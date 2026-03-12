@@ -81,16 +81,11 @@ export default function Features() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <h1 className="text-2xl font-bold text-foreground">Feature Backlog</h1>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            {sortedFeatures.length} features for{' '}
-            <span className="text-primary font-medium">{selectedQuarter}-{selectedYear}</span>
-          </p>
-        </div>
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-muted-foreground">
+          {sortedFeatures.length} features for{' '}
+          <span className="text-primary font-medium">{selectedQuarter} {selectedYear}</span>
+        </p>
         {canEdit && (
           <Button onClick={openNew} className="gap-2"><Plus className="w-4 h-4" />Add Feature</Button>
         )}

@@ -47,11 +47,7 @@ export default function Users() {
   return (
     <RoleGate allowed={['admin']}>
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">User Management</h1>
-            <p className="text-sm text-muted-foreground mt-1">Manage users and their roles</p>
-          </div>
+        <div className="flex items-center justify-end">
           <Button onClick={() => setInviteOpen(true)} className="gap-2">
             <UserPlus className="w-4 h-4" /> Invite User
           </Button>
