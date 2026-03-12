@@ -172,7 +172,7 @@ export default function TeamPlan() {
       // If custom feature, create it first
       if (!fid && customTitle) {
         const maxPriority = allFeatures.length > 0 ? Math.max(...allFeatures.map(f => f.priority || 0)) : 0;
-        const newFeature = await base44.entities.Feature.create({ title: customTitle, priority: maxPriority + 1, quarter: selectedQuarter, year: selectedYear });
+        const newFeature = await base44.entities.Feature.create({ title: customTitle, objective: customFeatureObjective || undefined, priority: maxPriority + 1, quarter: selectedQuarter, year: selectedYear });
         fid = newFeature.id;
       }
       const existing = sortedEntries;
