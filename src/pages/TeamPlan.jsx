@@ -31,7 +31,7 @@ export default function TeamPlan() {
   const qc = useQueryClient();
   const { toast } = useToast();
 
-  const [selectedTeamId, setSelectedTeamId] = useState('');
+  const [selectedTeamId, setSelectedTeamId] = useState(() => localStorage.getItem('selectedTeamId') || '');
   const [addFeatureOpen, setAddFeatureOpen] = useState(false);
   const [selectedFeatureId, setSelectedFeatureId] = useState('');
   const [effortForm, setEffortForm] = useState({ be: '', fe: '' });
@@ -55,6 +55,7 @@ export default function TeamPlan() {
     enabled: !!selectedTeamId,
   });
 
+  const handleTeamChange = (id) => { setSelectedTeamId(id); localStorage.setItem('selectedTeamId', id); };
   const selectedTeam = teams.find(t => t.id === selectedTeamId);
   const isAdmin = userRole === 'admin';
   const isTeamLead = selectedTeam?.team_lead_email === user?.email;
@@ -128,7 +129,7 @@ export default function TeamPlan() {
       const sprint_allocations = sprints.map((s, i) => ({ sprint: s, be_weeks: beAllocs[i], fe_weeks: feAllocs[i] }));
       return base44.entities.TeamPlanEntry.create({ team_id: selectedTeamId, feature_id: featureId, be_effort_weeks: beEffort, fe_effort_weeks: feEffort, sprint_allocations, year: selectedYear, quarter: selectedQuarter });
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] }); setAddFeatureOpen(false); setSelectedFeatureId(''); setEffortForm({ be: '', fe: '' }); toast({ title: 'Feature added' }); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] }); setAddFeatureOpen(false); setSelectedFeatureId(''); setEffortForm({ be: '', fe: '' }); },
   });
 
   const removeEntryMutation = useMutation({
@@ -153,14 +154,42 @@ export default function TeamPlan() {
 
   const updateCellMutation = useMutation({
     mutationFn: async ({ entry, sprintName, type, newVal }) => {
-      const newAllocs = sprints.map((s) => {
-        const existing = entry.sprint_allocations?.find(a => a.sprint === s) || { sprint: s, be_weeks: 0, fe_weeks: 0 };
-        if (s === sprintName) return { ...existing, [type === 'be' ? 'be_weeks' : 'fe_weeks']: newVal };
-        return existing;
+      // Set the edited sprint, then redistribute remaining effort for sprints after it
+      const sprintIdx = sprints.indexOf(sprintName);
+      const key = type === 'be' ? 'be_weeks' : 'fe_weeks';
+      
+      // Build current allocs with the new value for the edited sprint
+      const currentAllocs = sprints.map((s) => {
+        const a = entry.sprint_allocations?.find(a => a.sprint === s) || { sprint: s, be_weeks: 0, fe_weeks: 0 };
+        if (s === sprintName) return { ...a, [key]: newVal };
+        return { ...a };
       });
-      const newBE = newAllocs.reduce((s, a) => s + (a.be_weeks || 0), 0);
-      const newFE = newAllocs.reduce((s, a) => s + (a.fe_weeks || 0), 0);
-      return base44.entities.TeamPlanEntry.update(entry.id, { sprint_allocations: newAllocs, be_effort_weeks: newBE, fe_effort_weeks: newFE });
+
+      // Sum effort locked in sprints 0..sprintIdx (inclusive)
+      const lockedEffort = currentAllocs.slice(0, sprintIdx + 1).reduce((sum, a) => sum + (a[key] || 0), 0);
+      const totalEffort = type === 'be' ? (entry.be_effort_weeks || 0) : (entry.fe_effort_weeks || 0);
+      const remainingEffort = Math.max(0, Number((totalEffort - lockedEffort).toFixed(1)));
+
+      // Compute remaining capacity in sprints after the edited one (from other entries)
+      const otherEntries = sortedEntries.filter(e => e.id !== entry.id);
+      const afterSprints = sprints.slice(sprintIdx + 1);
+      const usedAfter = afterSprints.map(s => otherEntries.reduce((sum, e) => {
+        const a = e.sprint_allocations?.find(a => a.sprint === s);
+        return sum + (a?.[key] || 0);
+      }, 0));
+      const capPerSprint = type === 'be' ? beSprintCap : feSprintCap;
+      const remainingCaps = usedAfter.map(u => Math.max(0, capPerSprint - u));
+
+      // Distribute remaining effort into sprints after the edited one
+      const afterAllocs = distributeEffort(remainingEffort, remainingCaps);
+      afterSprints.forEach((s, i) => {
+        const idx = sprints.indexOf(s);
+        currentAllocs[idx] = { ...currentAllocs[idx], [key]: afterAllocs[i] };
+      });
+
+      const newBE = currentAllocs.reduce((s, a) => s + (a.be_weeks || 0), 0);
+      const newFE = currentAllocs.reduce((s, a) => s + (a.fe_weeks || 0), 0);
+      return base44.entities.TeamPlanEntry.update(entry.id, { sprint_allocations: currentAllocs, be_effort_weeks: newBE, fe_effort_weeks: newFE });
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] }); setEditCell(null); },
   });
@@ -172,7 +201,7 @@ export default function TeamPlan() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-3">
-          <Select value={selectedTeamId} onValueChange={setSelectedTeamId}>
+          <Select value={selectedTeamId} onValueChange={handleTeamChange}>
             <SelectTrigger className="w-52 bg-card">
               <SelectValue placeholder="Select a team..." />
             </SelectTrigger>
