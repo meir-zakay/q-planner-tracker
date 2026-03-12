@@ -295,6 +295,15 @@ export default function TeamPlan() {
 
   const objColor = (name) => colorMap[name] || '#94a3b8';
 
+  const getSprintRange = (entry) => {
+    const activeSprints = sprints.filter(s => {
+      const alloc = entry.sprint_allocations?.find(a => a.sprint === s);
+      return (alloc?.be_weeks || 0) + (alloc?.fe_weeks || 0) > 0;
+    });
+    if (activeSprints.length === 0) return null;
+    return { start: activeSprints[0], end: activeSprints[activeSprints.length - 1] };
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
