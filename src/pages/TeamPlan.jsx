@@ -406,7 +406,7 @@ export default function TeamPlan() {
                           <span className={`text-[10px] font-semibold ${beOver ? 'text-red-500' : 'text-foreground'}`}>{beUsed}/{thisBeSprintCap}w</span>
                         </div>
                         <div className="w-full bg-muted rounded-full h-1 mb-2">
-                          <div className="h-1 rounded-full" style={{ width: `${Math.min(100, beSprintCap > 0 ? (beUsed / beSprintCap) * 100 : 0)}%`, backgroundColor: beOver ? '#ef4444' : '#4f46e5' }} />
+                          <div className="h-1 rounded-full" style={{ width: `${Math.min(100, thisBeSprintCap > 0 ? (beUsed / thisBeSprintCap) * 100 : 0)}%`, backgroundColor: beOver ? '#ef4444' : '#4f46e5' }} />
                         </div>
                         <Droppable droppableId={`${sprint}-be`}>
                           {(provided, snapshot) => (
