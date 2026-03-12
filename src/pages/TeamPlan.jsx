@@ -403,7 +403,7 @@ export default function TeamPlan() {
                       <div className="p-2 border-b border-border/50">
                         <div className="flex items-center justify-between mb-1.5">
                           <span className="text-[10px] font-medium text-muted-foreground uppercase">BE</span>
-                          <span className={`text-[10px] font-semibold ${beOver ? 'text-red-500' : 'text-foreground'}`}>{beUsed}/{beSprintCap.toFixed(0)}w</span>
+                          <span className={`text-[10px] font-semibold ${beOver ? 'text-red-500' : 'text-foreground'}`}>{beUsed}/{thisBeSprintCap}w</span>
                         </div>
                         <div className="w-full bg-muted rounded-full h-1 mb-2">
                           <div className="h-1 rounded-full" style={{ width: `${Math.min(100, beSprintCap > 0 ? (beUsed / beSprintCap) * 100 : 0)}%`, backgroundColor: beOver ? '#ef4444' : '#4f46e5' }} />
