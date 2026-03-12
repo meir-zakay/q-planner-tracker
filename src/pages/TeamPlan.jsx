@@ -688,10 +688,10 @@ export default function TeamPlan() {
             )}
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => { setAddFeatureOpen(false); setAddMode('existing'); setSelectedFeatureId(''); setCustomFeatureTitle(''); setEffortForm({ be: '', fe: '' }); }}>Cancel</Button>
+            <Button variant="outline" onClick={() => { setAddFeatureOpen(false); setAddMode('existing'); setSelectedFeatureId(''); setCustomFeatureTitle(''); setCustomFeatureObjective(''); setEffortForm({ be: '', fe: '' }); }}>Cancel</Button>
             <Button
               onClick={() => addEntryMutation.mutate({ featureId: selectedFeatureId, customTitle: customFeatureTitle, beEffort: Number(effortForm.be) || 0, feEffort: Number(effortForm.fe) || 0 })}
-              disabled={addEntryMutation.isPending || (addMode === 'existing' ? !selectedFeatureId : !customFeatureTitle.trim())}
+              disabled={addEntryMutation.isPending || (addMode === 'existing' ? !selectedFeatureId : (!customFeatureTitle.trim() || !customFeatureObjective))}
             >Add to Plan</Button>
           </DialogFooter>
         </DialogContent>
