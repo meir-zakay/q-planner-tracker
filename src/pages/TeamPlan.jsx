@@ -611,17 +611,29 @@ export default function TeamPlan() {
       )}
 
       {/* Add Feature Dialog */}
-      <Dialog open={addFeatureOpen} onOpenChange={(o) => { if (!o) setAddFeatureOpen(false); }}>
+      <Dialog open={addFeatureOpen} onOpenChange={(o) => { if (!o) { setAddFeatureOpen(false); setAddMode('existing'); setSelectedFeatureId(''); setCustomFeatureTitle(''); setEffortForm({ be: '', fe: '' }); } }}>
         <DialogContent>
           <DialogHeader><DialogTitle>Add Feature to Plan</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
-            <div className="space-y-1.5">
-              <Label>Feature</Label>
-              <Select value={selectedFeatureId} onValueChange={setSelectedFeatureId}>
-                <SelectTrigger><SelectValue placeholder="Select a feature" /></SelectTrigger>
-                <SelectContent>{availableFeatures.map(f => <SelectItem key={f.id} value={f.id}>#{f.priority} — {f.title}</SelectItem>)}</SelectContent>
-              </Select>
+            {/* Mode toggle */}
+            <div className="flex gap-2">
+              <Button size="sm" variant={addMode === 'existing' ? 'default' : 'outline'} className="flex-1" onClick={() => setAddMode('existing')}>From Features List</Button>
+              <Button size="sm" variant={addMode === 'custom' ? 'default' : 'outline'} className="flex-1" onClick={() => setAddMode('custom')}>New Custom Feature</Button>
             </div>
+            {addMode === 'existing' ? (
+              <div className="space-y-1.5">
+                <Label>Feature</Label>
+                <Select value={selectedFeatureId} onValueChange={setSelectedFeatureId}>
+                  <SelectTrigger><SelectValue placeholder="Select a feature" /></SelectTrigger>
+                  <SelectContent>{availableFeatures.map(f => <SelectItem key={f.id} value={f.id}>#{f.priority} — {f.title}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+            ) : (
+              <div className="space-y-1.5">
+                <Label>Feature Title</Label>
+                <Input value={customFeatureTitle} onChange={e => setCustomFeatureTitle(e.target.value)} placeholder="Enter feature name..." />
+              </div>
+            )}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label className="flex items-center gap-1.5"><Server className="w-3.5 h-3.5" />BE Effort (weeks)</Label>
@@ -639,8 +651,11 @@ export default function TeamPlan() {
             )}
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setAddFeatureOpen(false)}>Cancel</Button>
-            <Button onClick={() => addEntryMutation.mutate({ featureId: selectedFeatureId, beEffort: Number(effortForm.be) || 0, feEffort: Number(effortForm.fe) || 0 })} disabled={addEntryMutation.isPending || !selectedFeatureId}>Add to Plan</Button>
+            <Button variant="outline" onClick={() => { setAddFeatureOpen(false); setAddMode('existing'); setSelectedFeatureId(''); setCustomFeatureTitle(''); setEffortForm({ be: '', fe: '' }); }}>Cancel</Button>
+            <Button
+              onClick={() => addEntryMutation.mutate({ featureId: selectedFeatureId, customTitle: customFeatureTitle, beEffort: Number(effortForm.be) || 0, feEffort: Number(effortForm.fe) || 0 })}
+              disabled={addEntryMutation.isPending || (addMode === 'existing' ? !selectedFeatureId : !customFeatureTitle.trim())}
+            >Add to Plan</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
