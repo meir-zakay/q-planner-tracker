@@ -316,8 +316,8 @@ export default function TeamPlan() {
             {teams.map(t => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}
           </SelectContent>
         </Select>
-        {canEdit && selectedTeamId && (
-          <Button onClick={() => setAddFeatureOpen(true)} className="gap-2"><Plus className="w-4 h-4" />Add Feature</Button>
+        {canEdit && (
+          <Button onClick={() => setAddFeatureOpen(true)} disabled={!selectedTeamId} className="gap-2"><Plus className="w-4 h-4" />Add Feature</Button>
         )}
       </div>
 
