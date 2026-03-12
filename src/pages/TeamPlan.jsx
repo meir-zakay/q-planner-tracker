@@ -383,8 +383,10 @@ export default function TeamPlan() {
                 {sprints.map((sprint, si) => {
                   const beUsed = sprintTotals[si]?.be || 0;
                   const feUsed = sprintTotals[si]?.fe || 0;
-                  const beOver = beUsed > beSprintCap;
-                  const feOver = feUsed > feSprintCap;
+                  const thisBeSprintCap = beSprintCaps[si] ?? 0;
+                  const thisFeSprintCap = feSprintCaps[si] ?? 0;
+                  const beOver = beUsed > thisBeSprintCap;
+                  const feOver = feUsed > thisFeSprintCap;
 
                   const beFeatures = sortedEntries.filter(e => (e.sprint_allocations?.find(a => a.sprint === sprint)?.be_weeks || 0) > 0);
                   const feFeatures = sortedEntries.filter(e => (e.sprint_allocations?.find(a => a.sprint === sprint)?.fe_weeks || 0) > 0);
