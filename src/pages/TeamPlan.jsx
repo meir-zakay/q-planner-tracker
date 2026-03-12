@@ -216,7 +216,8 @@ export default function TeamPlan() {
     mutationFn: async ({ entry, sprintName, type, newVal }) => {
       const sprintIdx = sprints.indexOf(sprintName);
       const key = type === 'be' ? 'be_weeks' : 'fe_weeks';
-      const capPerSprint = type === 'be' ? beSprintCap : feSprintCap;
+      const sprintCaps = type === 'be' ? beSprintCaps : feSprintCaps;
+      const capPerSprint = sprintCaps[sprintIdx] ?? 0;
       const otherEntries = sortedEntries.filter(e => e.id !== entry.id);
 
       // Clamp new value to the available capacity in this sprint (cap minus what others use)
