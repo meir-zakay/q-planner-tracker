@@ -90,8 +90,34 @@ export default function TeamPlan() {
   }, [quarterConfigs, selectedYear, selectedQuarter]);
 
   const numSprints = sprints.length;
-  const beSprintCap = selectedTeam ? (selectedTeam.be_capacity_weeks || 0) / numSprints : 0;
-  const feSprintCap = selectedTeam ? (selectedTeam.fe_capacity_weeks || 0) / numSprints : 0;
+
+  // Compute per-sprint capacities rounded to 0 or 0.5 steps,
+  // distributing the fractional remainder across the first N sprints.
+  // e.g. 6.3 cap/sprint → fraction=0.3, 0.3*6=1.8 → floor=1 sprint gets +0.5 (round 1.8→2? no)
+  // Actually: total = rawCap * numSprints; distribute fairly.
+  // Each sprint gets either floor(rawCap rounded to 0.5) or that + 0.5.
+  // We use: base = roundHalf(floor of rawCap to nearest 0.5), remainder in 0.5 units spread across first k sprints.
+  function computeSprintCaps(totalCapacity, nSprints) {
+    if (nSprints === 0 || totalCapacity <= 0) return Array(nSprints).fill(0);
+    const rawPerSprint = totalCapacity / nSprints;
+    // Floor to nearest 0.5
+    const base = Math.floor(rawPerSprint * 2) / 2;
+    // How many 0.5 units are left to distribute?
+    const totalIn05 = Math.round(totalCapacity * 2); // total in 0.5-unit steps
+    const baseIn05 = base * 2;
+    const extraUnits = totalIn05 - baseIn05 * nSprints; // how many sprints get +0.5
+    const caps = Array(nSprints).fill(base);
+    for (let i = 0; i < extraUnits && i < nSprints; i++) {
+      caps[i] = base + 0.5;
+    }
+    return caps;
+  }
+
+  const beSprintCaps = useMemo(() => computeSprintCaps(selectedTeam?.be_capacity_weeks || 0, numSprints), [selectedTeam, numSprints]);
+  const feSprintCaps = useMemo(() => computeSprintCaps(selectedTeam?.fe_capacity_weeks || 0, numSprints), [selectedTeam, numSprints]);
+  // Single scalar cap (max) used for display headers — use the first sprint's cap as representative
+  const beSprintCap = beSprintCaps[0] ?? 0;
+  const feSprintCap = feSprintCaps[0] ?? 0;
 
   const featureMap = useMemo(() => { const m = {}; allFeatures.forEach(f => { m[f.id] = f; }); return m; }, [allFeatures]);
   const colorMap = useMemo(() => { const m = {}; objectives.forEach(o => { m[o.name] = o.color; }); return m; }, [objectives]);
