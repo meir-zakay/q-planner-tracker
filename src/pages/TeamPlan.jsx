@@ -20,22 +20,25 @@ function roundHalf(n) {
 }
 
 function distributeEffort(totalEffort, sprintCapacities) {
-  // First pass: allocate using full capacity per sprint, rounding to 0.5
   const allocations = sprintCapacities.map(() => 0);
-  let remaining = totalEffort;
-  for (let i = 0; i < sprintCapacities.length && remaining > 0; i++) {
-    const raw = Math.min(remaining, sprintCapacities[i]);
-    const alloc = roundHalf(raw);
+  let remaining = Number(totalEffort.toFixed(2));
+  for (let i = 0; i < sprintCapacities.length && remaining > 0.01; i++) {
+    const cap = sprintCapacities[i];
+    if (cap <= 0) continue;
+    // Allocate up to the sprint cap, rounded to 0.5, never exceeding cap
+    const raw = Math.min(remaining, cap);
+    const alloc = Math.min(roundHalf(raw), cap);
     allocations[i] = alloc;
     remaining = Number((remaining - alloc).toFixed(2));
   }
-  // Collect fractional remainder (< 0.5) and redistribute as 0.5 chunks
+  // If there's still a sub-0.5 remainder, try to fit 0.5 chunks into sprints with room
   if (remaining > 0.01) {
     for (let i = 0; i < sprintCapacities.length && remaining > 0.01; i++) {
-      const room = sprintCapacities[i] - allocations[i];
-      if (room >= 0.5) {
-        allocations[i] += 0.5;
-        remaining = Number((remaining - 0.5).toFixed(2));
+      const room = Number((sprintCapacities[i] - allocations[i]).toFixed(2));
+      const add = Math.min(roundHalf(remaining), room);
+      if (add > 0) {
+        allocations[i] = Number((allocations[i] + add).toFixed(2));
+        remaining = Number((remaining - add).toFixed(2));
       }
     }
   }
