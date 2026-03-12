@@ -11,15 +11,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Plus, GripVertical, Pencil, Trash2, ListChecks } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
-
 const emptyFeature = { priority: 1, title: '', objective: '', description: '', comments: '' };
 
 export default function Features() {
   const { userRole } = useOutletContext();
   const { selectedYear, selectedQuarter } = useQuarterSelection();
   const qc = useQueryClient();
-  const { toast } = useToast();
   const [formOpen, setFormOpen] = useState(false);
   const [formData, setFormData] = useState(emptyFeature);
   const [editId, setEditId] = useState(null);
@@ -48,7 +45,6 @@ export default function Features() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['features', selectedYear, selectedQuarter] });
       setFormOpen(false); setEditId(null); setFormData(emptyFeature);
-      toast({ title: editId ? 'Feature updated' : 'Feature created' });
     },
   });
 

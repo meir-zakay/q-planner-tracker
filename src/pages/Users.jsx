@@ -11,8 +11,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { UserPlus, Pencil, Trash2, Mail, Shield } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
-
 const ROLES = ['admin', 'editor', 'viewer'];
 
 const roleBadge = { admin: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300', editor: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300', viewer: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300' };
@@ -20,7 +18,6 @@ const roleBadge = { admin: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-re
 export default function Users() {
   const { user } = useOutletContext();
   const qc = useQueryClient();
-  const { toast } = useToast();
   const [editUser, setEditUser] = useState(null);
   const [inviteOpen, setInviteOpen] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
@@ -31,18 +28,17 @@ export default function Users() {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.User.update(id, data),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['users'] }); setEditUser(null); toast({ title: 'User updated' }); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['users'] }); setEditUser(null); },
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.User.delete(id),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['users'] }); setDeleteConfirm(null); toast({ title: 'User deleted' }); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['users'] }); setDeleteConfirm(null); },
   });
 
   const handleInvite = async () => {
     if (!inviteEmail) return;
     await base44.users.inviteUser(inviteEmail, inviteRole);
-    toast({ title: 'Invitation sent', description: `Invited ${inviteEmail} as ${inviteRole}` });
     setInviteOpen(false);
     setInviteEmail('');
     setInviteRole('viewer');

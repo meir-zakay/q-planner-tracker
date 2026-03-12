@@ -9,14 +9,12 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Plus, Pencil, Trash2, Server, Monitor, X, Users } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
 import { useQuarterSelection } from '@/components/QuarterContext';
 
 const emptyTeam = { name: '', be_developers: 0, be_capacity_weeks: 0, fe_developers: 0, fe_capacity_weeks: 0, team_lead_email: '', team_lead_name: '' };
 
 export default function Teams() {
   const qc = useQueryClient();
-  const { toast } = useToast();
   const { selectedYear, selectedQuarter } = useQuarterSelection();
   const [formOpen, setFormOpen] = useState(false);
   const [formData, setFormData] = useState(emptyTeam);
@@ -28,7 +26,7 @@ export default function Teams() {
 
   const saveMutation = useMutation({
     mutationFn: (data) => editId ? base44.entities.Team.update(editId, data) : base44.entities.Team.create(data),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['teams'] }); setFormOpen(false); setEditId(null); setFormData(emptyTeam); toast({ title: editId ? 'Team updated' : 'Team created' }); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['teams'] }); setFormOpen(false); setEditId(null); setFormData(emptyTeam); },
   });
 
   const deleteMutation = useMutation({
