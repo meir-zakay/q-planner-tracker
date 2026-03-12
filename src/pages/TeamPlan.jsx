@@ -54,6 +54,7 @@ export default function TeamPlan() {
   const [addFeatureOpen, setAddFeatureOpen] = useState(false);
   const [selectedFeatureId, setSelectedFeatureId] = useState('');
   const [customFeatureTitle, setCustomFeatureTitle] = useState('');
+  const [customFeatureObjective, setCustomFeatureObjective] = useState('');
   const [addMode, setAddMode] = useState('existing'); // 'existing' | 'custom'
   const [effortForm, setEffortForm] = useState({ be: '', fe: '' });
   const [editEntryId, setEditEntryId] = useState(null);
