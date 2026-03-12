@@ -12,6 +12,7 @@ import Teams from '@/pages/Teams';
 import Features from '@/pages/Features';
 import TeamPlan from '@/pages/TeamPlan';
 import Settings from '@/pages/Settings';
+import Capacity from '@/pages/Capacity';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -42,6 +43,7 @@ const AuthenticatedApp = () => {
         <Route path="/Teams" element={<Teams />} />
         <Route path="/Features" element={<Features />} />
         <Route path="/TeamPlan" element={<TeamPlan />} />
+        <Route path="/Capacity" element={<Capacity />} />
         <Route path="/Settings" element={<Settings />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
