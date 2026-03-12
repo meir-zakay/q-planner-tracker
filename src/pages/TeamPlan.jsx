@@ -140,7 +140,14 @@ export default function TeamPlan() {
   const utilizationColor = utilizationPct > 100 ? '#ef4444' : utilizationPct > 85 ? '#f59e0b' : '#4f46e5';
 
   const addEntryMutation = useMutation({
-    mutationFn: async ({ featureId, beEffort, feEffort }) => {
+    mutationFn: async ({ featureId, customTitle, beEffort, feEffort }) => {
+      let fid = featureId;
+      // If custom feature, create it first
+      if (!fid && customTitle) {
+        const maxPriority = allFeatures.length > 0 ? Math.max(...allFeatures.map(f => f.priority || 0)) : 0;
+        const newFeature = await base44.entities.Feature.create({ title: customTitle, priority: maxPriority + 1, quarter: selectedQuarter, year: selectedYear });
+        fid = newFeature.id;
+      }
       const existing = sortedEntries;
       const beUsedPerSprint = sprints.map((s) => existing.reduce((sum, e) => { const a = e.sprint_allocations?.find(a => a.sprint === s); return sum + (a?.be_weeks || 0); }, 0));
       const feUsedPerSprint = sprints.map((s) => existing.reduce((sum, e) => { const a = e.sprint_allocations?.find(a => a.sprint === s); return sum + (a?.fe_weeks || 0); }, 0));
@@ -149,9 +156,13 @@ export default function TeamPlan() {
       const beAllocs = distributeEffort(beEffort, beRem);
       const feAllocs = distributeEffort(feEffort, feRem);
       const sprint_allocations = sprints.map((s, i) => ({ sprint: s, be_weeks: beAllocs[i], fe_weeks: feAllocs[i] }));
-      return base44.entities.TeamPlanEntry.create({ team_id: selectedTeamId, feature_id: featureId, be_effort_weeks: beEffort, fe_effort_weeks: feEffort, sprint_allocations, year: selectedYear, quarter: selectedQuarter });
+      return base44.entities.TeamPlanEntry.create({ team_id: selectedTeamId, feature_id: fid, be_effort_weeks: beEffort, fe_effort_weeks: feEffort, sprint_allocations, year: selectedYear, quarter: selectedQuarter });
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] }); setAddFeatureOpen(false); setSelectedFeatureId(''); setEffortForm({ be: '', fe: '' }); },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] });
+      qc.invalidateQueries({ queryKey: ['features', selectedYear, selectedQuarter] });
+      setAddFeatureOpen(false); setSelectedFeatureId(''); setCustomFeatureTitle(''); setAddMode('existing'); setEffortForm({ be: '', fe: '' });
+    },
   });
 
   const removeEntryMutation = useMutation({
