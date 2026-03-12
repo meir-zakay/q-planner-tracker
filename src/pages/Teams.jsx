@@ -52,7 +52,10 @@ export default function Teams() {
       <div className="space-y-6">
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Teams</h1>
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-bold text-foreground">Teams</h1>
+              <span className="text-sm font-medium text-primary">{selectedQuarter}-{selectedYear}</span>
+            </div>
             <p className="text-sm text-muted-foreground">{teams.length} teams</p>
           </div>
           <Button onClick={openNew} className="gap-2"><Plus className="w-4 h-4" />Add Team</Button>

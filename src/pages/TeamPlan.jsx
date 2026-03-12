@@ -200,6 +200,10 @@ export default function TeamPlan() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 mb-0">
+            <h1 className="text-xl font-bold text-foreground">Team Plan</h1>
+            <span className="text-sm font-medium text-primary">{selectedQuarter}-{selectedYear}</span>
+          </div>
           <Select value={selectedTeamId} onValueChange={handleTeamChange}>
             <SelectTrigger className="w-52 bg-card">
               <SelectValue placeholder="Select a team..." />
@@ -208,9 +212,6 @@ export default function TeamPlan() {
               {teams.map(t => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}
             </SelectContent>
           </Select>
-          {selectedTeamId && (
-            <span className="text-sm font-medium text-primary">{selectedQuarter}-{selectedYear}</span>
-          )}
         </div>
         {canEdit && selectedTeamId && (
           <Button onClick={() => setAddFeatureOpen(true)} className="gap-2"><Plus className="w-4 h-4" />Add Feature</Button>
