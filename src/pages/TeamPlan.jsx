@@ -243,7 +243,7 @@ export default function TeamPlan() {
         const a = e.sprint_allocations?.find(a => a.sprint === s);
         return sum + (a?.[key] || 0);
       }, 0));
-      const remainingCaps = usedAfter.map(u => Math.max(0, capPerSprint - u));
+      const remainingCaps = usedAfter.map((u, i) => Math.max(0, (sprintCaps[sprintIdx + 1 + i] ?? 0) - u));
 
       if (delta > 0) {
         // Increased: the locked sprints (0..sprintIdx) carry clampedVal;
