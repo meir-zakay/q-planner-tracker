@@ -21,7 +21,8 @@ export default function Teams() {
   const [editId, setEditId] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
-  const { data: teams = [] } = useQuery({ queryKey: ['teams'], queryFn: () => base44.entities.Team.list() });
+  const { data: teamsRaw = [] } = useQuery({ queryKey: ['teams'], queryFn: () => base44.entities.Team.list() });
+  const teams = [...teamsRaw].sort((a, b) => a.name.localeCompare(b.name));
   const { data: users = [] } = useQuery({ queryKey: ['users'], queryFn: () => base44.entities.User.list() });
 
   const saveMutation = useMutation({
@@ -50,14 +51,8 @@ export default function Teams() {
   return (
     <RoleGate allowed={['admin']}>
       <div className="space-y-6">
-        <div className="flex items-start justify-between">
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold text-foreground">Teams</h1>
-              <span className="text-sm font-medium text-primary">{selectedQuarter}-{selectedYear}</span>
-            </div>
-            <p className="text-sm text-muted-foreground">{teams.length} teams</p>
-          </div>
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-muted-foreground">{teams.length} teams</p>
           <Button onClick={openNew} className="gap-2"><Plus className="w-4 h-4" />Add Team</Button>
         </div>
 
