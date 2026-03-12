@@ -55,7 +55,8 @@ export default function TeamPlan() {
   const [editCell, setEditCell] = useState(null);
   const [editCellValue, setEditCellValue] = useState('');
 
-  const { data: teams = [] } = useQuery({ queryKey: ['teams'], queryFn: () => base44.entities.Team.list() });
+  const { data: teamsRaw = [] } = useQuery({ queryKey: ['teams'], queryFn: () => base44.entities.Team.list() });
+  const teams = useMemo(() => [...teamsRaw].sort((a, b) => a.name.localeCompare(b.name)), [teamsRaw]);
   const { data: allFeatures = [] } = useQuery({
     queryKey: ['features', selectedYear, selectedQuarter],
     queryFn: () => base44.entities.Feature.filter({ year: selectedYear, quarter: selectedQuarter }),
@@ -215,20 +216,14 @@ export default function TeamPlan() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 mb-0">
-            <h1 className="text-xl font-bold text-foreground">Team Plan</h1>
-            <span className="text-sm font-medium text-primary">{selectedQuarter}-{selectedYear}</span>
-          </div>
-          <Select value={selectedTeamId} onValueChange={handleTeamChange}>
-            <SelectTrigger className="w-52 bg-card">
-              <SelectValue placeholder="Select a team..." />
-            </SelectTrigger>
-            <SelectContent>
-              {teams.map(t => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}
-            </SelectContent>
-          </Select>
-        </div>
+        <Select value={selectedTeamId} onValueChange={handleTeamChange}>
+          <SelectTrigger className="w-52 bg-card">
+            <SelectValue placeholder="Select a team..." />
+          </SelectTrigger>
+          <SelectContent>
+            {teams.map(t => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}
+          </SelectContent>
+        </Select>
         {canEdit && selectedTeamId && (
           <Button onClick={() => setAddFeatureOpen(true)} className="gap-2"><Plus className="w-4 h-4" />Add Feature</Button>
         )}
