@@ -202,8 +202,8 @@ export default function TeamPlan() {
       const otherEntries = sortedEntries.filter(e => e.id !== entry.id);
       const beUsedPerSprint = sprints.map((s) => otherEntries.reduce((sum, e) => { const a = e.sprint_allocations?.find(a => a.sprint === s); return sum + (a?.be_weeks || 0); }, 0));
       const feUsedPerSprint = sprints.map((s) => otherEntries.reduce((sum, e) => { const a = e.sprint_allocations?.find(a => a.sprint === s); return sum + (a?.fe_weeks || 0); }, 0));
-      const beRem = beUsedPerSprint.map(u => Math.max(0, beSprintCap - u));
-      const feRem = feUsedPerSprint.map(u => Math.max(0, feSprintCap - u));
+      const beRem = beUsedPerSprint.map((u, i) => Math.max(0, beSprintCaps[i] - u));
+      const feRem = feUsedPerSprint.map((u, i) => Math.max(0, feSprintCaps[i] - u));
       const beAllocs = distributeEffort(beEffort, beRem);
       const feAllocs = distributeEffort(feEffort, feRem);
       const sprint_allocations = sprints.map((s, i) => ({ sprint: s, be_weeks: beAllocs[i], fe_weeks: feAllocs[i] }));
