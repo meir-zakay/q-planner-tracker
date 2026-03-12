@@ -13,6 +13,7 @@ import Features from '@/pages/Features';
 import TeamPlan from '@/pages/TeamPlan';
 import Settings from '@/pages/Settings';
 
+
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
