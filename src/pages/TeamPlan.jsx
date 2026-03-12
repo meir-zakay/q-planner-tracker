@@ -510,11 +510,18 @@ export default function TeamPlan() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-foreground truncate">{feat.title}</p>
-                        {feat.objective && (
-                          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold text-white mt-0.5" style={{ backgroundColor: objColor(feat.objective) }}>
-                            {feat.objective}
-                          </span>
-                        )}
+                        <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
+                          {feat.objective && (
+                            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold text-white" style={{ backgroundColor: objColor(feat.objective) }}>
+                              {feat.objective}
+                            </span>
+                          )}
+                          {(() => { const range = getSprintRange(entry); return range ? (
+                            <span className="text-[10px] text-muted-foreground">
+                              {range.start === range.end ? range.start : `${range.start} → ${range.end}`}
+                            </span>
+                          ) : null; })()}
+                        </div>
                       </div>
                       {isEditing ? (
                         <div className="flex items-center gap-2">
