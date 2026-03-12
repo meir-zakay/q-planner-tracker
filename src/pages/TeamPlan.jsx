@@ -53,6 +53,8 @@ export default function TeamPlan() {
   const [selectedTeamId, setSelectedTeamId] = useState(() => localStorage.getItem('selectedTeamId') || '');
   const [addFeatureOpen, setAddFeatureOpen] = useState(false);
   const [selectedFeatureId, setSelectedFeatureId] = useState('');
+  const [customFeatureTitle, setCustomFeatureTitle] = useState('');
+  const [addMode, setAddMode] = useState('existing'); // 'existing' | 'custom'
   const [effortForm, setEffortForm] = useState({ be: '', fe: '' });
   const [editEntryId, setEditEntryId] = useState(null);
   const [editEffort, setEditEffort] = useState({ be: '', fe: '' });
