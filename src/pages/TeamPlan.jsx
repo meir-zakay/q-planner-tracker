@@ -463,7 +463,7 @@ export default function TeamPlan() {
                           <span className={`text-[10px] font-semibold ${feOver ? 'text-red-500' : 'text-foreground'}`}>{feUsed}/{thisFeSprintCap}w</span>
                         </div>
                         <div className="w-full bg-muted rounded-full h-1 mb-2">
-                          <div className="h-1 rounded-full" style={{ width: `${Math.min(100, feSprintCap > 0 ? (feUsed / feSprintCap) * 100 : 0)}%`, backgroundColor: feOver ? '#ef4444' : '#10b981' }} />
+                          <div className="h-1 rounded-full" style={{ width: `${Math.min(100, thisFeSprintCap > 0 ? (feUsed / thisFeSprintCap) * 100 : 0)}%`, backgroundColor: feOver ? '#ef4444' : '#10b981' }} />
                         </div>
                         <Droppable droppableId={`${sprint}-fe`}>
                           {(provided, snapshot) => (
