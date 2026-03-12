@@ -4,18 +4,14 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useQuarterSelection } from '@/components/QuarterContext';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
-import { Plus, GripVertical, Pencil, Trash2, Hash, ListChecks } from 'lucide-react';
+import { Plus, GripVertical, Pencil, Trash2, ListChecks } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
-
-const OBJECTIVE_COLORS = { KTLO: '#f59e0b', RRC: '#10b981', BAU: '#6366f1', VSR: '#f43f5e', 'Growth Enablement': '#06b6d4', 'Core Optimization': '#8b5cf6', 'New Value Prop': '#f97316' };
 
 const emptyFeature = { priority: 1, title: '', objective: '', description: '', comments: '' };
 
@@ -43,39 +39,33 @@ export default function Features() {
 
   const sortedFeatures = useMemo(() => [...features].sort((a, b) => (a.priority || 0) - (b.priority || 0)), [features]);
 
+  const colorMap = useMemo(() => { const m = {}; objectives.forEach(o => { m[o.name] = o.color; }); return m; }, [objectives]);
+
   const saveMutation = useMutation({
     mutationFn: (data) => editId
       ? base44.entities.Feature.update(editId, data)
       : base44.entities.Feature.create({ ...data, year: selectedYear, quarter: selectedQuarter }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['features', selectedYear, selectedQuarter] });
-      setFormOpen(false);
-      setEditId(null);
-      setFormData(emptyFeature);
+      setFormOpen(false); setEditId(null); setFormData(emptyFeature);
       toast({ title: editId ? 'Feature updated' : 'Feature created' });
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.Feature.delete(id),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['features', selectedYear, selectedQuarter] });
-      setDeleteConfirm(null);
-    },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['features', selectedYear, selectedQuarter] }); setDeleteConfirm(null); },
   });
 
   const updatePrioritiesMutation = useMutation({
     mutationFn: async (reorderedFeatures) => {
-      const updates = reorderedFeatures.map((f, i) =>
-        base44.entities.Feature.update(f.id, { priority: i + 1 })
-      );
-      await Promise.all(updates);
+      await Promise.all(reorderedFeatures.map((f, i) => base44.entities.Feature.update(f.id, { priority: i + 1 })));
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['features', selectedYear, selectedQuarter] }),
   });
 
   const handleDragEnd = (result) => {
-    if (!result.destination) return;
+    if (!result.destination || !canEdit) return;
     const reordered = Array.from(sortedFeatures);
     const [moved] = reordered.splice(result.source.index, 1);
     reordered.splice(result.destination.index, 0, moved);
@@ -85,87 +75,84 @@ export default function Features() {
   const openNew = () => {
     const nextPriority = sortedFeatures.length > 0 ? Math.max(...sortedFeatures.map(f => f.priority || 0)) + 1 : 1;
     setFormData({ ...emptyFeature, priority: nextPriority });
-    setEditId(null);
-    setFormOpen(true);
+    setEditId(null); setFormOpen(true);
   };
 
-  const openEdit = (feature) => {
-    setFormData({ ...emptyFeature, ...feature });
-    setEditId(feature.id);
-    setFormOpen(true);
-  };
+  const openEdit = (feature) => { setFormData({ ...emptyFeature, ...feature }); setEditId(feature.id); setFormOpen(true); };
 
-  const objectiveColor = (name) => {
-    const obj = objectives.find(o => o.name === name);
-    return obj?.color || OBJECTIVE_COLORS[name] || '#94a3b8';
-  };
+  const objColor = (name) => colorMap[name] || '#94a3b8';
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      {/* Header */}
+      <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Features</h1>
-          <p className="text-sm text-muted-foreground mt-1">{selectedQuarter} {selectedYear} — Priority ordered, drag to reorder</p>
+          <div className="flex items-center gap-2 mb-1">
+            <h1 className="text-2xl font-bold text-foreground">Feature Backlog</h1>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            {sortedFeatures.length} features for{' '}
+            <span className="text-primary font-medium">{selectedQuarter}-{selectedYear}</span>
+          </p>
         </div>
         {canEdit && (
           <Button onClick={openNew} className="gap-2"><Plus className="w-4 h-4" />Add Feature</Button>
         )}
       </div>
 
+      {/* Feature List */}
       {isLoading ? (
-        <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-20 bg-muted animate-pulse rounded-lg" />)}</div>
+        <div className="space-y-2">{[1,2,3,4].map(i => <div key={i} className="h-16 bg-muted animate-pulse rounded-xl" />)}</div>
       ) : sortedFeatures.length === 0 ? (
-        <div className="text-center py-20 text-muted-foreground">
-          <ListChecks className="w-12 h-12 mx-auto mb-3 opacity-40" />
+        <div className="text-center py-20 text-muted-foreground border border-dashed border-border rounded-xl">
+          <ListChecks className="w-10 h-10 mx-auto mb-3 opacity-30" />
           <p className="font-medium">No features yet</p>
           <p className="text-sm mt-1">Add features for {selectedQuarter} {selectedYear}</p>
         </div>
       ) : (
-        <DragDropContext onDragEnd={canEdit ? handleDragEnd : () => {}}>
+        <DragDropContext onDragEnd={handleDragEnd}>
           <Droppable droppableId="features">
             {(provided) => (
-              <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-2">
+              <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-1.5">
                 {sortedFeatures.map((feature, index) => (
                   <Draggable key={feature.id} draggableId={feature.id} index={index} isDragDisabled={!canEdit}>
                     {(provided, snapshot) => (
-                      <Card
+                      <div
                         ref={provided.innerRef}
                         {...provided.draggableProps}
-                        className={`transition-shadow ${snapshot.isDragging ? 'shadow-xl ring-2 ring-primary/30' : ''}`}
+                        className={`bg-card border border-border rounded-xl px-4 py-3.5 flex items-center gap-3 group transition-shadow ${snapshot.isDragging ? 'shadow-xl ring-2 ring-primary/20' : 'hover:shadow-sm'}`}
                       >
-                        <CardContent className="p-4">
-                          <div className="flex items-start gap-3">
-                            {canEdit && (
-                              <div {...provided.dragHandleProps} className="mt-1 cursor-grab active:cursor-grabbing text-muted-foreground">
-                                <GripVertical className="w-4 h-4" />
-                              </div>
-                            )}
-                            <div className="flex items-center justify-center w-7 h-7 rounded-full bg-muted text-xs font-bold text-muted-foreground shrink-0">
-                              {feature.priority}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-start justify-between gap-2">
-                                <div>
-                                  <h3 className="font-semibold text-foreground text-sm">{feature.title}</h3>
-                                  {feature.description && <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{feature.description}</p>}
-                                </div>
-                                <div className="flex items-center gap-1 shrink-0">
-                                  {feature.objective && (
-                                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium text-white" style={{ backgroundColor: objectiveColor(feature.objective) }}>
-                                      {feature.objective}
-                                    </span>
-                                  )}
-                                  {canEdit && <>
-                                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEdit(feature)}><Pencil className="w-3 h-3" /></Button>
-                                    <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => setDeleteConfirm(feature)}><Trash2 className="w-3 h-3" /></Button>
-                                  </>}
-                                </div>
-                              </div>
-                              {feature.comments && <p className="text-xs text-amber-600 dark:text-amber-400 mt-1.5 italic">💬 {feature.comments}</p>}
-                            </div>
+                        {canEdit && (
+                          <div {...provided.dragHandleProps} className="cursor-grab text-muted-foreground/40 hover:text-muted-foreground transition-colors">
+                            <GripVertical className="w-4 h-4" />
                           </div>
-                        </CardContent>
-                      </Card>
+                        )}
+                        <div className="flex items-center justify-center w-6 h-6 rounded-full border-2 border-border text-[11px] font-bold text-muted-foreground shrink-0">
+                          {feature.priority}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-semibold text-foreground text-sm">{feature.title}</span>
+                            {feature.objective && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold text-white" style={{ backgroundColor: objColor(feature.objective) }}>
+                                {feature.objective}
+                              </span>
+                            )}
+                          </div>
+                          {feature.description && <p className="text-xs text-muted-foreground mt-0.5 truncate">{feature.description}</p>}
+                          {feature.comments && <p className="text-xs text-muted-foreground/70 mt-0.5 truncate italic">✓ {feature.comments}</p>}
+                        </div>
+                        {canEdit && (
+                          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground" onClick={() => openEdit(feature)}>
+                              <Pencil className="w-3.5 h-3.5" />
+                            </Button>
+                            <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive" onClick={() => setDeleteConfirm(feature)}>
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </Button>
+                          </div>
+                        )}
+                      </div>
                     )}
                   </Draggable>
                 ))}
@@ -182,31 +169,29 @@ export default function Features() {
           <DialogHeader><DialogTitle>{editId ? 'Edit Feature' : 'Add Feature'}</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <Label>Priority</Label>
                 <Input type="number" min="1" value={formData.priority} onChange={e => setFormData(p => ({ ...p, priority: Number(e.target.value) }))} />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <Label>Objective</Label>
                 <Select value={formData.objective} onValueChange={v => setFormData(p => ({ ...p, objective: v }))}>
                   <SelectTrigger><SelectValue placeholder="Select objective" /></SelectTrigger>
-                  <SelectContent>
-                    {objectives.map(o => <SelectItem key={o.id} value={o.name}>{o.name}</SelectItem>)}
-                  </SelectContent>
+                  <SelectContent>{objectives.map(o => <SelectItem key={o.id} value={o.name}>{o.name}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <Label>Title</Label>
               <Input value={formData.title} onChange={e => setFormData(p => ({ ...p, title: e.target.value }))} placeholder="Feature title" />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <Label>Description</Label>
-              <Textarea value={formData.description} onChange={e => setFormData(p => ({ ...p, description: e.target.value }))} placeholder="What does this feature do?" rows={3} />
+              <Textarea value={formData.description} onChange={e => setFormData(p => ({ ...p, description: e.target.value }))} rows={3} />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <Label>Comments</Label>
-              <Textarea value={formData.comments} onChange={e => setFormData(p => ({ ...p, comments: e.target.value }))} placeholder="Any comments or notes..." rows={2} />
+              <Textarea value={formData.comments} onChange={e => setFormData(p => ({ ...p, comments: e.target.value }))} rows={2} />
             </div>
           </div>
           <DialogFooter>
@@ -216,11 +201,10 @@ export default function Features() {
         </DialogContent>
       </Dialog>
 
-      {/* Delete confirm */}
       <Dialog open={!!deleteConfirm} onOpenChange={(o) => !o && setDeleteConfirm(null)}>
         <DialogContent>
           <DialogHeader><DialogTitle>Delete Feature</DialogTitle></DialogHeader>
-          <p className="text-sm text-muted-foreground">Delete <strong>{deleteConfirm?.title}</strong>? This cannot be undone.</p>
+          <p className="text-sm text-muted-foreground">Delete <strong>{deleteConfirm?.title}</strong>?</p>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteConfirm(null)}>Cancel</Button>
             <Button variant="destructive" onClick={() => deleteMutation.mutate(deleteConfirm.id)}>Delete</Button>
