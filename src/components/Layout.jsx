@@ -58,124 +58,129 @@ export default function Layout() {
 
   const filteredNav = navItems.filter(item => item.roles.includes(userRole));
 
+  const pageTitle = PAGE_TITLES[location.pathname] || 'QPlan';
+
   return (
     <TooltipProvider delayDuration={300}>
-      <div className="min-h-screen bg-background flex">
-        {/* Sidebar */}
-        <aside className={`relative shrink-0 h-screen sticky top-0 bg-card border-r border-border flex flex-col transition-all duration-200 ${collapsed ? 'w-14' : 'w-56'}`}>
+      <div className="min-h-screen bg-background flex flex-col">
+        {/* Top Header Bar */}
+        <header className="h-14 bg-card border-b border-border flex items-center px-4 gap-4 shrink-0 z-20 sticky top-0">
           {/* Logo */}
-          <div className={`flex items-center gap-2.5 px-3 py-4 border-b border-border ${collapsed ? 'justify-center' : ''}`}>
-            <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center shrink-0">
+          <Link to="/Dashboard" className="flex items-center gap-2 shrink-0">
+            <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
               <span className="text-primary-foreground font-bold text-xs">Q</span>
             </div>
-            {!collapsed && <span className="font-bold text-foreground text-sm tracking-tight">QPlan</span>}
-          </div>
+            <span className="font-bold text-foreground text-sm tracking-tight">QPlan</span>
+          </Link>
+
+          {/* Divider */}
+          <div className="w-px h-5 bg-border shrink-0" />
+
+          {/* Page Title */}
+          <h1 className="text-sm font-semibold text-foreground">{pageTitle}</h1>
+
+          {/* Spacer */}
+          <div className="flex-1" />
 
           {/* Quarter selector */}
-          {!collapsed && (
-            <div className="px-3 py-3 border-b border-border space-y-1.5">
-              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">Planning Period</p>
-              <div className="flex gap-1.5">
-                <Select value={selectedQuarter} onValueChange={setSelectedQuarter}>
-                  <SelectTrigger className="h-7 text-xs flex-1 bg-background">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {['Q1', 'Q2', 'Q3', 'Q4'].map(q => <SelectItem key={q} value={q}>{q}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-                <Select value={String(selectedYear)} onValueChange={v => setSelectedYear(parseInt(v))}>
-                  <SelectTrigger className="h-7 text-xs w-[70px] bg-background">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {[currentYear - 1, currentYear, currentYear + 1].map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground hidden sm:inline">Period:</span>
+            <Select value={selectedQuarter} onValueChange={setSelectedQuarter}>
+              <SelectTrigger className="h-8 text-xs w-[64px] bg-background">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {['Q1', 'Q2', 'Q3', 'Q4'].map(q => <SelectItem key={q} value={q}>{q}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <Select value={String(selectedYear)} onValueChange={v => setSelectedYear(parseInt(v))}>
+              <SelectTrigger className="h-8 text-xs w-[72px] bg-background">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {[currentYear - 1, currentYear, currentYear + 1].map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Dark mode toggle */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground" onClick={() => setDarkMode(!darkMode)}>
+                {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{darkMode ? 'Light Mode' : 'Dark Mode'}</TooltipContent>
+          </Tooltip>
+
+          {/* User + Logout */}
+          <div className="flex items-center gap-2 pl-2 border-l border-border">
+            <div className="hidden sm:block text-right">
+              <p className="text-xs font-medium text-foreground leading-none">{user?.full_name || user?.email || 'User'}</p>
+              <p className="text-[10px] text-muted-foreground capitalize mt-0.5">{userRole}</p>
             </div>
-          )}
-
-          {/* Nav */}
-          <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto">
-            {filteredNav.map(item => {
-              const isActive = location.pathname === item.path;
-              const NavLink = (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`flex items-center gap-3 px-2.5 py-2 rounded-lg text-sm font-medium transition-all duration-150 ${
-                    collapsed ? 'justify-center' : ''
-                  } ${isActive
-                    ? 'bg-primary/10 text-primary'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-accent'
-                  }`}
-                >
-                  <item.icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-primary' : ''}`} />
-                  {!collapsed && <span>{item.label}</span>}
-                </Link>
-              );
-              if (collapsed) {
-                return (
-                  <Tooltip key={item.path}>
-                    <TooltipTrigger asChild>{NavLink}</TooltipTrigger>
-                    <TooltipContent side="right">{item.label}</TooltipContent>
-                  </Tooltip>
-                );
-              }
-              return NavLink;
-            })}
-          </nav>
-
-          {/* Bottom */}
-          <div className={`p-2 border-t border-border space-y-0.5`}>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="sm" className={`w-full text-muted-foreground ${collapsed ? 'px-0 justify-center' : 'justify-start gap-3'}`} onClick={() => setDarkMode(!darkMode)}>
-                  {darkMode ? <Sun className="w-4 h-4 shrink-0" /> : <Moon className="w-4 h-4 shrink-0" />}
-                  {!collapsed && <span className="text-sm">{darkMode ? 'Light Mode' : 'Dark Mode'}</span>}
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground" onClick={() => base44.auth.logout()}>
+                  <LogOut className="w-4 h-4" />
                 </Button>
               </TooltipTrigger>
-              {collapsed && <TooltipContent side="right">{darkMode ? 'Light Mode' : 'Dark Mode'}</TooltipContent>}
+              <TooltipContent>Logout</TooltipContent>
             </Tooltip>
-            {!collapsed && (
-              <div className="flex items-center justify-between px-2 py-1.5">
-                <div className="min-w-0">
-                  <p className="text-xs font-medium text-foreground truncate">{user?.full_name || user?.email || 'User'}</p>
-                  <p className="text-[10px] text-muted-foreground capitalize">{userRole}</p>
-                </div>
-                <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground shrink-0" onClick={() => base44.auth.logout()}>
-                  <LogOut className="w-3.5 h-3.5" />
-                </Button>
-              </div>
-            )}
-            {collapsed && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm" className="w-full px-0 justify-center text-muted-foreground" onClick={() => base44.auth.logout()}>
-                    <LogOut className="w-4 h-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="right">Logout</TooltipContent>
-              </Tooltip>
-            )}
           </div>
+        </header>
 
-          {/* Collapse toggle */}
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className="absolute -right-3 top-16 w-6 h-6 bg-card border border-border rounded-full flex items-center justify-center shadow-sm hover:bg-accent transition-colors z-10"
-          >
-            {collapsed ? <ChevronRight className="w-3 h-3 text-muted-foreground" /> : <ChevronLeft className="w-3 h-3 text-muted-foreground" />}
-          </button>
-        </aside>
+        {/* Body */}
+        <div className="flex flex-1 min-h-0">
+          {/* Sidebar */}
+          <aside className={`relative shrink-0 h-[calc(100vh-3.5rem)] sticky top-14 bg-card border-r border-border flex flex-col transition-all duration-200 ${collapsed ? 'w-14' : 'w-52'}`}>
+            {/* Nav */}
+            <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto">
+              {filteredNav.map(item => {
+                const isActive = location.pathname === item.path;
+                const NavLink = (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={`flex items-center gap-3 px-2.5 py-2 rounded-lg text-sm font-medium transition-all duration-150 ${
+                      collapsed ? 'justify-center' : ''
+                    } ${isActive
+                      ? 'bg-primary/10 text-primary'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                    }`}
+                  >
+                    <item.icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-primary' : ''}`} />
+                    {!collapsed && <span>{item.label}</span>}
+                  </Link>
+                );
+                if (collapsed) {
+                  return (
+                    <Tooltip key={item.path}>
+                      <TooltipTrigger asChild>{NavLink}</TooltipTrigger>
+                      <TooltipContent side="right">{item.label}</TooltipContent>
+                    </Tooltip>
+                  );
+                }
+                return NavLink;
+              })}
+            </nav>
 
-        {/* Main content */}
-        <main className="flex-1 min-w-0 overflow-auto">
-          <div className="p-6 md:p-8 max-w-[1400px] mx-auto">
-            <Outlet context={{ user, userRole, selectedYear, selectedQuarter }} />
-          </div>
-        </main>
+            {/* Collapse toggle */}
+            <button
+              onClick={() => setCollapsed(!collapsed)}
+              className="absolute -right-3 top-4 w-6 h-6 bg-card border border-border rounded-full flex items-center justify-center shadow-sm hover:bg-accent transition-colors z-10"
+            >
+              {collapsed ? <ChevronRight className="w-3 h-3 text-muted-foreground" /> : <ChevronLeft className="w-3 h-3 text-muted-foreground" />}
+            </button>
+          </aside>
+
+          {/* Main content */}
+          <main className="flex-1 min-w-0 overflow-auto">
+            <div className="p-6 md:p-8 max-w-[1400px] mx-auto">
+              <Outlet context={{ user, userRole, selectedYear, selectedQuarter }} />
+            </div>
+          </main>
+        </div>
       </div>
     </TooltipProvider>
   );
