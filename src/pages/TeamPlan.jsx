@@ -14,13 +14,29 @@ import { Plus, Trash2, Pencil, Info, AlertTriangle, Server, Monitor } from 'luci
 const DEFAULT_SPRINTS = { Q1: ['S1','S2','S3','S4','S5','S6'], Q2: ['S7','S8','S9','S10','S11','S12'], Q3: ['S13','S14','S15','S16','S17','S18'], Q4: ['S19','S20','S21','S22','S23','S24'] };
 const FALLBACK_COLORS = ['#4f46e5','#0ea5e9','#f59e0b','#10b981','#f43f5e','#8b5cf6','#f97316'];
 
+function roundHalf(n) {
+  return Math.round(n * 2) / 2;
+}
+
 function distributeEffort(totalEffort, sprintCapacities) {
+  // First pass: allocate using full capacity per sprint, rounding to 0.5
   const allocations = sprintCapacities.map(() => 0);
   let remaining = totalEffort;
   for (let i = 0; i < sprintCapacities.length && remaining > 0; i++) {
-    const alloc = Math.min(remaining, sprintCapacities[i]);
-    allocations[i] = Number(alloc.toFixed(1));
-    remaining = Number((remaining - alloc).toFixed(1));
+    const raw = Math.min(remaining, sprintCapacities[i]);
+    const alloc = roundHalf(raw);
+    allocations[i] = alloc;
+    remaining = Number((remaining - alloc).toFixed(2));
+  }
+  // Collect fractional remainder (< 0.5) and redistribute as 0.5 chunks
+  if (remaining > 0.01) {
+    for (let i = 0; i < sprintCapacities.length && remaining > 0.01; i++) {
+      const room = sprintCapacities[i] - allocations[i];
+      if (room >= 0.5) {
+        allocations[i] += 0.5;
+        remaining = Number((remaining - 0.5).toFixed(2));
+      }
+    }
   }
   return allocations;
 }
