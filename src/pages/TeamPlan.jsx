@@ -639,7 +639,7 @@ export default function TeamPlan() {
       )}
 
       {/* Add Feature Dialog */}
-      <Dialog open={addFeatureOpen} onOpenChange={(o) => { if (!o) { setAddFeatureOpen(false); setAddMode('existing'); setSelectedFeatureId(''); setCustomFeatureTitle(''); setEffortForm({ be: '', fe: '' }); } }}>
+      <Dialog open={addFeatureOpen} onOpenChange={(o) => { if (!o) { setAddFeatureOpen(false); setAddMode('existing'); setSelectedFeatureId(''); setCustomFeatureTitle(''); setCustomFeatureObjective(''); setEffortForm({ be: '', fe: '' }); } }}>
         <DialogContent>
           <DialogHeader><DialogTitle>Add Feature to Plan</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
