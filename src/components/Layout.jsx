@@ -7,6 +7,15 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
+const PAGE_TITLES = {
+  '/Dashboard': 'Dashboard',
+  '/Features': 'Feature Backlog',
+  '/TeamPlan': 'Team Plan',
+  '/Teams': 'Teams',
+  '/Users': 'User Management',
+  '/Settings': 'Settings',
+};
+
 const navItems = [
   { path: '/Dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['admin', 'editor', 'viewer'] },
   { path: '/Features', label: 'Features', icon: ListChecks, roles: ['admin', 'editor', 'viewer'] },
