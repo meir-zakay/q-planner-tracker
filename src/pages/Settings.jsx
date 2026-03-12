@@ -8,14 +8,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Plus, Pencil, Trash2, Target, Calendar } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
-
 const QUARTERS = ['Q1', 'Q2', 'Q3', 'Q4'];
 const DEFAULT_SPRINTS = { Q1: ['S1','S2','S3','S4','S5','S6'], Q2: ['S7','S8','S9','S10','S11','S12'], Q3: ['S13','S14','S15','S16','S17','S18'], Q4: ['S19','S20','S21','S22','S23','S24'] };
 
 export default function Settings() {
   const qc = useQueryClient();
-  const { toast } = useToast();
   const [objForm, setObjForm] = useState(null);
   const [deleteObjConfirm, setDeleteObjConfirm] = useState(null);
   const currentYear = new Date().getFullYear();
@@ -26,7 +23,7 @@ export default function Settings() {
 
   const saveObjMutation = useMutation({
     mutationFn: (data) => data.id ? base44.entities.Objective.update(data.id, { name: data.name, color: data.color }) : base44.entities.Objective.create({ name: data.name, color: data.color, sort_order: objectives.length + 1 }),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['objectives'] }); setObjForm(null); toast({ title: 'Objective saved' }); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['objectives'] }); setObjForm(null); },
   });
 
   const deleteObjMutation = useMutation({
@@ -51,17 +48,11 @@ export default function Settings() {
       await base44.entities.QuarterConfig.create({ year: configYear, quarter, sprints });
     }
     qc.invalidateQueries({ queryKey: ['quarterConfigs'] });
-    toast({ title: `${quarter} sprints updated` });
   };
 
   return (
     <RoleGate allowed={['admin']}>
       <div className="space-y-8">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Settings</h1>
-          <p className="text-sm text-muted-foreground mt-1">Manage objectives and sprint configurations</p>
-        </div>
-
         {/* Objectives */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
