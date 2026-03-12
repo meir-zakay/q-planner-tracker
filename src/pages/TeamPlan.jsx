@@ -188,7 +188,7 @@ export default function TeamPlan() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] });
       qc.invalidateQueries({ queryKey: ['features', selectedYear, selectedQuarter] });
-      setAddFeatureOpen(false); setSelectedFeatureId(''); setCustomFeatureTitle(''); setAddMode('existing'); setEffortForm({ be: '', fe: '' });
+      setAddFeatureOpen(false); setSelectedFeatureId(''); setCustomFeatureTitle(''); setCustomFeatureObjective(''); setAddMode('existing'); setEffortForm({ be: '', fe: '' });
     },
   });
 
