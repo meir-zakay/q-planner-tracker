@@ -29,7 +29,6 @@ export default function TeamPlan() {
   const { user, userRole } = useOutletContext();
   const { selectedYear, selectedQuarter } = useQuarterSelection();
   const qc = useQueryClient();
-  const { toast } = useToast();
 
   const [selectedTeamId, setSelectedTeamId] = useState(() => localStorage.getItem('selectedTeamId') || '');
   const [addFeatureOpen, setAddFeatureOpen] = useState(false);
