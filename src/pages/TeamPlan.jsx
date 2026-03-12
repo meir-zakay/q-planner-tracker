@@ -211,6 +211,42 @@ export default function TeamPlan() {
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] }); setEditCell(null); },
   });
 
+  // Drag and drop handler for moving allocations between sprints
+  const handleDragEnd = (result) => {
+    if (!result.destination || !canEdit) return;
+    const { draggableId, source, destination } = result;
+    if (source.droppableId === destination.droppableId) return;
+
+    // Parse draggableId: "entryId-type" (type = be or fe)
+    const parts = draggableId.split('-drag-');
+    const entryId = parts[0];
+    const type = parts[1]; // 'be' or 'fe'
+    const sourceSprint = source.droppableId.replace(`-${type}`, '');
+    const destSprint = destination.droppableId.replace(`-${type}`, '');
+
+    const entry = sortedEntries.find(e => e.id === entryId);
+    if (!entry) return;
+
+    const key = type === 'be' ? 'be_weeks' : 'fe_weeks';
+    const sourceAlloc = entry.sprint_allocations?.find(a => a.sprint === sourceSprint);
+    const movedAmount = sourceAlloc?.[key] || 0;
+    if (movedAmount <= 0) return;
+
+    // Build new allocations: subtract from source, add to dest
+    const newAllocs = sprints.map(s => {
+      const existing = entry.sprint_allocations?.find(a => a.sprint === s) || { sprint: s, be_weeks: 0, fe_weeks: 0 };
+      const clone = { ...existing };
+      if (s === sourceSprint) clone[key] = 0;
+      if (s === destSprint) clone[key] = (clone[key] || 0) + movedAmount;
+      return clone;
+    });
+
+    const newBE = newAllocs.reduce((s, a) => s + (a.be_weeks || 0), 0);
+    const newFE = newAllocs.reduce((s, a) => s + (a.fe_weeks || 0), 0);
+    base44.entities.TeamPlanEntry.update(entry.id, { sprint_allocations: newAllocs, be_effort_weeks: newBE, fe_effort_weeks: newFE })
+      .then(() => qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] }));
+  };
+
   const objColor = (name) => colorMap[name] || '#94a3b8';
 
   return (
