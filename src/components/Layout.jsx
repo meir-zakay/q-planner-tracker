@@ -14,7 +14,7 @@ const PAGE_TITLES = {
   '/Teams': 'Teams',
   '/Users': 'User Management',
   '/Settings': 'Settings',
-  '/Capacity': 'Capacity',
+
 };
 
 const navItems = [
