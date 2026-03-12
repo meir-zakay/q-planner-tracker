@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -24,7 +24,7 @@ export default function Capacity() {
   const [saved, setSaved] = useState({});
 
   // Initialize edits when teams load
-  React.useEffect(() => {
+  useEffect(() => {
     if (teams.length === 0) return;
     setEdits(prev => {
       const next = { ...prev };
