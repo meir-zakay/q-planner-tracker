@@ -657,9 +657,18 @@ export default function TeamPlan() {
                 </Select>
               </div>
             ) : (
-              <div className="space-y-1.5">
-                <Label>Feature Title</Label>
-                <Input value={customFeatureTitle} onChange={e => setCustomFeatureTitle(e.target.value)} placeholder="Enter feature name..." />
+              <div className="space-y-3">
+                <div className="space-y-1.5">
+                  <Label>Feature Title</Label>
+                  <Input value={customFeatureTitle} onChange={e => setCustomFeatureTitle(e.target.value)} placeholder="Enter feature name..." />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Objective <span className="text-destructive">*</span></Label>
+                  <Select value={customFeatureObjective} onValueChange={setCustomFeatureObjective}>
+                    <SelectTrigger><SelectValue placeholder="Select an objective..." /></SelectTrigger>
+                    <SelectContent>{objectives.map(o => <SelectItem key={o.id} value={o.name}>{o.name}</SelectItem>)}</SelectContent>
+                  </Select>
+                </div>
               </div>
             )}
             <div className="grid grid-cols-2 gap-4">
