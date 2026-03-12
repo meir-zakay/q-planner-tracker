@@ -295,117 +295,143 @@ export default function TeamPlan() {
             </div>
 
             {/* Sprint Cards */}
-            <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${numSprints}, minmax(0, 1fr))` }}>
-              {sprints.map((sprint, si) => {
-                const beUsed = sprintTotals[si]?.be || 0;
-                const feUsed = sprintTotals[si]?.fe || 0;
-                const beOver = beUsed > beSprintCap;
-                const feOver = feUsed > feSprintCap;
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${numSprints}, minmax(0, 1fr))` }}>
+                {sprints.map((sprint, si) => {
+                  const beUsed = sprintTotals[si]?.be || 0;
+                  const feUsed = sprintTotals[si]?.fe || 0;
+                  const beOver = beUsed > beSprintCap;
+                  const feOver = feUsed > feSprintCap;
 
-                // Features with BE allocation in this sprint
-                const beFeatures = sortedEntries.filter(e => {
-                  const a = e.sprint_allocations?.find(a => a.sprint === sprint);
-                  return (a?.be_weeks || 0) > 0;
-                });
-                const feFeatures = sortedEntries.filter(e => {
-                  const a = e.sprint_allocations?.find(a => a.sprint === sprint);
-                  return (a?.fe_weeks || 0) > 0;
-                });
+                  const beFeatures = sortedEntries.filter(e => (e.sprint_allocations?.find(a => a.sprint === sprint)?.be_weeks || 0) > 0);
+                  const feFeatures = sortedEntries.filter(e => (e.sprint_allocations?.find(a => a.sprint === sprint)?.fe_weeks || 0) > 0);
 
-                return (
-                  <div key={sprint} className="border border-border rounded-lg overflow-hidden min-w-0">
-                    {/* Sprint header */}
-                    <div className="px-2.5 py-2 bg-muted/30 border-b border-border text-center">
-                      <p className="font-semibold text-foreground text-sm">{sprint}</p>
-                      <p className="text-[10px] text-muted-foreground">2 weeks</p>
-                    </div>
-
-                    {/* BE Section */}
-                    <div className="p-2 border-b border-border/50">
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-[10px] font-medium text-muted-foreground uppercase">BE</span>
-                        <span className={`text-[10px] font-semibold ${beOver ? 'text-red-500' : 'text-foreground'}`}>
-                          {beUsed}/{beSprintCap.toFixed(0)}w
-                        </span>
+                  return (
+                    <div key={sprint} className="border border-border rounded-lg overflow-hidden min-w-0">
+                      {/* Sprint header */}
+                      <div className="px-2.5 py-2 bg-muted/30 border-b border-border text-center">
+                        <p className="font-semibold text-foreground text-sm">{sprint}</p>
+                        <p className="text-[10px] text-muted-foreground">2 weeks</p>
                       </div>
-                      {/* BE progress bar */}
-                      <div className="w-full bg-muted rounded-full h-1 mb-2">
-                        <div className="h-1 rounded-full" style={{ width: `${Math.min(100, beSprintCap > 0 ? (beUsed / beSprintCap) * 100 : 0)}%`, backgroundColor: beOver ? '#ef4444' : '#4f46e5' }} />
-                      </div>
-                      <div className="space-y-1">
-                        {beFeatures.map(entry => {
-                          const feat = featureMap[entry.feature_id];
-                          const alloc = entry.sprint_allocations?.find(a => a.sprint === sprint);
-                          const cellKey = `${entry.id}-${sprint}-be`;
-                          return (
-                            <div key={entry.id} className="bg-primary/5 rounded px-1.5 py-1">
-                              <p className="text-[10px] text-foreground font-medium leading-tight truncate">{feat?.title}</p>
-                              {canEdit && editCell?.key === cellKey ? (
-                                <Input autoFocus type="number" min="0" step="0.5" value={editCellValue}
-                                  onChange={e => setEditCellValue(e.target.value)}
-                                  onBlur={() => updateCellMutation.mutate({ entry, sprintName: sprint, type: 'be', newVal: Number(editCellValue) })}
-                                  onKeyDown={e => { if (e.key === 'Enter') e.target.blur(); if (e.key === 'Escape') setEditCell(null); }}
-                                  className="h-5 w-14 text-[10px] p-0.5 mt-0.5 border-primary/40"
-                                />
-                              ) : (
-                                <p
-                                  className={`text-[10px] font-semibold text-primary mt-0.5 ${canEdit ? 'cursor-pointer hover:underline' : ''}`}
-                                  onClick={canEdit ? () => { setEditCell({ key: cellKey }); setEditCellValue(String(alloc?.be_weeks || 0)); } : undefined}
-                                >
-                                  {alloc?.be_weeks || 0}w
-                                </p>
-                              )}
+
+                      {/* BE Section */}
+                      <div className="p-2 border-b border-border/50">
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="text-[10px] font-medium text-muted-foreground uppercase">BE</span>
+                          <span className={`text-[10px] font-semibold ${beOver ? 'text-red-500' : 'text-foreground'}`}>{beUsed}/{beSprintCap.toFixed(0)}w</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-1 mb-2">
+                          <div className="h-1 rounded-full" style={{ width: `${Math.min(100, beSprintCap > 0 ? (beUsed / beSprintCap) * 100 : 0)}%`, backgroundColor: beOver ? '#ef4444' : '#4f46e5' }} />
+                        </div>
+                        <Droppable droppableId={`${sprint}-be`}>
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.droppableProps}
+                              className={`space-y-1 min-h-[2rem] rounded transition-colors ${snapshot.isDraggingOver ? 'bg-primary/5' : ''}`}
+                            >
+                              {beFeatures.map((entry, idx) => {
+                                const feat = featureMap[entry.feature_id];
+                                const alloc = entry.sprint_allocations?.find(a => a.sprint === sprint);
+                                const cellKey = `${entry.id}-${sprint}-be`;
+                                return (
+                                  <Draggable key={entry.id} draggableId={`${entry.id}-drag-be`} index={idx} isDragDisabled={!canEdit}>
+                                    {(drag, dragSnapshot) => (
+                                      <div
+                                        ref={drag.innerRef}
+                                        {...drag.draggableProps}
+                                        {...drag.dragHandleProps}
+                                        className={`bg-primary/5 rounded px-1.5 py-1 ${canEdit ? 'cursor-grab active:cursor-grabbing' : ''} ${dragSnapshot.isDragging ? 'shadow-md opacity-90' : ''}`}
+                                      >
+                                        <p className="text-[10px] text-foreground font-medium leading-tight truncate">{feat?.title}</p>
+                                        {canEdit && editCell?.key === cellKey ? (
+                                          <Input autoFocus type="number" min="0" step="0.5" value={editCellValue}
+                                            onChange={e => setEditCellValue(e.target.value)}
+                                            onBlur={() => updateCellMutation.mutate({ entry, sprintName: sprint, type: 'be', newVal: Number(editCellValue) })}
+                                            onKeyDown={e => { if (e.key === 'Enter') e.target.blur(); if (e.key === 'Escape') setEditCell(null); }}
+                                            className="h-5 w-14 text-[10px] p-0.5 mt-0.5 border-primary/40"
+                                          />
+                                        ) : (
+                                          <p
+                                            className={`text-[10px] font-semibold text-primary mt-0.5 ${canEdit ? 'hover:underline' : ''}`}
+                                            onClick={canEdit ? () => { setEditCell({ key: cellKey }); setEditCellValue(String(alloc?.be_weeks || 0)); } : undefined}
+                                          >
+                                            {alloc?.be_weeks || 0}w
+                                          </p>
+                                        )}
+                                      </div>
+                                    )}
+                                  </Draggable>
+                                );
+                              })}
+                              {provided.placeholder}
+                              {beFeatures.length === 0 && <p className="text-[10px] text-muted-foreground/50 text-center py-1">—</p>}
                             </div>
-                          );
-                        })}
-                        {beFeatures.length === 0 && <p className="text-[10px] text-muted-foreground/50 text-center py-1">—</p>}
+                          )}
+                        </Droppable>
                       </div>
-                    </div>
 
-                    {/* FE Section */}
-                    <div className="p-2">
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-[10px] font-medium text-muted-foreground uppercase">FE</span>
-                        <span className={`text-[10px] font-semibold ${feOver ? 'text-red-500' : 'text-foreground'}`}>
-                          {feUsed}/{feSprintCap.toFixed(0)}w
-                        </span>
-                      </div>
-                      <div className="w-full bg-muted rounded-full h-1 mb-2">
-                        <div className="h-1 rounded-full" style={{ width: `${Math.min(100, feSprintCap > 0 ? (feUsed / feSprintCap) * 100 : 0)}%`, backgroundColor: feOver ? '#ef4444' : '#10b981' }} />
-                      </div>
-                      <div className="space-y-1">
-                        {feFeatures.map(entry => {
-                          const feat = featureMap[entry.feature_id];
-                          const alloc = entry.sprint_allocations?.find(a => a.sprint === sprint);
-                          const cellKey = `${entry.id}-${sprint}-fe`;
-                          return (
-                            <div key={entry.id} className="bg-emerald-500/5 rounded px-1.5 py-1">
-                              <p className="text-[10px] text-foreground font-medium leading-tight truncate">{feat?.title}</p>
-                              {canEdit && editCell?.key === cellKey ? (
-                                <Input autoFocus type="number" min="0" step="0.5" value={editCellValue}
-                                  onChange={e => setEditCellValue(e.target.value)}
-                                  onBlur={() => updateCellMutation.mutate({ entry, sprintName: sprint, type: 'fe', newVal: Number(editCellValue) })}
-                                  onKeyDown={e => { if (e.key === 'Enter') e.target.blur(); if (e.key === 'Escape') setEditCell(null); }}
-                                  className="h-5 w-14 text-[10px] p-0.5 mt-0.5 border-emerald-400/40"
-                                />
-                              ) : (
-                                <p
-                                  className={`text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 mt-0.5 ${canEdit ? 'cursor-pointer hover:underline' : ''}`}
-                                  onClick={canEdit ? () => { setEditCell({ key: cellKey }); setEditCellValue(String(alloc?.fe_weeks || 0)); } : undefined}
-                                >
-                                  {alloc?.fe_weeks || 0}w
-                                </p>
-                              )}
+                      {/* FE Section */}
+                      <div className="p-2">
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="text-[10px] font-medium text-muted-foreground uppercase">FE</span>
+                          <span className={`text-[10px] font-semibold ${feOver ? 'text-red-500' : 'text-foreground'}`}>{feUsed}/{feSprintCap.toFixed(0)}w</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-1 mb-2">
+                          <div className="h-1 rounded-full" style={{ width: `${Math.min(100, feSprintCap > 0 ? (feUsed / feSprintCap) * 100 : 0)}%`, backgroundColor: feOver ? '#ef4444' : '#10b981' }} />
+                        </div>
+                        <Droppable droppableId={`${sprint}-fe`}>
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.droppableProps}
+                              className={`space-y-1 min-h-[2rem] rounded transition-colors ${snapshot.isDraggingOver ? 'bg-emerald-500/5' : ''}`}
+                            >
+                              {feFeatures.map((entry, idx) => {
+                                const feat = featureMap[entry.feature_id];
+                                const alloc = entry.sprint_allocations?.find(a => a.sprint === sprint);
+                                const cellKey = `${entry.id}-${sprint}-fe`;
+                                return (
+                                  <Draggable key={entry.id} draggableId={`${entry.id}-drag-fe`} index={idx} isDragDisabled={!canEdit}>
+                                    {(drag, dragSnapshot) => (
+                                      <div
+                                        ref={drag.innerRef}
+                                        {...drag.draggableProps}
+                                        {...drag.dragHandleProps}
+                                        className={`bg-emerald-500/5 rounded px-1.5 py-1 ${canEdit ? 'cursor-grab active:cursor-grabbing' : ''} ${dragSnapshot.isDragging ? 'shadow-md opacity-90' : ''}`}
+                                      >
+                                        <p className="text-[10px] text-foreground font-medium leading-tight truncate">{feat?.title}</p>
+                                        {canEdit && editCell?.key === cellKey ? (
+                                          <Input autoFocus type="number" min="0" step="0.5" value={editCellValue}
+                                            onChange={e => setEditCellValue(e.target.value)}
+                                            onBlur={() => updateCellMutation.mutate({ entry, sprintName: sprint, type: 'fe', newVal: Number(editCellValue) })}
+                                            onKeyDown={e => { if (e.key === 'Enter') e.target.blur(); if (e.key === 'Escape') setEditCell(null); }}
+                                            className="h-5 w-14 text-[10px] p-0.5 mt-0.5 border-emerald-400/40"
+                                          />
+                                        ) : (
+                                          <p
+                                            className={`text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 mt-0.5 ${canEdit ? 'hover:underline' : ''}`}
+                                            onClick={canEdit ? () => { setEditCell({ key: cellKey }); setEditCellValue(String(alloc?.fe_weeks || 0)); } : undefined}
+                                          >
+                                            {alloc?.fe_weeks || 0}w
+                                          </p>
+                                        )}
+                                      </div>
+                                    )}
+                                  </Draggable>
+                                );
+                              })}
+                              {provided.placeholder}
+                              {feFeatures.length === 0 && <p className="text-[10px] text-muted-foreground/50 text-center py-1">—</p>}
                             </div>
-                          );
-                        })}
-                        {feFeatures.length === 0 && <p className="text-[10px] text-muted-foreground/50 text-center py-1">—</p>}
+                          )}
+                        </Droppable>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            </DragDropContext>
           </div>
 
           {/* Bottom: Planned Features + Pie Chart */}
