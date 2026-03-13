@@ -681,11 +681,11 @@ export default function TeamPlan() {
                           </div>
                           <Button
                             variant="ghost" size="icon"
-                            className={`h-6 w-6 ${entry.excluded_from_allocation ? 'text-muted-foreground/40' : 'text-foreground'}`}
-                            title={entry.excluded_from_allocation ? 'Excluded from allocation — click to include' : 'Included in allocation — click to exclude'}
+                            className={`h-6 w-6 ${entry.excluded_from_allocation ? 'text-rose-400 hover:text-rose-300' : 'text-emerald-500 hover:text-emerald-400'}`}
+                            title={entry.excluded_from_allocation ? 'Excluded from sprint allocation — click to include' : 'Included in sprint allocation — click to exclude'}
                             onClick={() => toggleExcludeMutation.mutate({ entry, excluded: !entry.excluded_from_allocation })}
                           >
-                            {entry.excluded_from_allocation ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                            {entry.excluded_from_allocation ? <CircleMinus className="w-3.5 h-3.5" /> : <CircleCheck className="w-3.5 h-3.5" />}
                           </Button>
                           {canEdit && (
                             <>
