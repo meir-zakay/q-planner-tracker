@@ -285,35 +285,51 @@ export default function TeamPlan() {
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] }); setEditCell(null); },
   });
 
-  // Drag and drop handler for moving allocations between sprints
+  // Re-allocate a single entry's effort starting from a given sprint index,
+  // respecting capacity already taken by OTHER entries.
+  function reallocateFromSprint(entry, type, startSprintIdx, otherEntries) {
+    const key = type === 'be' ? 'be_weeks' : 'fe_weeks';
+    const totalEffortKey = type === 'be' ? 'be_effort_weeks' : 'fe_effort_weeks';
+    const sprintCaps = type === 'be' ? beSprintCaps : feSprintCaps;
+    const totalEffort = entry[totalEffortKey] || 0;
+
+    // Compute remaining capacity per sprint from startSprintIdx onward
+    const remainingCaps = sprints.map((s, i) => {
+      if (i < startSprintIdx) return 0;
+      const othersUsed = otherEntries.reduce((sum, e) => {
+        const a = e.sprint_allocations?.find(a => a.sprint === s);
+        return sum + (a?.[key] || 0);
+      }, 0);
+      return Math.max(0, (sprintCaps[i] ?? 0) - othersUsed);
+    });
+
+    const allocs = distributeEffort(totalEffort, remainingCaps);
+    return sprints.map((s, i) => {
+      const existing = entry.sprint_allocations?.find(a => a.sprint === s) || { sprint: s, be_weeks: 0, fe_weeks: 0 };
+      return { ...existing, [key]: allocs[i] };
+    });
+  }
+
+  // Drag and drop handler: re-allocates the dragged entry starting from the destination sprint
   const handleDragEnd = (result) => {
     if (!result.destination || !canEdit) return;
     const { draggableId, source, destination } = result;
     if (source.droppableId === destination.droppableId) return;
 
-    // Parse draggableId: "entryId-type" (type = be or fe)
+    // Parse draggableId: "entryId-drag-type"
     const parts = draggableId.split('-drag-');
     const entryId = parts[0];
     const type = parts[1]; // 'be' or 'fe'
-    const sourceSprint = source.droppableId.replace(`-${type}`, '');
     const destSprint = destination.droppableId.replace(`-${type}`, '');
 
     const entry = sortedEntries.find(e => e.id === entryId);
     if (!entry) return;
 
-    const key = type === 'be' ? 'be_weeks' : 'fe_weeks';
-    const sourceAlloc = entry.sprint_allocations?.find(a => a.sprint === sourceSprint);
-    const movedAmount = sourceAlloc?.[key] || 0;
-    if (movedAmount <= 0) return;
+    const destSprintIdx = sprints.indexOf(destSprint);
+    if (destSprintIdx < 0) return;
 
-    // Build new allocations: subtract from source, add to dest
-    const newAllocs = sprints.map(s => {
-      const existing = entry.sprint_allocations?.find(a => a.sprint === s) || { sprint: s, be_weeks: 0, fe_weeks: 0 };
-      const clone = { ...existing };
-      if (s === sourceSprint) clone[key] = 0;
-      if (s === destSprint) clone[key] = (clone[key] || 0) + movedAmount;
-      return clone;
-    });
+    const otherEntries = sortedEntries.filter(e => e.id !== entryId);
+    const newAllocs = reallocateFromSprint(entry, type, destSprintIdx, otherEntries);
 
     const newBE = newAllocs.reduce((s, a) => s + (a.be_weeks || 0), 0);
     const newFE = newAllocs.reduce((s, a) => s + (a.fe_weeks || 0), 0);
