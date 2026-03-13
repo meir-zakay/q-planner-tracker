@@ -672,6 +672,14 @@ export default function TeamPlan() {
                             <Monitor className="w-3 h-3" />
                             <span className="font-medium text-foreground">{entry.fe_effort_weeks || 0}w</span>
                           </div>
+                          <Button
+                            variant="ghost" size="icon"
+                            className={`h-6 w-6 ${entry.excluded_from_allocation ? 'text-muted-foreground/40' : 'text-foreground'}`}
+                            title={entry.excluded_from_allocation ? 'Excluded from allocation — click to include' : 'Included in allocation — click to exclude'}
+                            onClick={() => toggleExcludeMutation.mutate({ entry, excluded: !entry.excluded_from_allocation })}
+                          >
+                            {entry.excluded_from_allocation ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                          </Button>
                           {canEdit && (
                             <>
                               <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-foreground" onClick={() => { setEditEntryId(entry.id); setEditEffort({ be: String(entry.be_effort_weeks || 0), fe: String(entry.fe_effort_weeks || 0) }); }}>
