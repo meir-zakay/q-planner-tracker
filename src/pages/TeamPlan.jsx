@@ -19,30 +19,51 @@ function roundHalf(n) {
   return Math.round(n * 2) / 2;
 }
 
+// Distribute totalEffort across sprints greedily from the first sprint with capacity,
+// filling each sprint up to its cap (rounded to 0.5 steps).
 function distributeEffort(totalEffort, sprintCapacities) {
   const allocations = sprintCapacities.map(() => 0);
   let remaining = Number(totalEffort.toFixed(2));
   for (let i = 0; i < sprintCapacities.length && remaining > 0.01; i++) {
     const cap = sprintCapacities[i];
-    if (cap <= 0) continue;
-    // Allocate up to the sprint cap, rounded to 0.5, never exceeding cap
+    if (cap <= 0.001) continue;
     const raw = Math.min(remaining, cap);
-    const alloc = Math.min(roundHalf(raw), cap);
-    allocations[i] = alloc;
-    remaining = Number((remaining - alloc).toFixed(2));
-  }
-  // If there's still a sub-0.5 remainder, try to fit 0.5 chunks into sprints with room
-  if (remaining > 0.01) {
-    for (let i = 0; i < sprintCapacities.length && remaining > 0.01; i++) {
-      const room = Number((sprintCapacities[i] - allocations[i]).toFixed(2));
-      const add = Math.min(roundHalf(remaining), room);
-      if (add > 0) {
-        allocations[i] = Number((allocations[i] + add).toFixed(2));
-        remaining = Number((remaining - add).toFixed(2));
-      }
-    }
+    const alloc = roundHalf(raw);
+    const actual = Math.min(alloc, cap);
+    allocations[i] = actual;
+    remaining = Number((remaining - actual).toFixed(2));
   }
   return allocations;
+}
+
+// Re-allocate ALL entries in priority order given a set of "pinned" sprint-starts
+// and per-sprint caps. Returns a map of entryId -> sprint_allocations array.
+// pinnedStarts: { [entryId]: sprintIdx } — the earliest sprint the entry can start from.
+function reallocateAll(entriesInOrder, sprints, beSprintCaps, feSprintCaps, pinnedStarts = {}) {
+  // Track remaining capacity per sprint for BE and FE separately
+  const beRem = [...beSprintCaps];
+  const feRem = [...feSprintCaps];
+
+  const result = {};
+  for (const entry of entriesInOrder) {
+    const startIdx = pinnedStarts[entry.id] ?? 0;
+    const beTotal = entry.be_effort_weeks || 0;
+    const feTotal = entry.fe_effort_weeks || 0;
+
+    // Available caps from startIdx onward (zero before)
+    const beCaps = beRem.map((c, i) => i < startIdx ? 0 : c);
+    const feCaps = feRem.map((c, i) => i < startIdx ? 0 : c);
+
+    const beAllocs = distributeEffort(beTotal, beCaps);
+    const feAllocs = distributeEffort(feTotal, feCaps);
+
+    // Subtract from remaining
+    beAllocs.forEach((v, i) => { beRem[i] = Number((beRem[i] - v).toFixed(2)); });
+    feAllocs.forEach((v, i) => { feRem[i] = Number((feRem[i] - v).toFixed(2)); });
+
+    result[entry.id] = sprints.map((s, i) => ({ sprint: s, be_weeks: beAllocs[i], fe_weeks: feAllocs[i] }));
+  }
+  return result;
 }
 
 export default function TeamPlan() {
