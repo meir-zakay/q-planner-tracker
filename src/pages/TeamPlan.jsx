@@ -427,38 +427,40 @@ export default function TeamPlan() {
                               className={`space-y-1 min-h-[2rem] rounded transition-colors ${snapshot.isDraggingOver ? 'bg-primary/5' : ''}`}
                             >
                               {beFeatures.map((entry, idx) => {
-                                const feat = featureMap[entry.feature_id];
-                                const alloc = entry.sprint_allocations?.find(a => a.sprint === sprint);
-                                const cellKey = `${entry.id}-${sprint}-be`;
-                                return (
-                                  <Draggable key={entry.id} draggableId={`${entry.id}-drag-be`} index={idx} isDragDisabled={!canEdit}>
-                                    {(drag, dragSnapshot) => (
-                                      <div
-                                        ref={drag.innerRef}
-                                        {...drag.draggableProps}
-                                        {...drag.dragHandleProps}
-                                        className={`bg-primary/5 rounded px-1.5 py-1 ${canEdit ? 'cursor-grab active:cursor-grabbing' : ''} ${dragSnapshot.isDragging ? 'shadow-md opacity-90' : ''}`}
-                                      >
-                                        <p className="text-[10px] text-foreground font-medium leading-tight truncate">{feat?.title}</p>
-                                        {canEdit && editCell?.key === cellKey ? (
-                                          <Input autoFocus type="number" min="0" step="0.5" value={editCellValue}
-                                            onChange={e => setEditCellValue(e.target.value)}
-                                            onBlur={() => updateCellMutation.mutate({ entry, sprintName: sprint, type: 'be', newVal: Number(editCellValue) })}
-                                            onKeyDown={e => { if (e.key === 'Enter') e.target.blur(); if (e.key === 'Escape') setEditCell(null); }}
-                                            className="h-5 w-14 text-[10px] p-0.5 mt-0.5 border-primary/40"
-                                          />
-                                        ) : (
-                                          <p
-                                            className={`text-[10px] font-semibold text-primary mt-0.5 ${canEdit ? 'hover:underline' : ''}`}
-                                            onClick={canEdit ? () => { setEditCell({ key: cellKey }); setEditCellValue(String(alloc?.be_weeks || 0)); } : undefined}
-                                          >
-                                            {alloc?.be_weeks || 0}w
-                                          </p>
-                                        )}
-                                      </div>
-                                    )}
-                                  </Draggable>
-                                );
+                               const feat = featureMap[entry.feature_id];
+                               const alloc = entry.sprint_allocations?.find(a => a.sprint === sprint);
+                               const cellKey = `${entry.id}-${sprint}-be`;
+                               const dragId = `${entry.id}-drag-be-${sprint}`;
+                               return (
+                                 <Draggable key={cellKey} draggableId={dragId} index={idx} isDragDisabled={!canEdit}>
+                                   {(drag, dragSnapshot) => (
+                                     <div
+                                       ref={drag.innerRef}
+                                       {...drag.draggableProps}
+                                       {...drag.dragHandleProps}
+                                       style={{ ...drag.draggableProps.style }}
+                                       className={`bg-primary/10 border border-primary/20 rounded px-1.5 py-1 ${canEdit ? 'cursor-grab active:cursor-grabbing' : ''} ${dragSnapshot.isDragging ? 'shadow-lg ring-2 ring-primary/40 opacity-95 z-50' : ''}`}
+                                     >
+                                       <p className="text-[10px] text-foreground font-medium leading-tight truncate">{feat?.title}</p>
+                                       {canEdit && editCell?.key === cellKey ? (
+                                         <Input autoFocus type="number" min="0" step="0.5" value={editCellValue}
+                                           onChange={e => setEditCellValue(e.target.value)}
+                                           onBlur={() => updateCellMutation.mutate({ entry, sprintName: sprint, type: 'be', newVal: Number(editCellValue) })}
+                                           onKeyDown={e => { if (e.key === 'Enter') e.target.blur(); if (e.key === 'Escape') setEditCell(null); }}
+                                           className="h-5 w-14 text-[10px] p-0.5 mt-0.5 border-primary/40"
+                                         />
+                                       ) : (
+                                         <p
+                                           className={`text-[10px] font-semibold text-primary mt-0.5 ${canEdit ? 'hover:underline cursor-pointer' : ''}`}
+                                           onClick={canEdit ? (e) => { e.stopPropagation(); setEditCell({ key: cellKey }); setEditCellValue(String(alloc?.be_weeks || 0)); } : undefined}
+                                         >
+                                           {alloc?.be_weeks || 0}w
+                                         </p>
+                                       )}
+                                     </div>
+                                   )}
+                                 </Draggable>
+                               );
                               })}
                               {provided.placeholder}
                               {beFeatures.length === 0 && <p className="text-[10px] text-muted-foreground/50 text-center py-1">—</p>}
