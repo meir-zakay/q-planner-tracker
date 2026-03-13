@@ -324,9 +324,13 @@ export default function TeamPlan() {
     onSuccess: () => { setEditCell(null); },
   });
 
-  // Drag and drop: move entry to start from destination sprint, then re-pack all
-  const handleDragEnd = (result) => {
-    if (!result.destination || !canEdit) return;
+  // Use a ref to always have fresh state in the drag handler (avoids stale closure)
+  const dndStateRef = useRef({});
+  dndStateRef.current = { sortedEntries, sprints, beSprintCaps, feSprintCaps, canEdit };
+
+  const handleDragEnd = useCallback((result) => {
+    const { sortedEntries: entries, sprints: sprintList, beSprintCaps: beCaps, feSprintCaps: feCaps, canEdit: canEditNow } = dndStateRef.current;
+    if (!result.destination || !canEditNow) return;
     const { draggableId, source, destination } = result;
     if (source.droppableId === destination.droppableId) return;
 
@@ -336,17 +340,17 @@ export default function TeamPlan() {
     const [, entryId, type] = dragMatch;
     const destSprint = destination.droppableId.replace(new RegExp(`-${type}$`), '');
 
-    const entry = sortedEntries.find(e => e.id === entryId);
+    const entry = entries.find(e => e.id === entryId);
     if (!entry) return;
 
-    const destSprintIdx = sprints.indexOf(destSprint);
+    const destSprintIdx = sprintList.indexOf(destSprint);
     if (destSprintIdx < 0) return;
 
     // Reallocate ALL entries: dragged entry gets pinned to start at destSprintIdx
     const pinnedStarts = { [entryId]: destSprintIdx };
-    const allocMap = reallocateAll(sortedEntries, sprints, beSprintCaps, feSprintCaps, pinnedStarts);
+    const allocMap = reallocateAll(entries, sprintList, beCaps, feCaps, pinnedStarts);
     saveReallocated(allocMap);
-  };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const objColor = (name) => colorMap[name] || '#94a3b8';
 
