@@ -581,7 +581,6 @@ export default function TeamPlan() {
                   );
                 })}
               </div>
-                ); })()}
           </div>
 
           {/* Bottom: Planned Features + Pie Chart */}
