@@ -411,6 +411,7 @@ export default function TeamPlan() {
         </div>
       ) : (
         <DragDropContext onDragEnd={handleDragEnd}>
+          <div className="space-y-6">
           {/* Sprint Allocation Section */}
           <div className="bg-card border border-border rounded-xl p-5">
             <h2 className="text-base font-semibold text-foreground mb-1">Sprint Allocation — {selectedTeam?.name}</h2>
