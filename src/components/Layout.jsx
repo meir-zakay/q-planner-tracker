@@ -67,14 +67,21 @@ export default function Layout() {
     <TooltipProvider delayDuration={300}>
       <div className="min-h-screen bg-background flex">
         {/* Sidebar */}
-        <aside className={`relative shrink-0 h-screen sticky top-0 bg-card border-r border-border flex flex-col transition-all duration-200 ${sidebarWidth}`}>
+        {/* Sidebar — always dark */}
+        <aside
+          className={`relative shrink-0 h-screen sticky top-0 flex flex-col transition-all duration-200 ${sidebarWidth}`}
+          style={{
+            background: 'hsl(238 40% 7%)',
+            borderRight: '1px solid hsl(238 30% 13%)',
+          }}
+        >
           {/* Logo */}
-          <div className="h-14 flex items-center gap-2 px-3 border-b border-border shrink-0">
+          <div className="h-14 flex items-center gap-2 px-3 shrink-0" style={{ borderBottom: '1px solid hsl(238 30% 13%)' }}>
             <Link to="/Dashboard" className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center shrink-0">
-                <span className="text-primary-foreground font-bold text-xs">C</span>
+              <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center shrink-0">
+                <span className="text-white font-bold text-xs">C</span>
               </div>
-              {!collapsed && <span className="font-bold text-foreground text-sm tracking-tight whitespace-nowrap">Cards Planner</span>}
+              {!collapsed && <span className="font-bold text-white text-sm tracking-tight whitespace-nowrap">Cards Planner</span>}
             </Link>
           </div>
 
@@ -86,14 +93,17 @@ export default function Layout() {
                 <Link
                   key={item.path}
                   to={item.path}
+                  style={isActive
+                    ? { backgroundColor: 'hsl(239 84% 67% / 0.18)', color: 'hsl(239 84% 80%)' }
+                    : {}}
                   className={`flex items-center gap-3 px-2.5 py-2 rounded-lg text-sm font-medium transition-all duration-150 ${
                     collapsed ? 'justify-center' : ''
                   } ${isActive
-                    ? 'bg-primary/10 text-primary'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                    ? ''
+                    : 'text-indigo-200/60 hover:text-indigo-100 hover:bg-white/5'
                   }`}
                 >
-                  <item.icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-primary' : ''}`} />
+                  <item.icon className="w-4 h-4 shrink-0" />
                   {!collapsed && <span>{item.label}</span>}
                 </Link>
               );
@@ -109,14 +119,14 @@ export default function Layout() {
             })}
           </nav>
 
-          {/* Bottom section: divider + theme + logout */}
-          <div className="border-t border-border p-2 space-y-0.5">
+          {/* Bottom section */}
+          <div className="p-2 space-y-0.5" style={{ borderTop: '1px solid hsl(238 30% 13%)' }}>
             {/* Theme toggle */}
             {(() => {
               const themeBtn = (
                 <button
                   onClick={() => setDarkMode(!darkMode)}
-                  className={`flex items-center gap-3 px-2.5 py-2 rounded-lg text-sm font-medium transition-all duration-150 text-muted-foreground hover:text-foreground hover:bg-accent w-full ${collapsed ? 'justify-center' : ''}`}
+                  className={`flex items-center gap-3 px-2.5 py-2 rounded-lg text-sm font-medium transition-all duration-150 text-indigo-200/60 hover:text-indigo-100 hover:bg-white/5 w-full ${collapsed ? 'justify-center' : ''}`}
                 >
                   {darkMode ? <Sun className="w-4 h-4 shrink-0" /> : <Moon className="w-4 h-4 shrink-0" />}
                   {!collapsed && <span>{darkMode ? 'Light Mode' : 'Dark Mode'}</span>}
@@ -133,12 +143,12 @@ export default function Layout() {
               return themeBtn;
             })()}
 
-            {/* User info + Logout */}
+            {/* Logout */}
             {(() => {
               const logoutBtn = (
                 <button
                   onClick={() => base44.auth.logout()}
-                  className={`flex items-center gap-3 px-2.5 py-2 rounded-lg text-sm font-medium transition-all duration-150 text-muted-foreground hover:text-foreground hover:bg-accent w-full ${collapsed ? 'justify-center' : ''}`}
+                  className={`flex items-center gap-3 px-2.5 py-2 rounded-lg text-sm font-medium transition-all duration-150 text-indigo-200/60 hover:text-indigo-100 hover:bg-white/5 w-full ${collapsed ? 'justify-center' : ''}`}
                 >
                   <LogOut className="w-4 h-4 shrink-0" />
                   {!collapsed && <span>Logout</span>}
@@ -158,8 +168,8 @@ export default function Layout() {
             {/* User badge */}
             {!collapsed && user && (
               <div className="px-2.5 pt-2">
-                <p className="text-xs font-medium text-foreground leading-none truncate">{user.full_name || user.email}</p>
-                <p className="text-[10px] text-muted-foreground capitalize mt-0.5">{userRole}</p>
+                <p className="text-xs font-medium text-indigo-100 leading-none truncate">{user.full_name || user.email}</p>
+                <p className="text-[10px] text-indigo-300/50 capitalize mt-0.5">{userRole}</p>
               </div>
             )}
           </div>
@@ -167,9 +177,10 @@ export default function Layout() {
           {/* Collapse toggle */}
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="absolute -right-3 top-4 w-6 h-6 bg-card border border-border rounded-full flex items-center justify-center shadow-sm hover:bg-accent transition-colors z-10"
+            className="absolute -right-3 top-4 w-6 h-6 rounded-full flex items-center justify-center shadow-sm transition-colors z-10"
+            style={{ background: 'hsl(238 35% 14%)', border: '1px solid hsl(238 30% 20%)' }}
           >
-            {collapsed ? <ChevronRight className="w-3 h-3 text-muted-foreground" /> : <ChevronLeft className="w-3 h-3 text-muted-foreground" />}
+            {collapsed ? <ChevronRight className="w-3 h-3 text-indigo-300/60" /> : <ChevronLeft className="w-3 h-3 text-indigo-300/60" />}
           </button>
         </aside>
 
