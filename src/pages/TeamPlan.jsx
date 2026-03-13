@@ -474,7 +474,8 @@ export default function TeamPlan() {
                             <div
                               ref={provided.innerRef}
                               {...provided.droppableProps}
-                              className={`space-y-1 min-h-[2.5rem] rounded-md transition-colors duration-150 ${snapshot.isDraggingOver ? 'bg-primary/10 ring-1 ring-primary/30 ring-inset' : ''}`}
+                              style={{ minHeight: beDropMinHeight }}
+                              className={`space-y-1 rounded-md transition-colors duration-150 ${snapshot.isDraggingOver ? 'bg-primary/10 ring-1 ring-primary/30 ring-inset' : ''}`}
                             >
                               {beFeatures.map((entry, idx) => {
                                const feat = featureMap[entry.feature_id];
