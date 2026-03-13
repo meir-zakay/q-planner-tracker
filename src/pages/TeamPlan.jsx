@@ -232,7 +232,20 @@ export default function TeamPlan() {
   });
 
   const removeEntryMutation = useMutation({
-    mutationFn: (id) => base44.entities.TeamPlanEntry.delete(id),
+    mutationFn: async (id) => {
+      await base44.entities.TeamPlanEntry.delete(id);
+      // Re-fetch remaining entries and reallocate
+      const remaining = await base44.entities.TeamPlanEntry.filter({ team_id: selectedTeamId, year: selectedYear, quarter: selectedQuarter });
+      const ordered = [...remaining].sort((a, b) => {
+        const pa = allFeatures.find(f => f.id === a.feature_id)?.priority || 999;
+        const pb = allFeatures.find(f => f.id === b.feature_id)?.priority || 999;
+        return pa - pb;
+      });
+      if (ordered.length > 0) {
+        const allocMap = reallocateAll(ordered, sprints, beSprintCaps, feSprintCaps);
+        await saveReallocated(allocMap);
+      }
+    },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] }),
   });
 
