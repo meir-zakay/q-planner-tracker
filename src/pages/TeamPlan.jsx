@@ -325,31 +325,54 @@ export default function TeamPlan() {
     onSuccess: () => { setEditCell(null); },
   });
 
+  const reorderEntryMutation = useMutation({
+    mutationFn: async (reorderedEntries) => {
+      // Assign new sort_order values and save, then reallocate
+      const updates = reorderedEntries.map((e, i) =>
+        base44.entities.TeamPlanEntry.update(e.id, { sort_order: i + 1 })
+      );
+      await Promise.all(updates);
+      const withNewOrder = reorderedEntries.map((e, i) => ({ ...e, sort_order: i + 1 }));
+      const allocMap = reallocateAll(withNewOrder, sprints, beSprintCaps, feSprintCaps);
+      await saveReallocated(allocMap);
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] }),
+  });
+
   // Use a ref to always have fresh state in the drag handler (avoids stale closure)
   const dndStateRef = useRef({});
   dndStateRef.current = { sortedEntries, sprints, beSprintCaps, feSprintCaps, canEdit };
 
   const handleDragEnd = useCallback((result) => {
-    const { sortedEntries: entries, sprints: sprintList, beSprintCaps: beCaps, feSprintCaps: feCaps, canEdit: canEditNow } = dndStateRef.current;
+    const { sortedEntries: currentEntries, sprints: sprintList, beSprintCaps: beCaps, feSprintCaps: feCaps, canEdit: canEditNow } = dndStateRef.current;
     if (!result.destination || !canEditNow) return;
     const { draggableId, source, destination } = result;
-    if (source.droppableId === destination.droppableId) return;
 
-    // draggableId format: "entryId-drag-be-S1" or "entryId-drag-fe-S2"
+    // --- Feature reorder in Planned Features list ---
+    if (source.droppableId === 'planned-features-list') {
+      if (source.index === destination.index) return;
+      const reordered = Array.from(currentEntries);
+      const [moved] = reordered.splice(source.index, 1);
+      reordered.splice(destination.index, 0, moved);
+      reorderEntryMutation.mutate(reordered);
+      return;
+    }
+
+    // --- Sprint drag ---
+    if (source.droppableId === destination.droppableId) return;
     const dragMatch = draggableId.match(/^(.+)-drag-(be|fe)-(.+)$/);
     if (!dragMatch) return;
     const [, entryId, type] = dragMatch;
     const destSprint = destination.droppableId.replace(new RegExp(`-${type}$`), '');
 
-    const entry = entries.find(e => e.id === entryId);
+    const entry = currentEntries.find(e => e.id === entryId);
     if (!entry) return;
 
     const destSprintIdx = sprintList.indexOf(destSprint);
     if (destSprintIdx < 0) return;
 
-    // Reallocate ALL entries: dragged entry gets pinned to start at destSprintIdx
     const pinnedStarts = { [entryId]: destSprintIdx };
-    const allocMap = reallocateAll(entries, sprintList, beCaps, feCaps, pinnedStarts);
+    const allocMap = reallocateAll(currentEntries, sprintList, beCaps, feCaps, pinnedStarts);
     saveReallocated(allocMap);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
