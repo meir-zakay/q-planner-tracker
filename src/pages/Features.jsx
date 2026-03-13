@@ -34,7 +34,7 @@ export default function Features() {
     queryFn: () => base44.entities.Objective.list('sort_order'),
   });
 
-  const sortedFeatures = useMemo(() => [...features].sort((a, b) => (a.priority || 0) - (b.priority || 0)), [features]);
+  const sortedFeatures = useMemo(() => [...features].filter(f => !f.team_plan_only).sort((a, b) => (a.priority || 0) - (b.priority || 0)), [features]);
 
   const colorMap = useMemo(() => { const m = {}; objectives.forEach(o => { m[o.name] = o.color; }); return m; }, [objectives]);
 
