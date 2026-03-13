@@ -216,67 +216,44 @@ export default function TeamPlan() {
     mutationFn: async ({ entry, sprintName, type, newVal }) => {
       const sprintIdx = sprints.indexOf(sprintName);
       const key = type === 'be' ? 'be_weeks' : 'fe_weeks';
+      const totalEffortKey = type === 'be' ? 'be_effort_weeks' : 'fe_effort_weeks';
       const sprintCaps = type === 'be' ? beSprintCaps : feSprintCaps;
-      const capPerSprint = sprintCaps[sprintIdx] ?? 0;
       const otherEntries = sortedEntries.filter(e => e.id !== entry.id);
 
-      // Clamp new value to the available capacity in this sprint (cap minus what others use)
+      // Clamp new value to available capacity in this sprint
       const othersUsedInSprint = otherEntries.reduce((sum, e) => {
         const a = e.sprint_allocations?.find(a => a.sprint === sprintName);
         return sum + (a?.[key] || 0);
       }, 0);
-      const availableInSprint = Math.max(0, capPerSprint - othersUsedInSprint);
-      const clampedVal = Math.min(newVal, availableInSprint);
+      const availableInSprint = Math.max(0, (sprintCaps[sprintIdx] ?? 0) - othersUsedInSprint);
+      const clampedVal = roundHalf(Math.min(newVal, availableInSprint));
 
-      const oldVal = entry.sprint_allocations?.find(a => a.sprint === sprintName)?.[key] || 0;
-      const delta = Number((clampedVal - oldVal).toFixed(2));
-
-      // Build allocs with clamped value for edited sprint
-      const currentAllocs = sprints.map((s) => {
+      // Build locked allocations for sprints 0..sprintIdx-1 (unchanged) + edited sprint = clampedVal
+      const currentAllocs = sprints.map((s, i) => {
         const a = entry.sprint_allocations?.find(a => a.sprint === s) || { sprint: s, be_weeks: 0, fe_weeks: 0 };
         if (s === sprintName) return { ...a, [key]: clampedVal };
         return { ...a };
       });
 
-      const afterSprints = sprints.slice(sprintIdx + 1);
-      const usedAfter = afterSprints.map(s => otherEntries.reduce((sum, e) => {
-        const a = e.sprint_allocations?.find(a => a.sprint === s);
-        return sum + (a?.[key] || 0);
-      }, 0));
-      const remainingCaps = usedAfter.map((u, i) => Math.max(0, (sprintCaps[sprintIdx + 1 + i] ?? 0) - u));
+      // Locked effort = sum of sprints 0..sprintIdx
+      const lockedEffort = currentAllocs.slice(0, sprintIdx + 1).reduce((sum, a) => sum + (a[key] || 0), 0);
+      const totalEffort = entry[totalEffortKey] || 0;
+      const remainingEffort = Math.max(0, Number((totalEffort - lockedEffort).toFixed(2)));
 
-      if (delta > 0) {
-        // Increased: the locked sprints (0..sprintIdx) carry clampedVal;
-        // recompute remaining effort for after sprints
-        const lockedEffort = currentAllocs.slice(0, sprintIdx + 1).reduce((sum, a) => sum + (a[key] || 0), 0);
-        const totalEffort = type === 'be' ? (entry.be_effort_weeks || 0) : (entry.fe_effort_weeks || 0);
-        const remainingEffort = Math.max(0, Number((totalEffort - lockedEffort).toFixed(2)));
-        const afterAllocs = distributeEffort(remainingEffort, remainingCaps);
-        afterSprints.forEach((s, i) => {
-          const idx = sprints.indexOf(s);
-          currentAllocs[idx] = { ...currentAllocs[idx], [key]: afterAllocs[i] };
-        });
-      } else if (delta < 0) {
-        // Decreased: freed up |delta| in this sprint; pull effort forward from later sprints
-        let freed = Math.abs(delta);
-        // Pull from the earliest sprints after the edited one first
-        for (let i = 0; i < afterSprints.length && freed > 0.01; i++) {
-          const s = afterSprints[i];
-          const idx = sprints.indexOf(s);
-          const curAlloc = currentAllocs[idx][key] || 0;
-          const pull = Math.min(freed, curAlloc);
-          if (pull > 0) {
-            const addable = Math.min(pull, availableInSprint - clampedVal);
-            if (addable > 0) {
-              currentAllocs[sprintIdx] = { ...currentAllocs[sprintIdx], [key]: Number((currentAllocs[sprintIdx][key] + addable).toFixed(2)) };
-              currentAllocs[idx] = { ...currentAllocs[idx], [key]: Number((curAlloc - addable).toFixed(2)) };
-              freed = Number((freed - addable).toFixed(2));
-            } else {
-              break;
-            }
-          }
-        }
-      }
+      // Remaining caps for sprints after the edited one
+      const remainingCaps = sprints.slice(sprintIdx + 1).map((s, i) => {
+        const othersUsed = otherEntries.reduce((sum, e) => {
+          const a = e.sprint_allocations?.find(a => a.sprint === s);
+          return sum + (a?.[key] || 0);
+        }, 0);
+        return Math.max(0, (sprintCaps[sprintIdx + 1 + i] ?? 0) - othersUsed);
+      });
+
+      const afterAllocs = distributeEffort(remainingEffort, remainingCaps);
+      sprints.slice(sprintIdx + 1).forEach((s, i) => {
+        const idx = sprints.indexOf(s);
+        currentAllocs[idx] = { ...currentAllocs[idx], [key]: afterAllocs[i] };
+      });
 
       const newBE = currentAllocs.reduce((s, a) => s + (a.be_weeks || 0), 0);
       const newFE = currentAllocs.reduce((s, a) => s + (a.fe_weeks || 0), 0);
