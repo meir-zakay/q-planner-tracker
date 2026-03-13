@@ -437,12 +437,6 @@ export default function TeamPlan() {
             </div>
 
             {/* Sprint Cards */}
-              {/* Compute max BE cards across all sprints to align FE sections */}
-              {(() => {
-                const maxBeCards = Math.max(1, ...sprints.map(s => sortedEntries.filter(e => (e.sprint_allocations?.find(a => a.sprint === s)?.be_weeks || 0) > 0).length));
-                // Each card is ~40px tall + 4px gap, plus 40px min placeholder
-                const beDropMinHeight = Math.max(40, maxBeCards * 44);
-                return (
               <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${numSprints}, minmax(0, 1fr))` }}>
                 {sprints.map((sprint, si) => {
                   const beUsed = sprintTotals[si]?.be || 0;
