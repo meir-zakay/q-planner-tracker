@@ -577,7 +577,6 @@ export default function TeamPlan() {
                   );
                 })}
               </div>
-            </DragDropContext>
           </div>
 
           {/* Bottom: Planned Features + Pie Chart */}
