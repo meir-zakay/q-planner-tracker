@@ -317,7 +317,10 @@ export default function TeamPlan() {
     const { draggableId, source, destination } = result;
     if (source.droppableId === destination.droppableId) return;
 
-    const [entryId, , type] = draggableId.split('-drag-');
+    // draggableId format: "entryId-drag-be-S1" or "entryId-drag-fe-S2"
+    const dragMatch = draggableId.match(/^(.+)-drag-(be|fe)-(.+)$/);
+    if (!dragMatch) return;
+    const [, entryId, type] = dragMatch;
     const destSprint = destination.droppableId.replace(new RegExp(`-${type}$`), '');
 
     const entry = sortedEntries.find(e => e.id === entryId);
