@@ -201,12 +201,31 @@ export default function TeamPlan() {
     qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] });
   };
 
+  const toggleExcludeMutation = useMutation({
+    mutationFn: async ({ entry, excluded }) => {
+      await base44.entities.TeamPlanEntry.update(entry.id, { excluded_from_allocation: excluded });
+      // Re-fetch and reallocate only included entries
+      const fresh = await base44.entities.TeamPlanEntry.filter({ team_id: selectedTeamId, year: selectedYear, quarter: selectedQuarter });
+      const included = fresh.filter(e => !e.excluded_from_allocation);
+      const ordered = [...included].sort((a, b) => {
+        const oa = a.sort_order ?? allFeatures.find(f => f.id === a.feature_id)?.priority ?? 999;
+        const ob = b.sort_order ?? allFeatures.find(f => f.id === b.feature_id)?.priority ?? 999;
+        return oa - ob;
+      });
+      if (ordered.length > 0) {
+        const allocMap = reallocateAll(ordered, sprints, beSprintCaps, feSprintCaps);
+        await saveReallocated(allocMap);
+      }
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] }),
+  });
+
   const addEntryMutation = useMutation({
     mutationFn: async ({ featureId, customTitle, beEffort, feEffort }) => {
       let fid = featureId;
       if (!fid && customTitle) {
         const maxPriority = allFeatures.length > 0 ? Math.max(...allFeatures.map(f => f.priority || 0)) : 0;
-        const newFeature = await base44.entities.Feature.create({ title: customTitle, objective: customFeatureObjective || undefined, priority: maxPriority + 1, quarter: selectedQuarter, year: selectedYear });
+        const newFeature = await base44.entities.Feature.create({ title: customTitle, objective: customFeatureObjective || undefined, priority: maxPriority + 1, quarter: selectedQuarter, year: selectedYear, team_plan_only: true });
         fid = newFeature.id;
       }
       // Temporarily add new entry with zero allocs to get its priority, then reallocate all
