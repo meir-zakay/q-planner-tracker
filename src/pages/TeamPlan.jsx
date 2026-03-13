@@ -600,8 +600,13 @@ export default function TeamPlan() {
                     {(rowDrag, rowSnapshot) => (
                     <div ref={rowDrag.innerRef} {...rowDrag.draggableProps} style={rowDrag.draggableProps.style}
                       className={`flex items-center gap-3 py-3 border-b border-border/50 last:border-0 ${rowSnapshot.isDragging ? 'bg-card shadow-md rounded-lg px-2 opacity-95' : ''}`}>
+                      {canEdit && (
+                        <div {...rowDrag.dragHandleProps} className="cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-muted-foreground shrink-0">
+                          <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor"><circle cx="2" cy="2" r="1.5"/><circle cx="8" cy="2" r="1.5"/><circle cx="2" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="2" cy="14" r="1.5"/><circle cx="8" cy="14" r="1.5"/></svg>
+                        </div>
+                      )}
                       <div className="flex items-center justify-center w-6 h-6 rounded-full border-2 border-border text-[10px] font-bold text-muted-foreground shrink-0">
-                        {feat.priority}
+                        {rowIdx + 1}
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-foreground truncate">{feat.title}</p>
