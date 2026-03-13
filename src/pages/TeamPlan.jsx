@@ -274,9 +274,9 @@ export default function TeamPlan() {
 
   const updateEffortMutation = useMutation({
     mutationFn: async ({ entry, beEffort, feEffort }) => {
-      // Update totals then reallocate all entries from scratch
+      // Update totals then reallocate all included entries from scratch
       const updated = { ...entry, be_effort_weeks: beEffort, fe_effort_weeks: feEffort };
-      const allEntries = sortedEntries.map(e => e.id === entry.id ? updated : e);
+      const allEntries = sortedEntries.filter(e => !e.excluded_from_allocation).map(e => e.id === entry.id ? updated : e);
       const allocMap = reallocateAll(allEntries, sprints, beSprintCaps, feSprintCaps);
       await saveReallocated(allocMap);
     },
