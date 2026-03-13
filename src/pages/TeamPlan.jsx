@@ -235,9 +235,10 @@ export default function TeamPlan() {
         sprint_allocations: sprints.map(s => ({ sprint: s, be_weeks: 0, fe_weeks: 0 })),
         year: selectedYear, quarter: selectedQuarter
       });
-      // Fetch updated entries and reallocate all
+      // Fetch updated entries and reallocate only included entries
       const fresh = await base44.entities.TeamPlanEntry.filter({ team_id: selectedTeamId, year: selectedYear, quarter: selectedQuarter });
-      const ordered = [...fresh].sort((a, b) => {
+      const included = fresh.filter(e => !e.excluded_from_allocation);
+      const ordered = [...included].sort((a, b) => {
         const oa = a.sort_order ?? allFeatures.find(f => f.id === a.feature_id)?.priority ?? 999;
         const ob = b.sort_order ?? allFeatures.find(f => f.id === b.feature_id)?.priority ?? 999;
         return oa - ob;
