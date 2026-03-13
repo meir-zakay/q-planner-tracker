@@ -187,24 +187,42 @@ export default function TeamPlan() {
   const utilizationPct = totalCapacity > 0 ? Math.round((totalUsed / totalCapacity) * 100) : 0;
   const utilizationColor = utilizationPct > 100 ? '#ef4444' : utilizationPct > 85 ? '#f59e0b' : '#4f46e5';
 
+  // Save re-allocated results for all affected entries in parallel
+  const saveReallocated = async (allocMap) => {
+    await Promise.all(
+      Object.entries(allocMap).map(([id, sprint_allocations]) => {
+        const newBE = sprint_allocations.reduce((s, a) => s + (a.be_weeks || 0), 0);
+        const newFE = sprint_allocations.reduce((s, a) => s + (a.fe_weeks || 0), 0);
+        return base44.entities.TeamPlanEntry.update(id, { sprint_allocations, be_effort_weeks: newBE, fe_effort_weeks: newFE });
+      })
+    );
+    qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] });
+  };
+
   const addEntryMutation = useMutation({
     mutationFn: async ({ featureId, customTitle, beEffort, feEffort }) => {
       let fid = featureId;
-      // If custom feature, create it first
       if (!fid && customTitle) {
         const maxPriority = allFeatures.length > 0 ? Math.max(...allFeatures.map(f => f.priority || 0)) : 0;
         const newFeature = await base44.entities.Feature.create({ title: customTitle, objective: customFeatureObjective || undefined, priority: maxPriority + 1, quarter: selectedQuarter, year: selectedYear });
         fid = newFeature.id;
       }
-      const existing = sortedEntries;
-      const beUsedPerSprint = sprints.map((s) => existing.reduce((sum, e) => { const a = e.sprint_allocations?.find(a => a.sprint === s); return sum + (a?.be_weeks || 0); }, 0));
-      const feUsedPerSprint = sprints.map((s) => existing.reduce((sum, e) => { const a = e.sprint_allocations?.find(a => a.sprint === s); return sum + (a?.fe_weeks || 0); }, 0));
-      const beRem = beUsedPerSprint.map((u, i) => Math.max(0, beSprintCaps[i] - u));
-      const feRem = feUsedPerSprint.map((u, i) => Math.max(0, feSprintCaps[i] - u));
-      const beAllocs = distributeEffort(beEffort, beRem);
-      const feAllocs = distributeEffort(feEffort, feRem);
-      const sprint_allocations = sprints.map((s, i) => ({ sprint: s, be_weeks: beAllocs[i], fe_weeks: feAllocs[i] }));
-      return base44.entities.TeamPlanEntry.create({ team_id: selectedTeamId, feature_id: fid, be_effort_weeks: beEffort, fe_effort_weeks: feEffort, sprint_allocations, year: selectedYear, quarter: selectedQuarter });
+      // Temporarily add new entry with zero allocs to get its priority, then reallocate all
+      const newEntry = await base44.entities.TeamPlanEntry.create({
+        team_id: selectedTeamId, feature_id: fid,
+        be_effort_weeks: beEffort, fe_effort_weeks: feEffort,
+        sprint_allocations: sprints.map(s => ({ sprint: s, be_weeks: 0, fe_weeks: 0 })),
+        year: selectedYear, quarter: selectedQuarter
+      });
+      // Fetch updated entries and reallocate all
+      const fresh = await base44.entities.TeamPlanEntry.filter({ team_id: selectedTeamId, year: selectedYear, quarter: selectedQuarter });
+      const ordered = [...fresh].sort((a, b) => {
+        const pa = allFeatures.find(f => f.id === a.feature_id)?.priority || 999;
+        const pb = allFeatures.find(f => f.id === b.feature_id)?.priority || 999;
+        return pa - pb;
+      });
+      const allocMap = reallocateAll(ordered, sprints, beSprintCaps, feSprintCaps);
+      await saveReallocated(allocMap);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] });
@@ -220,17 +238,13 @@ export default function TeamPlan() {
 
   const updateEffortMutation = useMutation({
     mutationFn: async ({ entry, beEffort, feEffort }) => {
-      const otherEntries = sortedEntries.filter(e => e.id !== entry.id);
-      const beUsedPerSprint = sprints.map((s) => otherEntries.reduce((sum, e) => { const a = e.sprint_allocations?.find(a => a.sprint === s); return sum + (a?.be_weeks || 0); }, 0));
-      const feUsedPerSprint = sprints.map((s) => otherEntries.reduce((sum, e) => { const a = e.sprint_allocations?.find(a => a.sprint === s); return sum + (a?.fe_weeks || 0); }, 0));
-      const beRem = beUsedPerSprint.map((u, i) => Math.max(0, beSprintCaps[i] - u));
-      const feRem = feUsedPerSprint.map((u, i) => Math.max(0, feSprintCaps[i] - u));
-      const beAllocs = distributeEffort(beEffort, beRem);
-      const feAllocs = distributeEffort(feEffort, feRem);
-      const sprint_allocations = sprints.map((s, i) => ({ sprint: s, be_weeks: beAllocs[i], fe_weeks: feAllocs[i] }));
-      return base44.entities.TeamPlanEntry.update(entry.id, { be_effort_weeks: beEffort, fe_effort_weeks: feEffort, sprint_allocations });
+      // Update totals then reallocate all entries from scratch
+      const updated = { ...entry, be_effort_weeks: beEffort, fe_effort_weeks: feEffort };
+      const allEntries = sortedEntries.map(e => e.id === entry.id ? updated : e);
+      const allocMap = reallocateAll(allEntries, sprints, beSprintCaps, feSprintCaps);
+      await saveReallocated(allocMap);
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] }); setEditEntryId(null); },
+    onSuccess: () => { setEditEntryId(null); },
   });
 
   const updateCellMutation = useMutation({
@@ -241,7 +255,7 @@ export default function TeamPlan() {
       const sprintCaps = type === 'be' ? beSprintCaps : feSprintCaps;
       const otherEntries = sortedEntries.filter(e => e.id !== entry.id);
 
-      // Clamp new value to available capacity in this sprint
+      // Clamp to available capacity in this sprint
       const othersUsedInSprint = otherEntries.reduce((sum, e) => {
         const a = e.sprint_allocations?.find(a => a.sprint === sprintName);
         return sum + (a?.[key] || 0);
@@ -249,76 +263,62 @@ export default function TeamPlan() {
       const availableInSprint = Math.max(0, (sprintCaps[sprintIdx] ?? 0) - othersUsedInSprint);
       const clampedVal = roundHalf(Math.min(newVal, availableInSprint));
 
-      // Build locked allocations for sprints 0..sprintIdx-1 (unchanged) + edited sprint = clampedVal
-      const currentAllocs = sprints.map((s, i) => {
+      // Lock sprints 0..sprintIdx for this entry, redistribute remainder after
+      const lockedAllocs = sprints.map((s, i) => {
         const a = entry.sprint_allocations?.find(a => a.sprint === s) || { sprint: s, be_weeks: 0, fe_weeks: 0 };
         if (s === sprintName) return { ...a, [key]: clampedVal };
         return { ...a };
       });
 
-      // Locked effort = sum of sprints 0..sprintIdx
-      const lockedEffort = currentAllocs.slice(0, sprintIdx + 1).reduce((sum, a) => sum + (a[key] || 0), 0);
+      const lockedEffort = lockedAllocs.slice(0, sprintIdx + 1).reduce((sum, a) => sum + (a[key] || 0), 0);
       const totalEffort = entry[totalEffortKey] || 0;
       const remainingEffort = Math.max(0, Number((totalEffort - lockedEffort).toFixed(2)));
 
-      // Remaining caps for sprints after the edited one
-      const remainingCaps = sprints.slice(sprintIdx + 1).map((s, i) => {
+      // Build a temporary "modified entry" with locked allocs for prior sprints
+      const modifiedEntry = { ...entry, sprint_allocations: lockedAllocs };
+
+      // Now reallocate all entries: entries before this one keep their allocs locked,
+      // this entry distributes remaining effort from sprintIdx+1 onward,
+      // and entries after reallocate in remaining capacity
+      const pinnedStarts = {};
+      const allEntries = sortedEntries.map(e => e.id === entry.id ? modifiedEntry : e);
+
+      // For the edited entry, distribute remaining effort after locked sprints
+      const afterCaps = sprints.map((s, i) => {
+        if (i <= sprintIdx) return 0;
         const othersUsed = otherEntries.reduce((sum, e) => {
           const a = e.sprint_allocations?.find(a => a.sprint === s);
           return sum + (a?.[key] || 0);
         }, 0);
-        return Math.max(0, (sprintCaps[sprintIdx + 1 + i] ?? 0) - othersUsed);
+        return Math.max(0, (sprintCaps[i] ?? 0) - othersUsed);
       });
+      const afterAllocs = distributeEffort(remainingEffort, afterCaps);
+      const finalAllocs = lockedAllocs.map((a, i) => i > sprintIdx ? { ...a, [key]: afterAllocs[i] } : a);
 
-      const afterAllocs = distributeEffort(remainingEffort, remainingCaps);
-      sprints.slice(sprintIdx + 1).forEach((s, i) => {
-        const idx = sprints.indexOf(s);
-        currentAllocs[idx] = { ...currentAllocs[idx], [key]: afterAllocs[i] };
-      });
+      const newBE = finalAllocs.reduce((s, a) => s + (a.be_weeks || 0), 0);
+      const newFE = finalAllocs.reduce((s, a) => s + (a.fe_weeks || 0), 0);
+      await base44.entities.TeamPlanEntry.update(entry.id, { sprint_allocations: finalAllocs, be_effort_weeks: newBE, fe_effort_weeks: newFE });
 
-      const newBE = currentAllocs.reduce((s, a) => s + (a.be_weeks || 0), 0);
-      const newFE = currentAllocs.reduce((s, a) => s + (a.fe_weeks || 0), 0);
-      return base44.entities.TeamPlanEntry.update(entry.id, { sprint_allocations: currentAllocs, be_effort_weeks: newBE, fe_effort_weeks: newFE });
+      // Now re-pack all other entries with updated capacity
+      const updatedEntry = { ...entry, sprint_allocations: finalAllocs, be_effort_weeks: newBE, fe_effort_weeks: newFE };
+      const allUpdated = sortedEntries.map(e => e.id === entry.id ? updatedEntry : e);
+      const allocMap = reallocateAll(allUpdated, sprints, beSprintCaps, feSprintCaps);
+      // Only save the OTHER entries (edited one is already saved)
+      const othersAllocMap = Object.fromEntries(Object.entries(allocMap).filter(([id]) => id !== entry.id));
+      if (Object.keys(othersAllocMap).length > 0) await saveReallocated(othersAllocMap);
+      else qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] });
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] }); setEditCell(null); },
+    onSuccess: () => { setEditCell(null); },
   });
 
-  // Re-allocate a single entry's effort starting from a given sprint index,
-  // respecting capacity already taken by OTHER entries.
-  function reallocateFromSprint(entry, type, startSprintIdx, otherEntries) {
-    const key = type === 'be' ? 'be_weeks' : 'fe_weeks';
-    const totalEffortKey = type === 'be' ? 'be_effort_weeks' : 'fe_effort_weeks';
-    const sprintCaps = type === 'be' ? beSprintCaps : feSprintCaps;
-    const totalEffort = entry[totalEffortKey] || 0;
-
-    // Compute remaining capacity per sprint from startSprintIdx onward
-    const remainingCaps = sprints.map((s, i) => {
-      if (i < startSprintIdx) return 0;
-      const othersUsed = otherEntries.reduce((sum, e) => {
-        const a = e.sprint_allocations?.find(a => a.sprint === s);
-        return sum + (a?.[key] || 0);
-      }, 0);
-      return Math.max(0, (sprintCaps[i] ?? 0) - othersUsed);
-    });
-
-    const allocs = distributeEffort(totalEffort, remainingCaps);
-    return sprints.map((s, i) => {
-      const existing = entry.sprint_allocations?.find(a => a.sprint === s) || { sprint: s, be_weeks: 0, fe_weeks: 0 };
-      return { ...existing, [key]: allocs[i] };
-    });
-  }
-
-  // Drag and drop handler: re-allocates the dragged entry starting from the destination sprint
+  // Drag and drop: move entry to start from destination sprint, then re-pack all
   const handleDragEnd = (result) => {
     if (!result.destination || !canEdit) return;
     const { draggableId, source, destination } = result;
     if (source.droppableId === destination.droppableId) return;
 
-    // Parse draggableId: "entryId-drag-type"
-    const parts = draggableId.split('-drag-');
-    const entryId = parts[0];
-    const type = parts[1]; // 'be' or 'fe'
-    const destSprint = destination.droppableId.replace(`-${type}`, '');
+    const [entryId, , type] = draggableId.split('-drag-');
+    const destSprint = destination.droppableId.replace(new RegExp(`-${type}$`), '');
 
     const entry = sortedEntries.find(e => e.id === entryId);
     if (!entry) return;
@@ -326,13 +326,10 @@ export default function TeamPlan() {
     const destSprintIdx = sprints.indexOf(destSprint);
     if (destSprintIdx < 0) return;
 
-    const otherEntries = sortedEntries.filter(e => e.id !== entryId);
-    const newAllocs = reallocateFromSprint(entry, type, destSprintIdx, otherEntries);
-
-    const newBE = newAllocs.reduce((s, a) => s + (a.be_weeks || 0), 0);
-    const newFE = newAllocs.reduce((s, a) => s + (a.fe_weeks || 0), 0);
-    base44.entities.TeamPlanEntry.update(entry.id, { sprint_allocations: newAllocs, be_effort_weeks: newBE, fe_effort_weeks: newFE })
-      .then(() => qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] }));
+    // Reallocate ALL entries: dragged entry gets pinned to start at destSprintIdx
+    const pinnedStarts = { [entryId]: destSprintIdx };
+    const allocMap = reallocateAll(sortedEntries, sprints, beSprintCaps, feSprintCaps, pinnedStarts);
+    saveReallocated(allocMap);
   };
 
   const objColor = (name) => colorMap[name] || '#94a3b8';
