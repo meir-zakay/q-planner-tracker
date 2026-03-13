@@ -202,7 +202,15 @@ export default function TeamPlan() {
 
   const toggleExcludeMutation = useMutation({
     mutationFn: async ({ entry, excluded }) => {
-      await base44.entities.TeamPlanEntry.update(entry.id, { excluded_from_allocation: excluded });
+      // If excluding, clear sprint allocations and zero out effort
+      if (excluded) {
+        await base44.entities.TeamPlanEntry.update(entry.id, {
+          excluded_from_allocation: true,
+          sprint_allocations: sprints.map(s => ({ sprint: s, be_weeks: 0, fe_weeks: 0 })),
+        });
+      } else {
+        await base44.entities.TeamPlanEntry.update(entry.id, { excluded_from_allocation: false });
+      }
       // Re-fetch and reallocate only included entries
       const fresh = await base44.entities.TeamPlanEntry.filter({ team_id: selectedTeamId, year: selectedYear, quarter: selectedQuarter });
       const included = fresh.filter(e => !e.excluded_from_allocation);
