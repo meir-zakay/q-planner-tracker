@@ -451,6 +451,7 @@ export default function TeamPlan() {
                                const alloc = entry.sprint_allocations?.find(a => a.sprint === sprint);
                                const cellKey = `${entry.id}-${sprint}-be`;
                                const dragId = `${entry.id}-drag-be-${sprint}`;
+                               const featColor = feat?.objective ? objColor(feat.objective) : null;
                                return (
                                  <Draggable key={cellKey} draggableId={dragId} index={idx} isDragDisabled={!canEdit}>
                                    {(drag, dragSnapshot) => (
@@ -458,8 +459,8 @@ export default function TeamPlan() {
                                        ref={drag.innerRef}
                                        {...drag.draggableProps}
                                        {...drag.dragHandleProps}
-                                       style={{ ...drag.draggableProps.style }}
-                                       className={`bg-primary/10 border border-primary/20 rounded px-1.5 py-1 ${canEdit ? 'cursor-grab active:cursor-grabbing' : ''} ${dragSnapshot.isDragging ? 'shadow-lg ring-2 ring-primary/40 opacity-95 z-50' : ''}`}
+                                       style={{ ...drag.draggableProps.style, ...(featColor ? { backgroundColor: `${featColor}22`, borderColor: `${featColor}55` } : {}) }}
+                                       className={`rounded px-1.5 py-1 border ${!featColor ? 'bg-primary/10 border-primary/20' : ''} ${canEdit ? 'cursor-grab active:cursor-grabbing' : ''} ${dragSnapshot.isDragging ? 'shadow-lg opacity-95 z-50' : ''}`}
                                      >
                                        <p className="text-[10px] text-foreground font-medium leading-tight truncate">{feat?.title}</p>
                                        {canEdit && editCell?.key === cellKey ? (
