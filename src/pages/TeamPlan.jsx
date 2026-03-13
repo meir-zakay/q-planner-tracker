@@ -238,9 +238,9 @@ export default function TeamPlan() {
       // Re-fetch remaining entries and reallocate
       const remaining = await base44.entities.TeamPlanEntry.filter({ team_id: selectedTeamId, year: selectedYear, quarter: selectedQuarter });
       const ordered = [...remaining].sort((a, b) => {
-        const pa = allFeatures.find(f => f.id === a.feature_id)?.priority || 999;
-        const pb = allFeatures.find(f => f.id === b.feature_id)?.priority || 999;
-        return pa - pb;
+        const oa = a.sort_order ?? allFeatures.find(f => f.id === a.feature_id)?.priority ?? 999;
+        const ob = b.sort_order ?? allFeatures.find(f => f.id === b.feature_id)?.priority ?? 999;
+        return oa - ob;
       });
       if (ordered.length > 0) {
         const allocMap = reallocateAll(ordered, sprints, beSprintCaps, feSprintCaps);
