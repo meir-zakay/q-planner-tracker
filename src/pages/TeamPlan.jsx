@@ -410,6 +410,7 @@ export default function TeamPlan() {
           <p className="text-sm">Select a team to view their quarterly plan</p>
         </div>
       ) : (
+        <DragDropContext onDragEnd={handleDragEnd}>
         <>
           {/* Sprint Allocation Section */}
           <div className="bg-card border border-border rounded-xl p-5">
