@@ -434,7 +434,6 @@ export default function TeamPlan() {
             </div>
 
             {/* Sprint Cards */}
-            <DragDropContext onDragEnd={handleDragEnd}>
               <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${numSprints}, minmax(0, 1fr))` }}>
                 {sprints.map((sprint, si) => {
                   const beUsed = sprintTotals[si]?.be || 0;
