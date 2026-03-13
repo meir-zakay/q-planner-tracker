@@ -785,11 +785,7 @@ export default function TeamPlan() {
                 <Input type="number" min="0" step="0.5" value={effortForm.fe} onChange={e => setEffortForm(p => ({ ...p, fe: e.target.value }))} placeholder="0" />
               </div>
             </div>
-            {(Number(effortForm.be) > totalBECap || Number(effortForm.fe) > totalFECap) && (
-              <div className="flex items-center gap-2 text-amber-600 text-xs bg-amber-50 dark:bg-amber-950 p-2.5 rounded-lg">
-                <AlertTriangle className="w-3.5 h-3.5 shrink-0" />This exceeds team capacity — the feature will be added but some effort may not fit in sprints.
-              </div>
-            )}
+
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => { setAddFeatureOpen(false); setAddMode('existing'); setSelectedFeatureId(''); setCustomFeatureTitle(''); setCustomFeatureObjective(''); setEffortForm({ be: '', fe: '' }); }}>Cancel</Button>
