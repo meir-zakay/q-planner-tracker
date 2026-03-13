@@ -585,16 +585,21 @@ export default function TeamPlan() {
             <div className="bg-card border border-border rounded-xl p-5">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-foreground">Planned Features</h3>
-                {canEdit && <p className="text-xs text-muted-foreground italic">Click <Pencil className="w-3 h-3 inline" /> to set effort estimates</p>}
+                {canEdit && <p className="text-xs text-muted-foreground italic">{sortedEntries.length > 1 ? 'Drag rows to reorder · ' : ''}Click <Pencil className="w-3 h-3 inline" /> to set effort</p>}
               </div>
-              <div className="space-y-2">
+              <Droppable droppableId="planned-features-list">
+                {(listProvided) => (
+                <div ref={listProvided.innerRef} {...listProvided.droppableProps} className="space-y-0">
                 {sortedEntries.length === 0 && <p className="text-sm text-muted-foreground text-center py-8">No features planned yet</p>}
-                {sortedEntries.map(entry => {
+                {sortedEntries.map((entry, rowIdx) => {
                   const feat = featureMap[entry.feature_id];
                   if (!feat) return null;
                   const isEditing = editEntryId === entry.id;
                   return (
-                    <div key={entry.id} className="flex items-center gap-3 py-3 border-b border-border/50 last:border-0">
+                    <Draggable key={entry.id} draggableId={`row-${entry.id}`} index={rowIdx} isDragDisabled={!canEdit}>
+                    {(rowDrag, rowSnapshot) => (
+                    <div ref={rowDrag.innerRef} {...rowDrag.draggableProps} style={rowDrag.draggableProps.style}
+                      className={`flex items-center gap-3 py-3 border-b border-border/50 last:border-0 ${rowSnapshot.isDragging ? 'bg-card shadow-md rounded-lg px-2 opacity-95' : ''}`}>
                       <div className="flex items-center justify-center w-6 h-6 rounded-full border-2 border-border text-[10px] font-bold text-muted-foreground shrink-0">
                         {feat.priority}
                       </div>
