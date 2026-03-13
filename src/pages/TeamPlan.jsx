@@ -218,9 +218,9 @@ export default function TeamPlan() {
       // Fetch updated entries and reallocate all
       const fresh = await base44.entities.TeamPlanEntry.filter({ team_id: selectedTeamId, year: selectedYear, quarter: selectedQuarter });
       const ordered = [...fresh].sort((a, b) => {
-        const pa = allFeatures.find(f => f.id === a.feature_id)?.priority || 999;
-        const pb = allFeatures.find(f => f.id === b.feature_id)?.priority || 999;
-        return pa - pb;
+        const oa = a.sort_order ?? allFeatures.find(f => f.id === a.feature_id)?.priority ?? 999;
+        const ob = b.sort_order ?? allFeatures.find(f => f.id === b.feature_id)?.priority ?? 999;
+        return oa - ob;
       });
       const allocMap = reallocateAll(ordered, sprints, beSprintCaps, feSprintCaps);
       await saveReallocated(allocMap);
