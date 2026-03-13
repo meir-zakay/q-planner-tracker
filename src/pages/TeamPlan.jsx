@@ -145,9 +145,10 @@ export default function TeamPlan() {
 
   const sortedEntries = useMemo(() => {
     return [...entries].sort((a, b) => {
-      const pa = featureMap[a.feature_id]?.priority || 999;
-      const pb = featureMap[b.feature_id]?.priority || 999;
-      return pa - pb;
+      // Use sort_order if set, otherwise fall back to feature priority
+      const oa = a.sort_order ?? featureMap[a.feature_id]?.priority ?? 999;
+      const ob = b.sort_order ?? featureMap[b.feature_id]?.priority ?? 999;
+      return oa - ob;
     });
   }, [entries, featureMap]);
 
