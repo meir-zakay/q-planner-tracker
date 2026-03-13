@@ -659,9 +659,14 @@ export default function TeamPlan() {
                         </div>
                       )}
                     </div>
+                    )}
+                    </Draggable>
                   );
                 })}
-              </div>
+                {listProvided.placeholder}
+                </div>
+                )}
+              </Droppable>
             </div>
 
             {/* Pie Chart */}
