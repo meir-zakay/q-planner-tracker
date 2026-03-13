@@ -387,6 +387,9 @@ export default function TeamPlan() {
     return { start: activeSprints[0], end: activeSprints[activeSprints.length - 1] };
   };
 
+  const maxBeCards = Math.max(1, ...sprints.map(s => sortedEntries.filter(e => (e.sprint_allocations?.find(a => a.sprint === s)?.be_weeks || 0) > 0).length));
+  const beDropMinHeight = Math.max(40, maxBeCards * 44);
+
   return (
     <div className="space-y-6">
       {/* Header */}
