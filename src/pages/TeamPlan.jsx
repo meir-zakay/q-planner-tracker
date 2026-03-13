@@ -486,7 +486,7 @@ export default function TeamPlan() {
                             <div
                               ref={provided.innerRef}
                               {...provided.droppableProps}
-                              className={`space-y-1 min-h-[2rem] rounded transition-colors ${snapshot.isDraggingOver ? 'bg-emerald-500/5' : ''}`}
+                              className={`space-y-1 min-h-[2.5rem] rounded-md transition-colors duration-150 ${snapshot.isDraggingOver ? 'bg-emerald-500/10 ring-1 ring-emerald-400/30 ring-inset' : ''}`}
                             >
                               {feFeatures.map((entry, idx) => {
                                const feat = featureMap[entry.feature_id];
