@@ -349,13 +349,13 @@ export default function TeamPlan() {
 
   const reorderEntryMutation = useMutation({
     mutationFn: async (reorderedEntries) => {
-      // Assign new sort_order values and save, then reallocate
+      // Assign new sort_order values and save, then reallocate only included
       const updates = reorderedEntries.map((e, i) =>
         base44.entities.TeamPlanEntry.update(e.id, { sort_order: i + 1 })
       );
       await Promise.all(updates);
       const withNewOrder = reorderedEntries.map((e, i) => ({ ...e, sort_order: i + 1 }));
-      const allocMap = reallocateAll(withNewOrder, sprints, beSprintCaps, feSprintCaps);
+      const allocMap = reallocateAll(withNewOrder.filter(e => !e.excluded_from_allocation), sprints, beSprintCaps, feSprintCaps);
       await saveReallocated(allocMap);
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] }),
