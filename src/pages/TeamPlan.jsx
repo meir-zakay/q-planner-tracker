@@ -742,7 +742,7 @@ export default function TeamPlan() {
                         className={`flex flex-col gap-1 py-2 border-b border-border/50 last:border-0 ${entry.excluded_from_allocation ? 'opacity-50' : ''}`}
                       >
                        {rowSnapshot.isDragging ? (
-                         <div className="bg-indigo-600 text-white text-xs font-semibold px-2 py-1 rounded-md shadow-xl inline-block whitespace-nowrap">
+                         <div className="bg-indigo-600 text-white text-xs font-semibold px-2 py-1 rounded-md shadow-xl w-32 truncate">
                            {feat.title}
                          </div>
                        ) : (
