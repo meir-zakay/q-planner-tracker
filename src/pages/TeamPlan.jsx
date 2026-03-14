@@ -587,8 +587,8 @@ export default function TeamPlan() {
                                        ref={drag.innerRef}
                                        {...drag.draggableProps}
                                        {...drag.dragHandleProps}
-                                       style={{ ...drag.draggableProps.style, ...(featColor ? { backgroundColor: `${featColor}22`, borderColor: `${featColor}55` } : {}) }}
-                                       className={`rounded px-1.5 py-1 border ${!featColor ? 'bg-primary/10 border-primary/20' : ''} ${canEdit ? 'cursor-grab active:cursor-grabbing' : ''} ${dragSnapshot.isDragging ? 'shadow-lg opacity-95 z-50' : ''}`}
+                                       style={drag.draggableProps.style}
+                                       className={`rounded px-1.5 py-1 border bg-blue-500/15 border-blue-500/30 ${canEdit ? 'cursor-grab active:cursor-grabbing' : ''} ${dragSnapshot.isDragging ? 'shadow-lg opacity-95 z-50' : ''}`}
                                      >
                                        <p className="text-[10px] text-foreground font-medium leading-tight truncate">{feat?.title}</p>
                                        {canEdit && editCell?.key === cellKey ? (
@@ -596,11 +596,11 @@ export default function TeamPlan() {
                                            onChange={e => setEditCellValue(e.target.value)}
                                            onBlur={() => updateCellMutation.mutate({ entry, sprintName: sprint, type: 'be', newVal: Number(editCellValue) })}
                                            onKeyDown={e => { if (e.key === 'Enter') e.target.blur(); if (e.key === 'Escape') setEditCell(null); }}
-                                           className="h-5 w-14 text-[10px] p-0.5 mt-0.5 border-primary/40"
+                                           className="h-5 w-14 text-[10px] p-0.5 mt-0.5 border-blue-400/40"
                                          />
                                        ) : (
                                          <p
-                                           className={`text-[10px] font-semibold text-primary mt-0.5 ${canEdit ? 'hover:underline cursor-pointer' : ''}`}
+                                           className={`text-[10px] font-semibold text-blue-400 mt-0.5 ${canEdit ? 'hover:underline cursor-pointer' : ''}`}
                                            onClick={canEdit ? (e) => { e.stopPropagation(); setEditCell({ key: cellKey }); setEditCellValue(String(alloc?.be_weeks || 0)); } : undefined}
                                          >
                                            {alloc?.be_weeks || 0}w
