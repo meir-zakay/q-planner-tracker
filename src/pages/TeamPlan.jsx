@@ -842,13 +842,13 @@ export default function TeamPlan() {
                       <Tooltip formatter={(value, name) => [`${value}w`, name]} />
                     </PieChart>
                   </ResponsiveContainer>
-                  <div className="space-y-1.5 mt-2">
+                  <div className="flex flex-wrap gap-x-3 gap-y-1 mt-2">
                     {effortByObjective.map((entry, index) => {
                       const total = effortByObjective.reduce((s, d) => s + d.value, 0);
                       const pct = total > 0 ? Math.round((entry.value / total) * 100) : 0;
                       const color = colorMap[entry.name] || FALLBACK_COLORS[index % FALLBACK_COLORS.length];
                       return (
-                        <div key={entry.name} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                        <div key={entry.name} className="flex items-center gap-1 text-xs text-muted-foreground">
                           <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: color }} />
                           <span>{entry.name} ({pct}%)</span>
                         </div>
