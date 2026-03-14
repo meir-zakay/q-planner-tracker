@@ -231,7 +231,7 @@ export default function Layout() {
           </header>
 
           {/* Main content */}
-          <main className="flex-1 min-w-0 overflow-auto">
+          <main className="flex-1 min-w-0">
             <div className="p-6 md:p-8 max-w-[1400px]">
               <Outlet context={{ user, userRole, selectedYear, selectedQuarter }} />
             </div>
