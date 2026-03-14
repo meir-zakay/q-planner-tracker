@@ -501,12 +501,7 @@ export default function TeamPlan() {
         )}
       </div>
 
-      {manualMode && (
-        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs">
-          <Wrench className="w-3.5 h-3.5 shrink-0" />
-          <span><strong>Manual mode is ON.</strong> Click 📌 on a feature row to assign it to a sprint. Drag sprint cards to move allocations between sprints. Cell edits save as-is. Capacity limits are not enforced.</span>
-        </div>
-      )}
+
 
       {!selectedTeamId ? (
         <div className="text-center py-24 text-muted-foreground">
