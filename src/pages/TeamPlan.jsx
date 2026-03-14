@@ -502,7 +502,31 @@ export default function TeamPlan() {
           <div className="space-y-6">
           {/* Sprint Allocation Section */}
           <div className="bg-card border border-border rounded-xl p-5">
-            <h2 className="text-base font-semibold text-foreground mb-1">Sprints Allocation — {selectedTeam?.name}</h2>
+            <div className="flex items-center justify-between mb-1 flex-wrap gap-2">
+              <h2 className="text-base font-semibold text-foreground">Sprints Allocation — {selectedTeam?.name}</h2>
+              <TooltipProvider delayDuration={200}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={toggleManualMode}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${
+                        manualMode
+                          ? 'bg-indigo-500/15 border-indigo-500/40 text-indigo-400 hover:bg-indigo-500/25'
+                          : 'bg-background border-border text-muted-foreground hover:text-foreground hover:border-foreground/30'
+                      }`}
+                    >
+                      <Wrench className="w-3.5 h-3.5" />
+                      {manualMode ? 'Manual' : 'Auto'}
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="max-w-xs text-xs">
+                    {manualMode
+                      ? 'Manual mode ON — drag features into sprints. Cell edits save as-is. Capacity limits not enforced. Click to switch to Auto.'
+                      : 'Auto mode — allocations are computed automatically by priority. Click to switch to Manual.'}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mb-4 text-sm">
               <span className={totalBEUsed > totalBECap ? 'text-red-500 font-semibold' : 'text-foreground'}>
                 BE: {totalBEUsed}w / {totalBECap}w
