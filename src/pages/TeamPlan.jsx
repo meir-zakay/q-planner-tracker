@@ -401,8 +401,43 @@ export default function TeamPlan() {
     if (!result.destination || !canEditNow) return;
     const { draggableId, source, destination } = result;
 
-    // --- Feature reorder in Planned Features list ---
+    // --- Feature reorder in Planned Features list (Auto mode) OR drop to sprint (Manual mode) ---
     if (source.droppableId === 'planned-features-list') {
+      // Manual mode: allow dropping a feature row into a sprint zone
+      if (isManual && destination.droppableId !== 'planned-features-list') {
+        const sprintMatch = destination.droppableId.match(/^(.+)-(be|fe)$/);
+        if (!sprintMatch) return;
+        const [, destSprint, type] = sprintMatch;
+        const key = type === 'be' ? 'be_weeks' : 'fe_weeks';
+        const totalKey = type === 'be' ? 'be_effort_weeks' : 'fe_effort_weeks';
+
+        // Find the entry being dragged (draggableId is `row-${entry.id}`)
+        const entryId = draggableId.replace(/^row-/, '');
+        const entry = currentEntries.find(e => e.id === entryId);
+        if (!entry) return;
+
+        // Block if feature already has allocation in this sprint
+        const existingAlloc = entry.sprint_allocations?.find(a => a.sprint === destSprint);
+        if ((existingAlloc?.[key] || 0) > 0) return;
+
+        // Add the full effort to this sprint
+        const totalEffort = entry[totalKey] || 0;
+        if (totalEffort === 0) return;
+
+        const newAllocs = sprintList.map(s => {
+          const a = entry.sprint_allocations?.find(a => a.sprint === s) || { sprint: s, be_weeks: 0, fe_weeks: 0 };
+          if (s === destSprint) return { ...a, [key]: totalEffort };
+          return { ...a };
+        });
+        const newBE = newAllocs.reduce((s, a) => s + (a.be_weeks || 0), 0);
+        const newFE = newAllocs.reduce((s, a) => s + (a.fe_weeks || 0), 0);
+        base44.entities.TeamPlanEntry.update(entryId, { sprint_allocations: newAllocs, be_effort_weeks: newBE, fe_effort_weeks: newFE })
+          .then(() => saveReallocated({}));
+        return;
+      }
+
+      // Auto mode (or dropped back in list): reorder
+      if (destination.droppableId !== 'planned-features-list') return;
       if (source.index === destination.index) return;
       const reordered = Array.from(currentEntries);
       const [moved] = reordered.splice(source.index, 1);
