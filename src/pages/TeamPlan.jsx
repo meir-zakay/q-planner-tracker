@@ -271,17 +271,19 @@ export default function TeamPlan() {
   const removeEntryMutation = useMutation({
     mutationFn: async (id) => {
       await base44.entities.TeamPlanEntry.delete(id);
-      // Re-fetch remaining entries and reallocate only included
-      const remaining = await base44.entities.TeamPlanEntry.filter({ team_id: selectedTeamId, year: selectedYear, quarter: selectedQuarter });
-      const included = remaining.filter(e => !e.excluded_from_allocation);
-      const ordered = [...included].sort((a, b) => {
-        const oa = a.sort_order ?? allFeatures.find(f => f.id === a.feature_id)?.priority ?? 999;
-        const ob = b.sort_order ?? allFeatures.find(f => f.id === b.feature_id)?.priority ?? 999;
-        return oa - ob;
-      });
-      if (ordered.length > 0) {
-        const allocMap = reallocateAll(ordered, sprints, beSprintCaps, feSprintCaps);
-        await saveReallocated(allocMap);
+      if (!manualMode) {
+        // Re-fetch remaining entries and reallocate only included
+        const remaining = await base44.entities.TeamPlanEntry.filter({ team_id: selectedTeamId, year: selectedYear, quarter: selectedQuarter });
+        const included = remaining.filter(e => !e.excluded_from_allocation);
+        const ordered = [...included].sort((a, b) => {
+          const oa = a.sort_order ?? allFeatures.find(f => f.id === a.feature_id)?.priority ?? 999;
+          const ob = b.sort_order ?? allFeatures.find(f => f.id === b.feature_id)?.priority ?? 999;
+          return oa - ob;
+        });
+        if (ordered.length > 0) {
+          const allocMap = reallocateAll(ordered, sprints, beSprintCaps, feSprintCaps);
+          await saveReallocated(allocMap);
+        }
       }
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] }),
