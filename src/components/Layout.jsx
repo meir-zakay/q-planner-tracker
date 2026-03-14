@@ -72,7 +72,7 @@ export default function Layout() {
         {/* Sidebar */}
         {/* Sidebar — always dark */}
         <aside
-          className={`relative shrink-0 h-screen sticky top-0 flex flex-col transition-all duration-200 ${sidebarWidth}`}
+          className={`relative shrink-0 h-screen sticky top-0 self-start flex flex-col transition-all duration-200 ${sidebarWidth}`}
           style={{
             background: 'hsl(234 40% 6%)',
             borderRight: '1px solid hsl(234 35% 12%)',
