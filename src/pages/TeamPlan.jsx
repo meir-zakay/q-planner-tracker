@@ -388,7 +388,7 @@ export default function TeamPlan() {
   dndStateRef.current = { sortedEntries, sprints, beSprintCaps, feSprintCaps, canEdit, manualMode };
 
   const handleDragEnd = useCallback((result) => {
-    const { sortedEntries: currentEntries, sprints: sprintList, beSprintCaps: beCaps, feSprintCaps: feCaps, canEdit: canEditNow } = dndStateRef.current;
+    const { sortedEntries: currentEntries, sprints: sprintList, beSprintCaps: beCaps, feSprintCaps: feCaps, canEdit: canEditNow, manualMode: isManual } = dndStateRef.current;
     if (!result.destination || !canEditNow) return;
     const { draggableId, source, destination } = result;
 
@@ -407,10 +407,31 @@ export default function TeamPlan() {
     const dragMatch = draggableId.match(/^(.+)-drag-(be|fe)-(.+)$/);
     if (!dragMatch) return;
     const [, entryId, type] = dragMatch;
+    const srcSprint = source.droppableId.replace(new RegExp(`-${type}$`), '');
     const destSprint = destination.droppableId.replace(new RegExp(`-${type}$`), '');
 
     const entry = currentEntries.find(e => e.id === entryId);
     if (!entry) return;
+
+    if (isManual) {
+      // Manual mode: move the allocation value from srcSprint to destSprint, leave everything else untouched
+      const key = type === 'be' ? 'be_weeks' : 'fe_weeks';
+      const srcAlloc = entry.sprint_allocations?.find(a => a.sprint === srcSprint);
+      const movedVal = srcAlloc?.[key] || 0;
+      if (movedVal === 0) return;
+
+      const newAllocs = sprintList.map(s => {
+        const a = entry.sprint_allocations?.find(a => a.sprint === s) || { sprint: s, be_weeks: 0, fe_weeks: 0 };
+        if (s === srcSprint) return { ...a, [key]: 0 };
+        if (s === destSprint) return { ...a, [key]: (a[key] || 0) + movedVal };
+        return { ...a };
+      });
+      const newBE = newAllocs.reduce((s, a) => s + (a.be_weeks || 0), 0);
+      const newFE = newAllocs.reduce((s, a) => s + (a.fe_weeks || 0), 0);
+      base44.entities.TeamPlanEntry.update(entryId, { sprint_allocations: newAllocs, be_effort_weeks: newBE, fe_effort_weeks: newFE })
+        .then(() => saveReallocated({})); // just invalidate
+      return;
+    }
 
     const destSprintIdx = sprintList.indexOf(destSprint);
     if (destSprintIdx < 0) return;
