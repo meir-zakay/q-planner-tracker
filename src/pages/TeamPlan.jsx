@@ -101,6 +101,11 @@ export default function TeamPlan() {
   });
 
   const handleTeamChange = (id) => { setSelectedTeamId(id); localStorage.setItem('selectedTeamId', id); };
+  const toggleManualMode = () => {
+    const next = !manualMode;
+    setManualMode(next);
+    localStorage.setItem('manualMode', String(next));
+  };
   const selectedTeam = teams.find(t => t.id === selectedTeamId);
   const isAdmin = userRole === 'admin';
   const isTeamLead = selectedTeam?.team_lead_email === user?.email;
