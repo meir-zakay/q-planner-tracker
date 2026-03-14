@@ -378,6 +378,25 @@ export default function TeamPlan() {
     onSuccess: () => { setEditCell(null); },
   });
 
+  const assignSprintMutation = useMutation({
+    mutationFn: async ({ entry, sprintName, type }) => {
+      const key = type === 'be' ? 'be_weeks' : 'fe_weeks';
+      const totalKey = type === 'be' ? 'be_effort_weeks' : 'fe_effort_weeks';
+      const totalEffort = entry[totalKey] || 0;
+      if (totalEffort === 0) return;
+      const newAllocs = sprints.map(s => {
+        const a = entry.sprint_allocations?.find(a => a.sprint === s) || { sprint: s, be_weeks: 0, fe_weeks: 0 };
+        if (s === sprintName) return { ...a, [key]: totalEffort };
+        return { ...a };
+      });
+      const newBE = newAllocs.reduce((s, a) => s + (a.be_weeks || 0), 0);
+      const newFE = newAllocs.reduce((s, a) => s + (a.fe_weeks || 0), 0);
+      await base44.entities.TeamPlanEntry.update(entry.id, { sprint_allocations: newAllocs, be_effort_weeks: newBE, fe_effort_weeks: newFE });
+      qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] });
+    },
+    onSuccess: () => setAssignSprintEntry(null),
+  });
+
   const reorderEntryMutation = useMutation({
     mutationFn: async (reorderedEntries) => {
       // Assign new sort_order values and save
