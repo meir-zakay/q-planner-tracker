@@ -713,11 +713,9 @@ export default function TeamPlan() {
                         className={`flex flex-col gap-1 py-2 border-b border-border/50 last:border-0 ${rowSnapshot.isDragging ? 'bg-card shadow-md rounded-lg px-2' : ''} ${entry.excluded_from_allocation ? 'opacity-50' : ''}`}
                       >
                         <div className="flex items-center gap-3">
-                          {canEdit && !manualMode && (
-                            <div {...rowDrag.dragHandleProps} className="cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-muted-foreground shrink-0">
-                              <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor"><circle cx="2" cy="2" r="1.5"/><circle cx="8" cy="2" r="1.5"/><circle cx="2" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="2" cy="14" r="1.5"/><circle cx="8" cy="14" r="1.5"/></svg>
-                            </div>
-                          )}
+                          <div {...rowDrag.dragHandleProps} className={`cursor-grab active:cursor-grabbing shrink-0 ${manualMode ? 'text-amber-400/60 hover:text-amber-400' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}>
+                            <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor"><circle cx="2" cy="2" r="1.5"/><circle cx="8" cy="2" r="1.5"/><circle cx="2" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="2" cy="14" r="1.5"/><circle cx="8" cy="14" r="1.5"/></svg>
+                          </div>
                           <div className="flex items-center justify-center w-6 h-6 rounded-lg text-[11px] font-bold text-primary shrink-0" style={{ background: 'hsl(239 84% 67% / 0.18)' }}>
                             {rowIdx + 1}
                           </div>
