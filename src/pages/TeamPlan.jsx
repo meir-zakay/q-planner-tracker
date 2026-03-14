@@ -614,8 +614,8 @@ export default function TeamPlan() {
                                        {...drag.dragHandleProps}
                                        style={drag.draggableProps.style}
                                        className={`rounded-lg px-2 py-1.5 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 cursor-grab active:cursor-grabbing ${dragSnapshot.isDragging ? 'shadow-lg opacity-95 z-50' : ''}`}
-                                     >
-                                       <p className="text-[11px] text-foreground font-medium leading-tight truncate">{feat?.title}</p>
+                                       >
+                                       <p className="text-[11px] text-blue-600 dark:text-blue-400 font-semibold leading-tight truncate">{feat?.title}</p>
                                        {canEdit && editCell?.key === cellKey ? (
                                          <Input autoFocus type="number" min="0" step="0.5" value={editCellValue}
                                            onChange={e => setEditCellValue(e.target.value)}
@@ -625,7 +625,7 @@ export default function TeamPlan() {
                                          />
                                        ) : (
                                          <p
-                                           className={`text-sm font-bold text-blue-600 dark:text-blue-400 mt-0.5 underline decoration-dotted ${canEdit ? 'cursor-pointer' : ''}`}
+                                           className={`text-xs text-muted-foreground mt-0.5 underline decoration-dotted ${canEdit ? 'cursor-pointer' : ''}`}
                                            onClick={canEdit ? (e) => { e.stopPropagation(); setEditCell({ key: cellKey }); setEditCellValue(String(alloc?.be_weeks || 0)); } : undefined}
                                          >
                                            {alloc?.be_weeks || 0}w
