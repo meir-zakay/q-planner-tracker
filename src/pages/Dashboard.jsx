@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useQuarterSelection } from '@/components/QuarterContext';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
-import { Users, ListChecks, TrendingUp, Calendar } from 'lucide-react';
+import { Users, ListChecks, Server, Monitor } from 'lucide-react';
 
 const FALLBACK_COLORS = ['#4f46e5','#0ea5e9','#f59e0b','#10b981','#f43f5e','#8b5cf6','#f97316'];
 
