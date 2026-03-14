@@ -198,16 +198,11 @@ export default function Layout() {
         </aside>
 
         {/* Main area */}
-        <div className="flex-1 min-w-0 flex flex-col">
-          {/* Top Header Bar */}
-          <header className="h-14 bg-card border-b border-border flex items-center px-6 gap-4 shrink-0 z-20 sticky top-0">
-            {/* Page Title — left aligned at sidebar end */}
+        <div className="flex-1 min-w-0 flex flex-col h-full overflow-hidden">
+          {/* Top Header Bar — always visible */}
+          <header className="h-14 bg-card border-b border-border flex items-center px-6 gap-4 shrink-0 z-20">
             <h1 className="text-lg font-bold text-foreground">{pageTitle}</h1>
-
-            {/* Spacer */}
             <div className="flex-1" />
-
-            {/* Quarter selector */}
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground hidden sm:inline">Period:</span>
               <Select value={selectedQuarter} onValueChange={setSelectedQuarter}>
@@ -229,8 +224,8 @@ export default function Layout() {
             </div>
           </header>
 
-          {/* Main content */}
-          <main className="flex-1 min-w-0">
+          {/* Main content — scrollable */}
+          <main className="flex-1 min-w-0 overflow-y-auto">
             <div className="p-6 md:p-8 max-w-[1400px]">
               <Outlet context={{ user, userRole, selectedYear, selectedQuarter }} />
             </div>
