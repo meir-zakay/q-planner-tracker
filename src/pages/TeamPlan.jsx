@@ -282,11 +282,17 @@ export default function TeamPlan() {
 
   const updateEffortMutation = useMutation({
     mutationFn: async ({ entry, beEffort, feEffort }) => {
-      // Update totals then reallocate all included entries from scratch
-      const updated = { ...entry, be_effort_weeks: beEffort, fe_effort_weeks: feEffort };
-      const allEntries = sortedEntries.filter(e => !e.excluded_from_allocation).map(e => e.id === entry.id ? updated : e);
-      const allocMap = reallocateAll(allEntries, sprints, beSprintCaps, feSprintCaps);
-      await saveReallocated(allocMap);
+      if (manualMode) {
+        // In manual mode: just save totals, no reallocation
+        await base44.entities.TeamPlanEntry.update(entry.id, { be_effort_weeks: beEffort, fe_effort_weeks: feEffort });
+        qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] });
+      } else {
+        // Update totals then reallocate all included entries from scratch
+        const updated = { ...entry, be_effort_weeks: beEffort, fe_effort_weeks: feEffort };
+        const allEntries = sortedEntries.filter(e => !e.excluded_from_allocation).map(e => e.id === entry.id ? updated : e);
+        const allocMap = reallocateAll(allEntries, sprints, beSprintCaps, feSprintCaps);
+        await saveReallocated(allocMap);
+      }
     },
     onSuccess: () => { setEditEntryId(null); },
   });
