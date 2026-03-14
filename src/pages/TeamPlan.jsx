@@ -403,7 +403,7 @@ export default function TeamPlan() {
 
   const handleDragEnd = useCallback((result) => {
     const { sortedEntries: currentEntries, sprints: sprintList, beSprintCaps: beCaps, feSprintCaps: feCaps, canEdit: canEditNow, manualMode: isManual } = dndStateRef.current;
-    if (!result.destination || !canEditNow) return;
+    if (!result.destination) return;
     const { draggableId, source, destination } = result;
 
     // --- Feature reorder in Planned Features list ---
