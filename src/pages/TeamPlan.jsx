@@ -768,12 +768,6 @@ export default function TeamPlan() {
                               >
                                 {entry.excluded_from_allocation ? <CircleMinus className="w-3.5 h-3.5" /> : <CircleCheck className="w-3.5 h-3.5" />}
                               </Button>
-                              {canEdit && manualMode && (
-                                <Button variant="ghost" size="icon" className="h-6 w-6 text-amber-400 hover:text-amber-300" title="Assign to sprint"
-                                  onClick={() => setAssignSprintEntry(isAssigning ? null : entry)}>
-                                  <span className="text-xs">📌</span>
-                                </Button>
-                              )}
                               {canEdit && (
                                 <>
                                   <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-foreground" onClick={() => { setEditEntryId(entry.id); setEditEffort({ be: String(entry.be_effort_weeks || 0), fe: String(entry.fe_effort_weeks || 0) }); }}>
