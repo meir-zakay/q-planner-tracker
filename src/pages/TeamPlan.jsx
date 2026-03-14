@@ -491,6 +491,13 @@ export default function TeamPlan() {
         )}
       </div>
 
+      {manualMode && (
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs">
+          <Wrench className="w-3.5 h-3.5 shrink-0" />
+          <span><strong>Manual mode is ON.</strong> Drag & drop moves allocations directly. Cell edits save as-is. Capacity limits are not enforced. Reallocation is disabled.</span>
+        </div>
+      )}
+
       {!selectedTeamId ? (
         <div className="text-center py-24 text-muted-foreground">
           <Info className="w-10 h-10 mx-auto mb-3 opacity-30" />
