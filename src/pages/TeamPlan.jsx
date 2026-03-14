@@ -394,14 +394,7 @@ export default function TeamPlan() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] }),
   });
 
-  // Capture the scroll offset of <main> when drag starts, so we can compensate the ghost position
-  const scrollOffsetRef = useRef({ x: 0, y: 0 });
-  const handleBeforeDragStart = useCallback(() => {
-    const main = document.querySelector('main');
-    if (main) {
-      scrollOffsetRef.current = { x: main.scrollLeft, y: main.scrollTop };
-    }
-  }, []);
+
 
   // Use a ref to always have fresh state in the drag handler (avoids stale closure)
   const dndStateRef = useRef({});
