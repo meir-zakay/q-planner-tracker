@@ -402,13 +402,12 @@ export default function TeamPlan() {
   dndStateRef.current = { sortedEntries, sprints, beSprintCaps, feSprintCaps, canEdit, manualMode };
 
   const handleDragEnd = useCallback((result) => {
-    const { sortedEntries: currentEntries, sprints: sprintList, beSprintCaps: beCaps, feSprintCaps: feCaps, canEdit: canEditNow, manualMode: isManual } = dndStateRef.current;
+    const { sortedEntries: currentEntries, sprints: sprintList, beSprintCaps: beCaps, feSprintCaps: feCaps, manualMode: isManual } = dndStateRef.current;
     if (!result.destination) return;
     const { draggableId, source, destination } = result;
 
-    // --- Feature reorder in Planned Features list ---
-    if (source.droppableId === 'planned-features-list') {
-      if (destination.droppableId !== 'planned-features-list') return;
+    // --- Feature reorder in Planned Features list (auto mode only) ---
+    if (source.droppableId === 'planned-features-list' && destination.droppableId === 'planned-features-list') {
       if (source.index === destination.index) return;
       const reordered = Array.from(currentEntries);
       const [moved] = reordered.splice(source.index, 1);
@@ -417,43 +416,47 @@ export default function TeamPlan() {
       return;
     }
 
-    // --- Sprint drag ---
-    if (source.droppableId === destination.droppableId) return;
-    const dragMatch = draggableId.match(/^(.+)-drag-(be|fe)-(.+)$/);
-    if (!dragMatch) return;
-    const [, entryId, type] = dragMatch;
-    const srcSprint = source.droppableId.replace(new RegExp(`-${type}$`), '');
-    const destSprint = destination.droppableId.replace(new RegExp(`-${type}$`), '');
-
-    const entry = currentEntries.find(e => e.id === entryId);
-    if (!entry) return;
-
-    if (isManual) {
-      // Manual mode: move the allocation value from srcSprint to destSprint, leave everything else untouched
+    // --- Manual mode: drag feature from list into a sprint ---
+    if (isManual && source.droppableId === 'planned-features-list') {
+      const destMatch = destination.droppableId.match(/^(.+)-(be|fe)$/);
+      if (!destMatch) return;
+      const [, destSprint, type] = destMatch;
       const key = type === 'be' ? 'be_weeks' : 'fe_weeks';
-      const srcAlloc = entry.sprint_allocations?.find(a => a.sprint === srcSprint);
-      const movedVal = srcAlloc?.[key] || 0;
-      if (movedVal === 0) return;
+      const totalKey = type === 'be' ? 'be_effort_weeks' : 'fe_effort_weeks';
 
+      // draggableId is `row-${entry.id}`
+      const entryId = draggableId.replace(/^row-/, '');
+      const entry = currentEntries.find(e => e.id === entryId);
+      if (!entry) return;
+
+      const effort = entry[totalKey] || 0;
+      if (effort === 0) return;
+
+      // Assign all of this type's effort to the destination sprint, clear others
       const newAllocs = sprintList.map(s => {
         const a = entry.sprint_allocations?.find(a => a.sprint === s) || { sprint: s, be_weeks: 0, fe_weeks: 0 };
-        if (s === srcSprint) return { ...a, [key]: 0 };
-        if (s === destSprint) return { ...a, [key]: (a[key] || 0) + movedVal };
-        return { ...a };
+        return { ...a, [key]: s === destSprint ? effort : 0 };
       });
       const newBE = newAllocs.reduce((s, a) => s + (a.be_weeks || 0), 0);
       const newFE = newAllocs.reduce((s, a) => s + (a.fe_weeks || 0), 0);
       base44.entities.TeamPlanEntry.update(entryId, { sprint_allocations: newAllocs, be_effort_weeks: newBE, fe_effort_weeks: newFE })
-        .then(() => saveReallocated({})); // just invalidate
+        .then(() => qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] }));
       return;
     }
 
-    const destSprintIdx = sprintList.indexOf(destSprint);
-    if (destSprintIdx < 0) return;
-
-    const pinnedStarts = { [entryId]: destSprintIdx };
-    const allocMap = reallocateAll(currentEntries, sprintList, beCaps, feCaps, pinnedStarts);
-    saveReallocated(allocMap);
+    // --- Auto mode: drag sprint card to repin ---
+    if (!isManual) {
+      if (source.droppableId === destination.droppableId) return;
+      const dragMatch = draggableId.match(/^(.+)-drag-(be|fe)-(.+)$/);
+      if (!dragMatch) return;
+      const [, entryId, type] = dragMatch;
+      const destSprint = destination.droppableId.replace(new RegExp(`-${type}$`), '');
+      const destSprintIdx = sprintList.indexOf(destSprint);
+      if (destSprintIdx < 0) return;
+      const pinnedStarts = { [entryId]: destSprintIdx };
+      const allocMap = reallocateAll(currentEntries, sprintList, beCaps, feCaps, pinnedStarts);
+      saveReallocated(allocMap);
+    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const objColor = (name) => colorMap[name] || '#94a3b8';
