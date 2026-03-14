@@ -807,12 +807,12 @@ export default function TeamPlan() {
                                 </>
                               )}
                             </div>
-                          )}
-                        </div>
-                        )}
-                        </div>
-                        )}
-                        </Draggable>
+                              )}
+                            </div>
+                            )}
+                            </div>
+                            )}
+                            </Draggable>
                   );
                 })}
                 {listProvided.placeholder}
