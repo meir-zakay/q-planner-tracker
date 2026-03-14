@@ -710,7 +710,7 @@ export default function TeamPlan() {
                 <h3 className="font-semibold text-foreground">Planned Features</h3>
                 {canEdit && <p className="text-xs text-muted-foreground italic">
                   {manualMode
-                    ? 'Drag rows to a sprint to assign · '
+                    ? 'Click 📌 to assign sprint · '
                     : (sortedEntries.length > 1 ? 'Drag rows to reorder · ' : '')}
                   Click <Pencil className="w-3 h-3 inline" /> to set effort
                 </p>}
