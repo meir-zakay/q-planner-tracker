@@ -523,21 +523,15 @@ export default function TeamPlan() {
           <div className="space-y-6">
           {/* Sprint Allocation Section */}
           <div className="bg-card border border-border rounded-xl p-5">
-            <h2 className="text-base font-semibold text-foreground mb-1">Sprint Allocation — {selectedTeam?.name}</h2>
+            <h2 className="text-base font-semibold text-foreground mb-1">Sprints Allocation — {selectedTeam?.name}</h2>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mb-4 text-sm">
-              <span>
-                BE:{' '}
-                <span className={totalBEUsed > totalBECap ? 'text-red-500 font-semibold' : 'text-blue-500 font-semibold'}>{totalBEUsed}w</span>
-                {' / '}
-                <span className="text-blue-400/70">{totalBECap}w</span>
-                {totalBEUsed > totalBECap && <span className="text-red-500 text-xs ml-1">(over capacity!)</span>}
+              <span className={totalBEUsed > totalBECap ? 'text-red-500 font-semibold' : 'text-foreground'}>
+                BE: {totalBEUsed}w / {totalBECap}w
+                {totalBEUsed > totalBECap && <span className="text-xs ml-1">(over capacity!)</span>}
               </span>
-              <span>
-                FE:{' '}
-                <span className={totalFEUsed > totalFECap ? 'text-red-500 font-semibold' : 'text-emerald-500 font-semibold'}>{totalFEUsed}w</span>
-                {' / '}
-                <span className="text-emerald-400/70">{totalFECap}w</span>
-                {totalFEUsed > totalFECap && <span className="text-red-500 text-xs ml-1">(over capacity!)</span>}
+              <span className={totalFEUsed > totalFECap ? 'text-red-500 font-semibold' : 'text-foreground'}>
+                FE: {totalFEUsed}w / {totalFECap}w
+                {totalFEUsed > totalFECap && <span className="text-xs ml-1">(over capacity!)</span>}
               </span>
               {canEdit && <span className="text-xs text-muted-foreground italic">Click any effort value to edit it</span>}
             </div>
