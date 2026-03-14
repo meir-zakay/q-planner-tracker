@@ -741,25 +741,14 @@ export default function TeamPlan() {
                   return (
                     <Draggable key={entry.id} draggableId={`row-${entry.id}`} index={rowIdx} isDragDisabled={!canEdit}>
                     {(rowDrag, rowSnapshot) => {
-                      // Compensate ghost position for scroll container offset
-                      const ghostStyle = (() => {
-                        if (!rowSnapshot.isDragging || !manualMode) return rowDrag.draggableProps.style;
-                        const base = rowDrag.draggableProps.style || {};
-                        const { x: sx, y: sy } = scrollOffsetRef.current;
-                        if (!base.transform || (sx === 0 && sy === 0)) return { ...base, width: 'auto', minWidth: 0 };
-                        // Parse translate(Xpx, Ypx) and add scroll offsets
-                        const match = base.transform.match(/translate\(([^,]+),\s*([^)]+)\)/);
-                        if (!match) return { ...base, width: 'auto', minWidth: 0 };
-                        const tx = parseFloat(match[1]) + sx;
-                        const ty = parseFloat(match[2]) + sy;
-                        return { ...base, transform: `translate(${tx}px, ${ty}px)`, width: 'auto', minWidth: 0 };
-                      })();
-
                       const rowContent = (
                         <div
                           ref={rowDrag.innerRef}
                           {...rowDrag.draggableProps}
-                          style={ghostStyle}
+                          style={{
+                            ...rowDrag.draggableProps.style,
+                            ...(rowSnapshot.isDragging && manualMode ? { width: 'auto', minWidth: 0 } : {}),
+                          }}
                           className={`flex items-center gap-3 py-2 border-b border-border/50 last:border-0 ${rowSnapshot.isDragging && manualMode ? 'bg-card shadow-lg rounded-lg px-3 py-1.5 border border-border' : ''} ${rowSnapshot.isDragging && !manualMode ? 'bg-card shadow-md rounded-lg px-2' : ''} ${entry.excluded_from_allocation ? 'opacity-50' : ''}`}>
                           {canEdit && (
                             <div {...rowDrag.dragHandleProps} className={`cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-muted-foreground shrink-0 ${rowSnapshot.isDragging ? 'hidden' : ''}`}>
