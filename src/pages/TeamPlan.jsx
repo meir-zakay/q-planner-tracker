@@ -432,10 +432,12 @@ export default function TeamPlan() {
       const effort = entry[totalKey] || 0;
       if (effort === 0) return;
 
-      // Assign all of this type's effort to the destination sprint, clear others
+      // In manual mode: add effort to destination sprint without clearing others
+      // (allows the same feature to appear in multiple sprints)
       const newAllocs = sprintList.map(s => {
         const a = entry.sprint_allocations?.find(a => a.sprint === s) || { sprint: s, be_weeks: 0, fe_weeks: 0 };
-        return { ...a, [key]: s === destSprint ? effort : 0 };
+        if (s === destSprint) return { ...a, [key]: (a[key] || 0) + effort };
+        return { ...a };
       });
       const newBE = newAllocs.reduce((s, a) => s + (a.be_weeks || 0), 0);
       const newFE = newAllocs.reduce((s, a) => s + (a.fe_weeks || 0), 0);
