@@ -902,11 +902,11 @@ export default function TeamPlan() {
             )}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label className="flex items-center gap-1.5"><Server className="w-3.5 h-3.5" />BE Effort (weeks)</Label>
+                <Label className="flex items-center gap-1.5"><Server className="w-3.5 h-3.5 text-blue-500" />BE Effort (weeks)</Label>
                 <Input type="number" min="0" step="0.5" value={effortForm.be} onChange={e => setEffortForm(p => ({ ...p, be: e.target.value }))} placeholder="0" />
               </div>
               <div className="space-y-1.5">
-                <Label className="flex items-center gap-1.5"><Monitor className="w-3.5 h-3.5" />FE Effort (weeks)</Label>
+                <Label className="flex items-center gap-1.5"><Monitor className="w-3.5 h-3.5 text-emerald-500" />FE Effort (weeks)</Label>
                 <Input type="number" min="0" step="0.5" value={effortForm.fe} onChange={e => setEffortForm(p => ({ ...p, fe: e.target.value }))} placeholder="0" />
               </div>
             </div>
