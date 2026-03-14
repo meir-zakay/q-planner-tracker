@@ -738,11 +738,11 @@ export default function TeamPlan() {
                     <Draggable key={entry.id} draggableId={`row-${entry.id}`} index={rowIdx} isDragDisabled={!canEdit}>
                     {(rowDrag, rowSnapshot) => (
                     <div ref={rowDrag.innerRef} {...rowDrag.draggableProps}
-                      style={{
-                        ...rowDrag.draggableProps.style,
-                        ...(rowSnapshot.isDragging && manualMode ? { width: 'auto', minWidth: 0 } : {}),
-                      }}
-                      className={`flex items-center gap-3 py-2 border-b border-border/50 last:border-0 ${rowSnapshot.isDragging && manualMode ? 'bg-card shadow-lg rounded-lg px-3 py-1.5 border border-border' : ''} ${rowSnapshot.isDragging && !manualMode ? 'bg-card shadow-md rounded-lg px-2' : ''} ${entry.excluded_from_allocation ? 'opacity-50' : ''}`}>
+                     style={{
+                       ...rowDrag.draggableProps.style,
+                       ...(rowSnapshot.isDragging && manualMode ? { width: 'auto', minWidth: 0, zIndex: 9999 } : {}),
+                     }}
+                     className={`flex items-center gap-3 py-2 border-b border-border/50 last:border-0 ${rowSnapshot.isDragging && manualMode ? 'bg-card shadow-lg rounded-lg px-3 py-1.5 border border-border' : ''} ${rowSnapshot.isDragging && !manualMode ? 'bg-card shadow-md rounded-lg px-2' : ''} ${entry.excluded_from_allocation ? 'opacity-50' : ''}`}>
                       {canEdit && !rowSnapshot.isDragging && (
                         <div {...rowDrag.dragHandleProps} className="cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-muted-foreground shrink-0">
                           <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor"><circle cx="2" cy="2" r="1.5"/><circle cx="8" cy="2" r="1.5"/><circle cx="2" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="2" cy="14" r="1.5"/><circle cx="8" cy="14" r="1.5"/></svg>
