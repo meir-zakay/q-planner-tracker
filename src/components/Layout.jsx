@@ -68,14 +68,13 @@ export default function Layout() {
 
   return (
     <TooltipProvider delayDuration={300}>
-      <div className="min-h-screen bg-background flex overflow-x-hidden">
-        {/* Sidebar */}
-        {/* Sidebar — always dark */}
+      <div className="h-screen flex overflow-hidden">
+        {/* Sidebar — always dark indigo */}
         <aside
-          className={`relative shrink-0 h-screen sticky top-0 self-start flex flex-col transition-all duration-200 ${sidebarWidth}`}
+          className={`relative shrink-0 h-full flex flex-col transition-all duration-200 ${sidebarWidth} overflow-y-auto`}
           style={{
-            background: 'hsl(234 40% 6%)',
-            borderRight: '1px solid hsl(234 35% 12%)',
+            background: 'hsl(239 50% 10%)',
+            borderRight: '1px solid hsl(239 40% 16%)',
           }}
         >
           {/* Logo */}
