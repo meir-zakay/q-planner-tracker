@@ -74,12 +74,12 @@ export default function Layout() {
         <aside
           className={`relative shrink-0 h-screen sticky top-0 flex flex-col transition-all duration-200 ${sidebarWidth}`}
           style={{
-            background: 'hsl(238 40% 7%)',
-            borderRight: '1px solid hsl(238 30% 13%)',
+            background: 'hsl(234 40% 6%)',
+            borderRight: '1px solid hsl(234 35% 12%)',
           }}
         >
           {/* Logo */}
-          <div className="h-14 flex items-center gap-2 px-3 shrink-0" style={{ borderBottom: '1px solid hsl(238 30% 13%)' }}>
+          <div className="h-14 flex items-center gap-2 px-3 shrink-0" style={{ borderBottom: '1px solid hsl(234 35% 12%)' }}>
             <Link to="/Dashboard" className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center shrink-0">
                 <span className="text-white font-bold text-xs">Q</span>
@@ -123,7 +123,7 @@ export default function Layout() {
           </nav>
 
           {/* Bottom section */}
-          <div className="p-2 space-y-0.5" style={{ borderTop: '1px solid hsl(238 30% 13%)' }}>
+          <div className="p-2 space-y-0.5" style={{ borderTop: '1px solid hsl(234 35% 12%)' }}>
             {/* Theme toggle */}
             {(() => {
               const themeBtn = (
@@ -192,7 +192,7 @@ export default function Layout() {
           <button
             onClick={() => setCollapsed(!collapsed)}
             className="absolute -right-3 top-4 w-6 h-6 rounded-full flex items-center justify-center shadow-sm transition-colors z-10"
-            style={{ background: 'hsl(238 35% 14%)', border: '1px solid hsl(238 30% 20%)' }}
+            style={{ background: 'hsl(234 35% 11%)', border: '1px solid hsl(234 35% 18%)' }}
           >
             {collapsed ? <ChevronRight className="w-3 h-3 text-indigo-300/60" /> : <ChevronLeft className="w-3 h-3 text-indigo-300/60" />}
           </button>
