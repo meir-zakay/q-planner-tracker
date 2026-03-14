@@ -643,14 +643,14 @@ export default function TeamPlan() {
                                const cellKey = `${entry.id}-${sprint}-fe`;
                                const dragId = `${entry.id}-drag-fe-${sprint}`;
                                return (
-                                 <Draggable key={cellKey} draggableId={dragId} index={idx} isDragDisabled={!manualMode}>
+                                 <Draggable key={cellKey} draggableId={dragId} index={idx} isDragDisabled={false}>
                                    {(drag, dragSnapshot) => (
                                      <div
                                        ref={drag.innerRef}
                                        {...drag.draggableProps}
                                        {...drag.dragHandleProps}
                                        style={drag.draggableProps.style}
-                                       className={`rounded-lg px-2 py-1.5 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 ${manualMode ? 'cursor-grab active:cursor-grabbing' : ''} ${dragSnapshot.isDragging ? 'shadow-lg opacity-95 z-50' : ''}`}
+                                       className={`rounded-lg px-2 py-1.5 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 cursor-grab active:cursor-grabbing ${dragSnapshot.isDragging ? 'shadow-lg opacity-95 z-50' : ''}`}
                                      >
                                        <p className="text-[11px] text-foreground font-medium leading-tight truncate">{feat?.title}</p>
                                        {canEdit && editCell?.key === cellKey ? (
