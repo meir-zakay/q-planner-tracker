@@ -769,11 +769,11 @@ export default function TeamPlan() {
                       {isEditing ? (
                         <div className="flex items-center gap-2">
                           <div className="flex items-center gap-1">
-                            <Server className="w-3 h-3 text-muted-foreground" />
+                            <Server className="w-3 h-3 text-blue-500" />
                             <Input type="number" min="0" step="0.5" value={editEffort.be} onChange={e => setEditEffort(p => ({ ...p, be: e.target.value }))} className="h-7 w-16 text-xs" placeholder="0" />
                           </div>
                           <div className="flex items-center gap-1">
-                            <Monitor className="w-3 h-3 text-muted-foreground" />
+                            <Monitor className="w-3 h-3 text-emerald-500" />
                             <Input type="number" min="0" step="0.5" value={editEffort.fe} onChange={e => setEditEffort(p => ({ ...p, fe: e.target.value }))} className="h-7 w-16 text-xs" placeholder="0" />
                           </div>
                           <Button size="sm" className="h-7 text-xs px-2" onClick={() => updateEffortMutation.mutate({ entry, beEffort: Number(editEffort.be) || 0, feEffort: Number(editEffort.fe) || 0 })}>Save</Button>
