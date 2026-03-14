@@ -477,38 +477,14 @@ export default function TeamPlan() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
-        <div className="flex items-center gap-3 flex-wrap">
-          <Select value={selectedTeamId} onValueChange={handleTeamChange}>
-            <SelectTrigger className="w-52 bg-card">
-              <SelectValue placeholder="Select a team..." />
-            </SelectTrigger>
-            <SelectContent>
-              {teams.map(t => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}
-            </SelectContent>
-          </Select>
-          <TooltipProvider delayDuration={200}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={toggleManualMode}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${
-                    manualMode
-                      ? 'bg-amber-500/15 border-amber-500/40 text-amber-400 hover:bg-amber-500/25'
-                      : 'bg-card border-border text-muted-foreground hover:text-foreground hover:border-foreground/30'
-                  }`}
-                >
-                  <Wrench className="w-3.5 h-3.5" />
-                  {manualMode ? 'Manual' : 'Auto'}
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" className="max-w-xs text-xs">
-                {manualMode
-                  ? 'Manual mode ON — drag sprint cards to move allocations. Cell edits save as-is. Capacity limits not enforced. Click to switch to Auto.'
-                  : 'Auto mode — allocations are computed automatically by priority. Click to switch to Manual.'}
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
+        <Select value={selectedTeamId} onValueChange={handleTeamChange}>
+          <SelectTrigger className="w-52 bg-card">
+            <SelectValue placeholder="Select a team..." />
+          </SelectTrigger>
+          <SelectContent>
+            {teams.map(t => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}
+          </SelectContent>
+        </Select>
         {canEdit && (
           <Button onClick={() => setAddFeatureOpen(true)} disabled={!selectedTeamId} className="gap-2 bg-indigo-600 hover:bg-indigo-500 text-white border-0 px-5 py-2 text-sm font-semibold rounded-xl shadow-md"><Plus className="w-4 h-4" />Add Feature</Button>
         )}
