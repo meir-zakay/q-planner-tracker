@@ -599,7 +599,7 @@ export default function TeamPlan() {
                             <div
                               ref={provided.innerRef}
                               {...provided.droppableProps}
-                              style={{ minHeight: sharedDropMinHeight }}
+                              style={{ minHeight: beDropHeight }}
                               className={`space-y-1.5 rounded-lg transition-colors duration-150 ${snapshot.isDraggingOver ? 'bg-blue-500/10 ring-1 ring-blue-400/30 ring-inset' : ''}`}
                             >
                               {beFeatures.map((entry, idx) => {
