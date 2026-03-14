@@ -808,10 +808,10 @@ export default function TeamPlan() {
                             </div>
                           )}
                         </div>
-
-                      </div>
-                    )}
-                    </Draggable>
+                        )}
+                        </div>
+                        )}
+                        </Draggable>
                   );
                 })}
                 {listProvided.placeholder}
