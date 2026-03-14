@@ -748,15 +748,15 @@ export default function TeamPlan() {
                         {rowIdx + 1}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-foreground truncate">{feat.title}</p>
-                        <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <p className="text-sm font-medium text-foreground truncate">{feat.title}</p>
                           {feat.objective && (
-                            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold text-white" style={{ backgroundColor: objColor(feat.objective) }}>
+                            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold text-white shrink-0" style={{ backgroundColor: objColor(feat.objective) }}>
                               {feat.objective}
                             </span>
                           )}
                           {(() => { const range = getSprintRange(entry); return range ? (
-                            <span className="text-[10px] text-muted-foreground">
+                            <span className="text-[10px] text-muted-foreground shrink-0">
                               {range.start === range.end ? range.start : `${range.start} → ${range.end}`}
                             </span>
                           ) : null; })()}
@@ -778,11 +778,11 @@ export default function TeamPlan() {
                       ) : (
                         <div className="flex items-center gap-3">
                           <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                            <Server className="w-3 h-3" />
+                            <Server className="w-3 h-3 text-blue-500" />
                             <span className="font-medium text-foreground">{entry.be_effort_weeks || 0}w</span>
                           </div>
                           <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                            <Monitor className="w-3 h-3" />
+                            <Monitor className="w-3 h-3 text-emerald-500" />
                             <span className="font-medium text-foreground">{entry.fe_effort_weeks || 0}w</span>
                           </div>
                           <Button
