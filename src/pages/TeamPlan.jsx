@@ -444,18 +444,39 @@ export default function TeamPlan() {
       return;
     }
 
-    // --- Auto mode: drag sprint card to repin ---
-    if (!isManual) {
-      if (source.droppableId === destination.droppableId) return;
+    // --- Sprint card to sprint card DnD ---
+    if (source.droppableId !== destination.droppableId) {
       const dragMatch = draggableId.match(/^(.+)-drag-(be|fe)-(.+)$/);
       if (!dragMatch) return;
       const [, entryId, type] = dragMatch;
+      const key = type === 'be' ? 'be_weeks' : 'fe_weeks';
+      const srcSprint = source.droppableId.replace(new RegExp(`-${type}$`), '');
       const destSprint = destination.droppableId.replace(new RegExp(`-${type}$`), '');
-      const destSprintIdx = sprintList.indexOf(destSprint);
-      if (destSprintIdx < 0) return;
-      const pinnedStarts = { [entryId]: destSprintIdx };
-      const allocMap = reallocateAll(currentEntries, sprintList, beCaps, feCaps, pinnedStarts);
-      saveReallocated(allocMap);
+
+      if (isManual) {
+        // Move value from src to dest sprint
+        const entry = currentEntries.find(e => e.id === entryId);
+        if (!entry) return;
+        const movedVal = entry.sprint_allocations?.find(a => a.sprint === srcSprint)?.[key] || 0;
+        if (movedVal === 0) return;
+        const newAllocs = sprintList.map(s => {
+          const a = entry.sprint_allocations?.find(a => a.sprint === s) || { sprint: s, be_weeks: 0, fe_weeks: 0 };
+          if (s === srcSprint) return { ...a, [key]: 0 };
+          if (s === destSprint) return { ...a, [key]: (a[key] || 0) + movedVal };
+          return { ...a };
+        });
+        const newBE = newAllocs.reduce((s, a) => s + (a.be_weeks || 0), 0);
+        const newFE = newAllocs.reduce((s, a) => s + (a.fe_weeks || 0), 0);
+        base44.entities.TeamPlanEntry.update(entryId, { sprint_allocations: newAllocs, be_effort_weeks: newBE, fe_effort_weeks: newFE })
+          .then(() => qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] }));
+      } else {
+        // Auto mode: repin to dest sprint
+        const destSprintIdx = sprintList.indexOf(destSprint);
+        if (destSprintIdx < 0) return;
+        const pinnedStarts = { [entryId]: destSprintIdx };
+        const allocMap = reallocateAll(currentEntries, sprintList, beCaps, feCaps, pinnedStarts);
+        saveReallocated(allocMap);
+      }
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
