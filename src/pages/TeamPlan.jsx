@@ -464,14 +464,28 @@ export default function TeamPlan() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
-        <Select value={selectedTeamId} onValueChange={handleTeamChange}>
-          <SelectTrigger className="w-52 bg-card">
-            <SelectValue placeholder="Select a team..." />
-          </SelectTrigger>
-          <SelectContent>
-            {teams.map(t => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-3 flex-wrap">
+          <Select value={selectedTeamId} onValueChange={handleTeamChange}>
+            <SelectTrigger className="w-52 bg-card">
+              <SelectValue placeholder="Select a team..." />
+            </SelectTrigger>
+            <SelectContent>
+              {teams.map(t => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <button
+            onClick={toggleManualMode}
+            title={manualMode ? 'Manual mode ON — click to switch to Auto mode' : 'Auto mode — click to switch to Manual mode'}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${
+              manualMode
+                ? 'bg-amber-500/15 border-amber-500/40 text-amber-400 hover:bg-amber-500/25'
+                : 'bg-card border-border text-muted-foreground hover:text-foreground hover:border-foreground/30'
+            }`}
+          >
+            <Wrench className="w-3.5 h-3.5" />
+            {manualMode ? 'Manual' : 'Auto'}
+          </button>
+        </div>
         {canEdit && (
           <Button onClick={() => setAddFeatureOpen(true)} disabled={!selectedTeamId} className="gap-2"><Plus className="w-4 h-4" />Add Feature</Button>
         )}
