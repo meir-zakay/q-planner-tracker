@@ -73,8 +73,8 @@ export default function Layout() {
         <aside
           className={`relative shrink-0 h-full flex flex-col transition-all duration-200 ${sidebarWidth} overflow-y-auto`}
           style={{
-            background: 'hsl(239 50% 10%)',
-            borderRight: '1px solid hsl(239 40% 16%)',
+            background: 'hsl(228 30% 7%)',
+            borderRight: '1px solid hsl(228 25% 14%)',
           }}
         >
           {/* Logo */}
