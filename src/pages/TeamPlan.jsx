@@ -814,7 +814,7 @@ export default function TeamPlan() {
                           <Cell key={entry.name} fill={colorMap[entry.name] || FALLBACK_COLORS[index % FALLBACK_COLORS.length]} />
                         ))}
                       </Pie>
-                      <Tooltip formatter={(value, name) => [`${value}w`, name]} />
+                      <RechartsTooltip formatter={(value, name) => [`${value}w`, name]} />
                     </PieChart>
                   </ResponsiveContainer>
                   <div className="flex flex-wrap gap-x-3 gap-y-1 mt-2">
