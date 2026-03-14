@@ -493,10 +493,12 @@ export default function TeamPlan() {
     return { start: activeSprints[0], end: activeSprints[activeSprints.length - 1] };
   };
 
+  // Each card is ~52px tall (py-1.5 + title + effort row + 6px gap), use 52px per card
+  const CARD_HEIGHT = 52;
   const maxBeCards = Math.max(1, ...sprints.map(s => sortedEntries.filter(e => (e.sprint_allocations?.find(a => a.sprint === s)?.be_weeks || 0) > 0).length));
   const maxFeCards = Math.max(1, ...sprints.map(s => sortedEntries.filter(e => (e.sprint_allocations?.find(a => a.sprint === s)?.fe_weeks || 0) > 0).length));
-  const beDropHeight = Math.max(40, maxBeCards * 44);
-  const feDropHeight = Math.max(40, maxFeCards * 44);
+  const beDropHeight = Math.max(40, maxBeCards * CARD_HEIGHT);
+  const feDropHeight = Math.max(40, maxFeCards * CARD_HEIGHT);
 
   return (
     <div className="space-y-6">
