@@ -84,6 +84,7 @@ export default function TeamPlan() {
   const [editEffort, setEditEffort] = useState({ be: '', fe: '' });
   const [editCell, setEditCell] = useState(null);
   const [editCellValue, setEditCellValue] = useState('');
+  const [assignSprintEntry, setAssignSprintEntry] = useState(null); // entry to assign sprint to in manual mode
 
   const { data: teamsRaw = [] } = useQuery({ queryKey: ['teams'], queryFn: () => base44.entities.Team.list() });
   const teams = useMemo(() => [...teamsRaw].sort((a, b) => a.name.localeCompare(b.name)), [teamsRaw]);
