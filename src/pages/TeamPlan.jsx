@@ -551,16 +551,16 @@ export default function TeamPlan() {
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mb-4 text-sm">
               <span>
                 BE:{' '}
-                <span className={totalBEUsed > totalBECap ? 'text-red-500 font-semibold' : 'text-primary font-semibold'}>{totalBEUsed}w</span>
+                <span className={totalBEUsed > totalBECap ? 'text-red-500 font-semibold' : 'text-blue-500 font-semibold'}>{totalBEUsed}w</span>
                 {' / '}
-                <span className="text-muted-foreground">{totalBECap}w</span>
+                <span className="text-blue-400/70">{totalBECap}w</span>
                 {totalBEUsed > totalBECap && <span className="text-red-500 text-xs ml-1">(over capacity!)</span>}
               </span>
               <span>
                 FE:{' '}
-                <span className={totalFEUsed > totalFECap ? 'text-red-500 font-semibold' : 'text-primary font-semibold'}>{totalFEUsed}w</span>
+                <span className={totalFEUsed > totalFECap ? 'text-red-500 font-semibold' : 'text-emerald-500 font-semibold'}>{totalFEUsed}w</span>
                 {' / '}
-                <span className="text-muted-foreground">{totalFECap}w</span>
+                <span className="text-emerald-400/70">{totalFECap}w</span>
                 {totalFEUsed > totalFECap && <span className="text-red-500 text-xs ml-1">(over capacity!)</span>}
               </span>
               {canEdit && <span className="text-xs text-muted-foreground italic">Click any effort value to edit it</span>}
