@@ -495,8 +495,7 @@ export default function TeamPlan() {
 
   const maxBeCards = Math.max(1, ...sprints.map(s => sortedEntries.filter(e => (e.sprint_allocations?.find(a => a.sprint === s)?.be_weeks || 0) > 0).length));
   const maxFeCards = Math.max(1, ...sprints.map(s => sortedEntries.filter(e => (e.sprint_allocations?.find(a => a.sprint === s)?.fe_weeks || 0) > 0).length));
-  const beDropMinHeight = Math.max(40, maxBeCards * 44);
-  const feDropMinHeight = Math.max(40, maxFeCards * 44);
+  const sharedDropMinHeight = Math.max(40, Math.max(maxBeCards, maxFeCards) * 44);
 
   return (
     <div className="space-y-6">
