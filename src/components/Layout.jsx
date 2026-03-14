@@ -199,7 +199,7 @@ export default function Layout() {
         </aside>
 
         {/* Main area */}
-        <div className="flex-1 min-w-0 flex flex-col">
+        <div className="flex-1 min-w-0 flex flex-col overflow-auto">
           {/* Top Header Bar */}
           <header className="h-14 bg-card border-b border-border flex items-center px-6 gap-4 shrink-0 z-20 sticky top-0">
             {/* Page Title — left aligned at sidebar end */}
