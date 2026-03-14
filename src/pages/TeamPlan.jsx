@@ -647,8 +647,8 @@ export default function TeamPlan() {
                                        ref={drag.innerRef}
                                        {...drag.draggableProps}
                                        {...drag.dragHandleProps}
-                                       style={{ ...drag.draggableProps.style, ...(featColor ? { backgroundColor: `${featColor}22`, borderColor: `${featColor}55` } : {}) }}
-                                       className={`rounded px-1.5 py-1 border ${!featColor ? 'bg-emerald-500/10 border-emerald-500/20' : ''} ${canEdit ? 'cursor-grab active:cursor-grabbing' : ''} ${dragSnapshot.isDragging ? 'shadow-lg opacity-95 z-50' : ''}`}
+                                       style={drag.draggableProps.style}
+                                       className={`rounded px-1.5 py-1 border bg-emerald-500/15 border-emerald-500/30 ${canEdit ? 'cursor-grab active:cursor-grabbing' : ''} ${dragSnapshot.isDragging ? 'shadow-lg opacity-95 z-50' : ''}`}
                                      >
                                        <p className="text-[10px] text-foreground font-medium leading-tight truncate">{feat?.title}</p>
                                        {canEdit && editCell?.key === cellKey ? (
@@ -660,7 +660,7 @@ export default function TeamPlan() {
                                          />
                                        ) : (
                                          <p
-                                           className={`text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 mt-0.5 ${canEdit ? 'hover:underline cursor-pointer' : ''}`}
+                                           className={`text-[10px] font-semibold text-emerald-400 mt-0.5 ${canEdit ? 'hover:underline cursor-pointer' : ''}`}
                                            onClick={canEdit ? (e) => { e.stopPropagation(); setEditCell({ key: cellKey }); setEditCellValue(String(alloc?.fe_weeks || 0)); } : undefined}
                                          >
                                            {alloc?.fe_weeks || 0}w
