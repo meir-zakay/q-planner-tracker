@@ -598,7 +598,7 @@ export default function TeamPlan() {
                             <div
                               ref={provided.innerRef}
                               {...provided.droppableProps}
-                              style={{ minHeight: beDropMinHeight }}
+                              style={{ minHeight: sharedDropMinHeight }}
                               className={`space-y-1.5 rounded-lg transition-colors duration-150 ${snapshot.isDraggingOver ? 'bg-blue-500/10 ring-1 ring-blue-400/30 ring-inset' : ''}`}
                             >
                               {beFeatures.map((entry, idx) => {
@@ -658,7 +658,7 @@ export default function TeamPlan() {
                             <div
                               ref={provided.innerRef}
                               {...provided.droppableProps}
-                              style={{ minHeight: feDropMinHeight }}
+                              style={{ minHeight: sharedDropMinHeight }}
                                 className={`space-y-1.5 rounded-lg transition-colors duration-150 ${snapshot.isDraggingOver ? 'bg-emerald-500/10 ring-1 ring-emerald-400/30 ring-inset' : ''}`}
                             >
                               {feFeatures.map((entry, idx) => {
