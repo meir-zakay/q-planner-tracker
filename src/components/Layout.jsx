@@ -122,7 +122,7 @@ export default function Layout() {
           </nav>
 
           {/* Bottom section */}
-          <div className="p-2 space-y-0.5" style={{ borderTop: '1px solid hsl(239 40% 16%)' }}>
+          <div className="p-2 space-y-0.5" style={{ borderTop: '1px solid hsl(228 25% 14%)' }}>
             {/* Theme toggle */}
             {(() => {
               const themeBtn = (
