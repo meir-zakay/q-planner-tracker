@@ -781,26 +781,7 @@ export default function TeamPlan() {
                             </div>
                           )}
                         </div>
-                        {/* Sprint assignment picker (manual mode) */}
-                        {isAssigning && (
-                          <div className="ml-8 flex flex-wrap gap-1.5 py-1">
-                            <span className="text-[10px] text-amber-400 font-medium mr-1 self-center">Assign BE:</span>
-                            {sprints.map(s => (
-                              <button key={`be-${s}`} onClick={() => assignSprintMutation.mutate({ entry, sprintName: s, type: 'be' })}
-                                className="px-2 py-0.5 rounded text-[10px] font-medium bg-blue-500/20 text-blue-300 hover:bg-blue-500/40 border border-blue-500/30">
-                                {s}
-                              </button>
-                            ))}
-                            <span className="text-[10px] text-amber-400 font-medium ml-2 mr-1 self-center">FE:</span>
-                            {sprints.map(s => (
-                              <button key={`fe-${s}`} onClick={() => assignSprintMutation.mutate({ entry, sprintName: s, type: 'fe' })}
-                                className="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/40 border border-emerald-500/30">
-                                {s}
-                              </button>
-                            ))}
-                            <button onClick={() => setAssignSprintEntry(null)} className="px-2 py-0.5 rounded text-[10px] text-muted-foreground hover:text-foreground ml-1">✕</button>
-                          </div>
-                        )}
+
                       </div>
                     )}
                     </Draggable>
