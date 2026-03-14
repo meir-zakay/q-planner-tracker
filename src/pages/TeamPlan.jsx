@@ -743,29 +743,38 @@ export default function TeamPlan() {
                         ...(rowSnapshot.isDragging && manualMode ? { width: 'auto', minWidth: 0 } : {}),
                       }}
                       className={`flex items-center gap-3 py-2 border-b border-border/50 last:border-0 ${rowSnapshot.isDragging && manualMode ? 'bg-card shadow-lg rounded-lg px-3 py-1.5 border border-border' : ''} ${rowSnapshot.isDragging && !manualMode ? 'bg-card shadow-md rounded-lg px-2' : ''} ${entry.excluded_from_allocation ? 'opacity-50' : ''}`}>
-                      {canEdit && (
+                      {canEdit && !rowSnapshot.isDragging && (
                         <div {...rowDrag.dragHandleProps} className="cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-muted-foreground shrink-0">
                           <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor"><circle cx="2" cy="2" r="1.5"/><circle cx="8" cy="2" r="1.5"/><circle cx="2" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="2" cy="14" r="1.5"/><circle cx="8" cy="14" r="1.5"/></svg>
                         </div>
                       )}
-                      <div className="flex items-center justify-center w-6 h-6 rounded-lg text-[11px] font-bold text-primary shrink-0" style={{ background: 'hsl(239 84% 67% / 0.18)' }}>
-                        {rowIdx + 1}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <p className="text-sm font-medium text-foreground truncate">{feat.title}</p>
-                          {feat.objective && (
-                            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold text-white shrink-0" style={{ backgroundColor: objColor(feat.objective) }}>
-                              {feat.objective}
-                            </span>
-                          )}
-                          {(() => { const range = getSprintRange(entry); return range ? (
-                            <span className="text-[10px] text-muted-foreground shrink-0">
-                              {range.start === range.end ? range.start : `${range.start} → ${range.end}`}
-                            </span>
-                          ) : null; })()}
-                        </div>
-                      </div>
+                      {canEdit && rowSnapshot.isDragging && (
+                        <div {...rowDrag.dragHandleProps} />
+                      )}
+                      {rowSnapshot.isDragging && manualMode ? (
+                        <p className="text-sm font-semibold text-foreground whitespace-nowrap">{feat.title}</p>
+                      ) : (
+                        <>
+                          <div className="flex items-center justify-center w-6 h-6 rounded-lg text-[11px] font-bold text-primary shrink-0" style={{ background: 'hsl(239 84% 67% / 0.18)' }}>
+                            {rowIdx + 1}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <p className="text-sm font-medium text-foreground truncate">{feat.title}</p>
+                              {feat.objective && (
+                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold text-white shrink-0" style={{ backgroundColor: objColor(feat.objective) }}>
+                                  {feat.objective}
+                                </span>
+                              )}
+                              {(() => { const range = getSprintRange(entry); return range ? (
+                                <span className="text-[10px] text-muted-foreground shrink-0">
+                                  {range.start === range.end ? range.start : `${range.start} → ${range.end}`}
+                                </span>
+                              ) : null; })()}
+                            </div>
+                          </div>
+                        </>
+                      )}
                       {isEditing ? (
                         <div className="flex items-center gap-2">
                           <div className="flex items-center gap-1">
