@@ -714,7 +714,7 @@ export default function TeamPlan() {
           </div>
 
           {/* Bottom: Planned Features + Pie Chart */}
-          <div className="grid lg:grid-cols-[1fr_320px] gap-6">
+          <div className="grid lg:grid-cols-[1fr_380px] gap-6">
             {/* Planned Features */}
             <div className="bg-card border border-border rounded-xl p-5">
               <div className="flex items-center justify-between mb-4">
