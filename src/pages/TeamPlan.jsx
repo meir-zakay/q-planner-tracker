@@ -723,48 +723,41 @@ export default function TeamPlan() {
                   const feat = featureMap[entry.feature_id];
                   if (!feat) return null;
                   const isEditing = editEntryId === entry.id;
+                  const isAssigning = assignSprintEntry?.id === entry.id;
                   return (
-                    <Draggable key={entry.id} draggableId={`row-${entry.id}`} index={rowIdx} isDragDisabled={!canEdit}>
-                    {(rowDrag, rowSnapshot) => {
-                      const rowContent = (
-                        <div
-                          ref={rowDrag.innerRef}
-                          {...rowDrag.draggableProps}
-                          style={{
-                            ...rowDrag.draggableProps.style,
-                            ...(rowSnapshot.isDragging && manualMode ? { width: 'auto', minWidth: 0 } : {}),
-                          }}
-                          className={`flex items-center gap-3 py-2 border-b border-border/50 last:border-0 ${rowSnapshot.isDragging && manualMode ? 'bg-card shadow-lg rounded-lg px-3 py-1.5 border border-border' : ''} ${rowSnapshot.isDragging && !manualMode ? 'bg-card shadow-md rounded-lg px-2' : ''} ${entry.excluded_from_allocation ? 'opacity-50' : ''}`}>
-                          {canEdit && (
-                            <div {...rowDrag.dragHandleProps} className={`cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-muted-foreground shrink-0 ${rowSnapshot.isDragging ? 'hidden' : ''}`}>
+                    <Draggable key={entry.id} draggableId={`row-${entry.id}`} index={rowIdx} isDragDisabled={!canEdit || manualMode}>
+                    {(rowDrag, rowSnapshot) => (
+                      <div
+                        ref={rowDrag.innerRef}
+                        {...rowDrag.draggableProps}
+                        style={rowDrag.draggableProps.style}
+                        className={`flex flex-col gap-1 py-2 border-b border-border/50 last:border-0 ${rowSnapshot.isDragging ? 'bg-card shadow-md rounded-lg px-2' : ''} ${entry.excluded_from_allocation ? 'opacity-50' : ''}`}
+                      >
+                        <div className="flex items-center gap-3">
+                          {canEdit && !manualMode && (
+                            <div {...rowDrag.dragHandleProps} className="cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-muted-foreground shrink-0">
                               <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor"><circle cx="2" cy="2" r="1.5"/><circle cx="8" cy="2" r="1.5"/><circle cx="2" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="2" cy="14" r="1.5"/><circle cx="8" cy="14" r="1.5"/></svg>
                             </div>
                           )}
-                          {rowSnapshot.isDragging && manualMode ? (
-                            <p className="text-sm font-semibold text-foreground whitespace-nowrap">{feat.title}</p>
-                          ) : (
-                            <>
-                              <div className="flex items-center justify-center w-6 h-6 rounded-lg text-[11px] font-bold text-primary shrink-0" style={{ background: 'hsl(239 84% 67% / 0.18)' }}>
-                                {rowIdx + 1}
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 flex-wrap">
-                                  <p className="text-sm font-medium text-foreground truncate">{feat.title}</p>
-                                  {feat.objective && (
-                                    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold text-white shrink-0" style={{ backgroundColor: objColor(feat.objective) }}>
-                                      {feat.objective}
-                                    </span>
-                                  )}
-                                  {(() => { const range = getSprintRange(entry); return range ? (
-                                    <span className="text-[10px] text-muted-foreground shrink-0">
-                                      {range.start === range.end ? range.start : `${range.start} → ${range.end}`}
-                                    </span>
-                                  ) : null; })()}
-                                </div>
-                              </div>
-                            </>
-                          )}
-                          {rowSnapshot.isDragging && manualMode ? null : isEditing ? (
+                          <div className="flex items-center justify-center w-6 h-6 rounded-lg text-[11px] font-bold text-primary shrink-0" style={{ background: 'hsl(239 84% 67% / 0.18)' }}>
+                            {rowIdx + 1}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <p className="text-sm font-medium text-foreground truncate">{feat.title}</p>
+                              {feat.objective && (
+                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold text-white shrink-0" style={{ backgroundColor: objColor(feat.objective) }}>
+                                  {feat.objective}
+                                </span>
+                              )}
+                              {(() => { const range = getSprintRange(entry); return range ? (
+                                <span className="text-[10px] text-muted-foreground shrink-0">
+                                  {range.start === range.end ? range.start : `${range.start} → ${range.end}`}
+                                </span>
+                              ) : null; })()}
+                            </div>
+                          </div>
+                          {isEditing ? (
                             <div className="flex items-center gap-2">
                               <div className="flex items-center gap-1">
                                 <Server className="w-3 h-3 text-blue-500" />
@@ -790,11 +783,17 @@ export default function TeamPlan() {
                               <Button
                                 variant="ghost" size="icon"
                                 className={`h-6 w-6 ${entry.excluded_from_allocation ? 'text-rose-400 hover:text-rose-300' : 'text-emerald-500 hover:text-emerald-400'}`}
-                                title={entry.excluded_from_allocation ? 'Excluded from sprint allocation — click to include' : 'Included in sprint allocation — click to exclude'}
+                                title={entry.excluded_from_allocation ? 'Excluded — click to include' : 'Included — click to exclude'}
                                 onClick={() => toggleExcludeMutation.mutate({ entry, excluded: !entry.excluded_from_allocation })}
                               >
                                 {entry.excluded_from_allocation ? <CircleMinus className="w-3.5 h-3.5" /> : <CircleCheck className="w-3.5 h-3.5" />}
                               </Button>
+                              {canEdit && manualMode && (
+                                <Button variant="ghost" size="icon" className="h-6 w-6 text-amber-400 hover:text-amber-300" title="Assign to sprint"
+                                  onClick={() => setAssignSprintEntry(isAssigning ? null : entry)}>
+                                  <span className="text-xs">📌</span>
+                                </Button>
+                              )}
                               {canEdit && (
                                 <>
                                   <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-foreground" onClick={() => { setEditEntryId(entry.id); setEditEffort({ be: String(entry.be_effort_weeks || 0), fe: String(entry.fe_effort_weeks || 0) }); }}>
@@ -808,12 +807,28 @@ export default function TeamPlan() {
                             </div>
                           )}
                         </div>
-                      );
-                      // Portal the dragging ghost to document.body so it isn't clipped by overflow:auto on the layout scroll container
-                      return rowSnapshot.isDragging && manualMode
-                        ? createPortal(rowContent, document.body)
-                        : rowContent;
-                    }}
+                        {/* Sprint assignment picker (manual mode) */}
+                        {isAssigning && (
+                          <div className="ml-8 flex flex-wrap gap-1.5 py-1">
+                            <span className="text-[10px] text-amber-400 font-medium mr-1 self-center">Assign BE:</span>
+                            {sprints.map(s => (
+                              <button key={`be-${s}`} onClick={() => assignSprintMutation.mutate({ entry, sprintName: s, type: 'be' })}
+                                className="px-2 py-0.5 rounded text-[10px] font-medium bg-blue-500/20 text-blue-300 hover:bg-blue-500/40 border border-blue-500/30">
+                                {s}
+                              </button>
+                            ))}
+                            <span className="text-[10px] text-amber-400 font-medium ml-2 mr-1 self-center">FE:</span>
+                            {sprints.map(s => (
+                              <button key={`fe-${s}`} onClick={() => assignSprintMutation.mutate({ entry, sprintName: s, type: 'fe' })}
+                                className="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/40 border border-emerald-500/30">
+                                {s}
+                              </button>
+                            ))}
+                            <button onClick={() => setAssignSprintEntry(null)} className="px-2 py-0.5 rounded text-[10px] text-muted-foreground hover:text-foreground ml-1">✕</button>
+                          </div>
+                        )}
+                      </div>
+                    )}
                     </Draggable>
                   );
                 })}
