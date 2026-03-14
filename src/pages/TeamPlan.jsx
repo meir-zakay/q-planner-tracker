@@ -72,6 +72,7 @@ export default function TeamPlan() {
   const qc = useQueryClient();
 
   const [selectedTeamId, setSelectedTeamId] = useState(() => localStorage.getItem('selectedTeamId') || '');
+  const [manualMode, setManualMode] = useState(() => localStorage.getItem('manualMode') === 'true');
   const [addFeatureOpen, setAddFeatureOpen] = useState(false);
   const [selectedFeatureId, setSelectedFeatureId] = useState('');
   const [customFeatureTitle, setCustomFeatureTitle] = useState('');
