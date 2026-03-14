@@ -526,7 +526,7 @@ export default function TeamPlan() {
           </button>
         </div>
         {canEdit && (
-          <Button onClick={() => setAddFeatureOpen(true)} disabled={!selectedTeamId} className="gap-2"><Plus className="w-4 h-4" />Add Feature</Button>
+          <Button onClick={() => setAddFeatureOpen(true)} disabled={!selectedTeamId} className="gap-2 bg-indigo-600 hover:bg-indigo-500 text-white border-0 px-5 py-2 text-sm font-semibold rounded-xl shadow-md"><Plus className="w-4 h-4" />Add Feature</Button>
         )}
       </div>
 
@@ -748,7 +748,7 @@ export default function TeamPlan() {
                           <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor"><circle cx="2" cy="2" r="1.5"/><circle cx="8" cy="2" r="1.5"/><circle cx="2" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="2" cy="14" r="1.5"/><circle cx="8" cy="14" r="1.5"/></svg>
                         </div>
                       )}
-                      <div className="flex items-center justify-center w-6 h-6 rounded-full border-2 border-border text-[10px] font-bold text-muted-foreground shrink-0">
+                      <div className="flex items-center justify-center w-6 h-6 rounded-lg text-[11px] font-bold text-primary shrink-0" style={{ background: 'hsl(239 84% 67% / 0.18)' }}>
                         {rowIdx + 1}
                       </div>
                       <div className="flex-1 min-w-0">
