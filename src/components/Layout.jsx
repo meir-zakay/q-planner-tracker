@@ -82,9 +82,9 @@ export default function Layout() {
           <div className="h-14 flex items-center gap-2 px-3 shrink-0" style={{ borderBottom: '1px solid hsl(238 30% 13%)' }}>
             <Link to="/Dashboard" className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center shrink-0">
-                <span className="text-white font-bold text-xs">C</span>
+                <span className="text-white font-bold text-xs">Q</span>
               </div>
-              {!collapsed && <span className="font-bold text-white text-sm tracking-tight whitespace-nowrap">Cards Planner</span>}
+              {!collapsed && <span className="font-bold text-white text-sm tracking-tight whitespace-nowrap">Quarter Planner</span>}
             </Link>
           </div>
 
@@ -146,34 +146,45 @@ export default function Layout() {
               return themeBtn;
             })()}
 
-            {/* Logout */}
-            {(() => {
-              const logoutBtn = (
-                <button
-                  onClick={() => base44.auth.logout()}
-                  className={`flex items-center gap-3 px-2.5 py-2 rounded-lg text-sm font-medium transition-all duration-150 text-indigo-200/60 hover:text-indigo-100 hover:bg-white/5 w-full ${collapsed ? 'justify-center' : ''}`}
-                >
-                  <LogOut className="w-4 h-4 shrink-0" />
-                  {!collapsed && <span>Logout</span>}
-                </button>
-              );
-              if (collapsed) {
-                return (
+            {/* User + Logout */}
+            {user && (
+              !collapsed ? (
+                <div className="flex items-center justify-between px-2.5 py-2">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="w-7 h-7 rounded-full bg-indigo-700/60 flex items-center justify-center shrink-0">
+                      <span className="text-xs font-bold text-indigo-200">{(user.full_name || user.email || '?')[0].toUpperCase()}</span>
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs font-semibold text-indigo-100 leading-none truncate">{user.full_name || user.email}</p>
+                      <p className="text-[10px] text-indigo-300/50 capitalize mt-0.5">{userRole}</p>
+                    </div>
+                  </div>
                   <Tooltip>
-                    <TooltipTrigger asChild>{logoutBtn}</TooltipTrigger>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={() => base44.auth.logout()}
+                        className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all duration-150 text-indigo-300/40 hover:text-red-400 hover:bg-red-500/15"
+                        style={{ background: 'hsl(238 35% 14%)', border: '1px solid hsl(238 30% 20%)' }}
+                      >
+                        <LogOut className="w-3.5 h-3.5" />
+                      </button>
+                    </TooltipTrigger>
                     <TooltipContent side="right">Logout</TooltipContent>
                   </Tooltip>
-                );
-              }
-              return logoutBtn;
-            })()}
-
-            {/* User badge */}
-            {!collapsed && user && (
-              <div className="px-2.5 pt-2">
-                <p className="text-xs font-medium text-indigo-100 leading-none truncate">{user.full_name || user.email}</p>
-                <p className="text-[10px] text-indigo-300/50 capitalize mt-0.5">{userRole}</p>
-              </div>
+                </div>
+              ) : (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => base44.auth.logout()}
+                      className={`flex items-center justify-center px-2.5 py-2 rounded-lg text-sm font-medium transition-all duration-150 text-indigo-200/60 hover:text-red-400 hover:bg-red-500/10 w-full`}
+                    >
+                      <LogOut className="w-4 h-4 shrink-0" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">Logout</TooltipContent>
+                </Tooltip>
+              )
             )}
           </div>
 
@@ -192,7 +203,7 @@ export default function Layout() {
           {/* Top Header Bar */}
           <header className="h-14 bg-card border-b border-border flex items-center px-6 gap-4 shrink-0 z-20 sticky top-0">
             {/* Page Title — left aligned at sidebar end */}
-            <h1 className="text-sm font-semibold text-foreground">{pageTitle}</h1>
+            <h1 className="text-base font-bold text-foreground">{pageTitle}</h1>
 
             {/* Spacer */}
             <div className="flex-1" />
