@@ -84,7 +84,7 @@ export default function Layout() {
               <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center shrink-0">
                 <span className="text-white font-bold text-xs">Q</span>
               </div>
-              {!collapsed && <span className="font-bold text-white text-sm tracking-tight whitespace-nowrap">Quarter Planner</span>}
+              {!collapsed && <span className="font-bold text-white text-base tracking-tight whitespace-nowrap">Quarter Planner</span>}
             </Link>
           </div>
 
@@ -203,16 +203,16 @@ export default function Layout() {
           {/* Top Header Bar */}
           <header className="h-14 bg-card border-b border-border flex items-center px-6 gap-4 shrink-0 z-20 sticky top-0">
             {/* Page Title — left aligned at sidebar end */}
-            <h1 className="text-base font-bold text-foreground">{pageTitle}</h1>
+            <h1 className="text-lg font-bold text-foreground">{pageTitle}</h1>
 
             {/* Spacer */}
             <div className="flex-1" />
 
             {/* Quarter selector */}
             <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground hidden sm:inline">Period:</span>
+              <span className="text-sm text-muted-foreground hidden sm:inline">Period:</span>
               <Select value={selectedQuarter} onValueChange={setSelectedQuarter}>
-                <SelectTrigger className="h-8 text-xs w-[64px] bg-background">
+                <SelectTrigger className="h-9 text-sm w-[70px] bg-background">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -220,7 +220,7 @@ export default function Layout() {
                 </SelectContent>
               </Select>
               <Select value={String(selectedYear)} onValueChange={v => setSelectedYear(parseInt(v))}>
-                <SelectTrigger className="h-8 text-xs w-[72px] bg-background">
+                <SelectTrigger className="h-9 text-sm w-[80px] bg-background">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>

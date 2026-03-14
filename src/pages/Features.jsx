@@ -87,7 +87,7 @@ export default function Features() {
           <span className="text-primary font-medium">{selectedQuarter} {selectedYear}</span>
         </p>
         {canEdit && (
-          <Button onClick={openNew} className="gap-2"><Plus className="w-4 h-4" />Add Feature</Button>
+          <Button onClick={openNew} className="gap-2 bg-indigo-600 hover:bg-indigo-500 text-white border-0 px-5 py-2 text-sm font-semibold rounded-xl shadow-md"><Plus className="w-4 h-4" />Add Feature</Button>
         )}
       </div>
 
@@ -118,7 +118,7 @@ export default function Features() {
                             <GripVertical className="w-4 h-4" />
                           </div>
                         )}
-                        <div className="flex items-center justify-center w-6 h-6 rounded-full border-2 border-border text-[11px] font-bold text-muted-foreground shrink-0">
+                        <div className="flex items-center justify-center w-6 h-6 rounded-lg text-[11px] font-bold text-primary shrink-0" style={{ background: 'hsl(239 84% 67% / 0.18)' }}>
                           {feature.priority}
                         </div>
                         <div className="flex-1 min-w-0">

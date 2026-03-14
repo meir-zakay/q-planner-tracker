@@ -591,7 +591,7 @@ export default function TeamPlan() {
                       <div className="p-2 border-b border-border/50">
                         <div className="flex items-center justify-between mb-1.5">
                           <span className="text-[10px] font-medium text-muted-foreground uppercase">BE</span>
-                          <span className={`text-[10px] font-semibold ${beOver ? 'text-red-500' : 'text-foreground'}`}>{beUsed}/{thisBeSprintCap}w</span>
+                          <span className={`text-[10px] font-semibold ${beOver ? 'text-red-500' : 'text-blue-500'}`}>{beUsed}/{thisBeSprintCap}w</span>
                         </div>
                         <div className="w-full bg-muted rounded-full h-1 mb-2">
                           <div className="h-1 rounded-full" style={{ width: `${Math.min(100, thisBeSprintCap > 0 ? (beUsed / thisBeSprintCap) * 100 : 0)}%`, backgroundColor: beOver ? '#ef4444' : '#4f46e5' }} />
@@ -652,7 +652,7 @@ export default function TeamPlan() {
                       <div className="p-2">
                         <div className="flex items-center justify-between mb-1.5">
                           <span className="text-[10px] font-medium text-muted-foreground uppercase">FE</span>
-                          <span className={`text-[10px] font-semibold ${feOver ? 'text-red-500' : 'text-foreground'}`}>{feUsed}/{thisFeSprintCap}w</span>
+                          <span className={`text-[10px] font-semibold ${feOver ? 'text-red-500' : 'text-emerald-500'}`}>{feUsed}/{thisFeSprintCap}w</span>
                         </div>
                         <div className="w-full bg-muted rounded-full h-1 mb-2">
                           <div className="h-1 rounded-full" style={{ width: `${Math.min(100, thisFeSprintCap > 0 ? (feUsed / thisFeSprintCap) * 100 : 0)}%`, backgroundColor: feOver ? '#ef4444' : '#10b981' }} />
