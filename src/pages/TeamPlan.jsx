@@ -299,9 +299,24 @@ export default function TeamPlan() {
 
   const updateCellMutation = useMutation({
     mutationFn: async ({ entry, sprintName, type, newVal }) => {
-      const sprintIdx = sprints.indexOf(sprintName);
       const key = type === 'be' ? 'be_weeks' : 'fe_weeks';
       const totalEffortKey = type === 'be' ? 'be_effort_weeks' : 'fe_effort_weeks';
+
+      if (manualMode) {
+        // Manual mode: just set the value directly, no clamping, no redistribution
+        const val = roundHalf(Math.max(0, newVal));
+        const newAllocs = sprints.map(s => {
+          const a = entry.sprint_allocations?.find(a => a.sprint === s) || { sprint: s, be_weeks: 0, fe_weeks: 0 };
+          return s === sprintName ? { ...a, [key]: val } : { ...a };
+        });
+        const newBE = newAllocs.reduce((s, a) => s + (a.be_weeks || 0), 0);
+        const newFE = newAllocs.reduce((s, a) => s + (a.fe_weeks || 0), 0);
+        await base44.entities.TeamPlanEntry.update(entry.id, { sprint_allocations: newAllocs, be_effort_weeks: newBE, fe_effort_weeks: newFE });
+        qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] });
+        return;
+      }
+
+      const sprintIdx = sprints.indexOf(sprintName);
       const sprintCaps = type === 'be' ? beSprintCaps : feSprintCaps;
       const otherEntries = sortedEntries.filter(e => e.id !== entry.id);
 
@@ -324,16 +339,9 @@ export default function TeamPlan() {
       const totalEffort = entry[totalEffortKey] || 0;
       const remainingEffort = Math.max(0, Number((totalEffort - lockedEffort).toFixed(2)));
 
-      // Build a temporary "modified entry" with locked allocs for prior sprints
       const modifiedEntry = { ...entry, sprint_allocations: lockedAllocs };
-
-      // Now reallocate all entries: entries before this one keep their allocs locked,
-      // this entry distributes remaining effort from sprintIdx+1 onward,
-      // and entries after reallocate in remaining capacity
-      const pinnedStarts = {};
       const allEntries = sortedEntries.map(e => e.id === entry.id ? modifiedEntry : e);
 
-      // For the edited entry, distribute remaining effort after locked sprints
       const afterCaps = sprints.map((s, i) => {
         if (i <= sprintIdx) return 0;
         const othersUsed = otherEntries.reduce((sum, e) => {
@@ -349,11 +357,9 @@ export default function TeamPlan() {
       const newFE = finalAllocs.reduce((s, a) => s + (a.fe_weeks || 0), 0);
       await base44.entities.TeamPlanEntry.update(entry.id, { sprint_allocations: finalAllocs, be_effort_weeks: newBE, fe_effort_weeks: newFE });
 
-      // Now re-pack all other entries with updated capacity
       const updatedEntry = { ...entry, sprint_allocations: finalAllocs, be_effort_weeks: newBE, fe_effort_weeks: newFE };
       const allUpdated = sortedEntries.map(e => e.id === entry.id ? updatedEntry : e);
       const allocMap = reallocateAll(allUpdated, sprints, beSprintCaps, feSprintCaps);
-      // Only save the OTHER entries (edited one is already saved)
       const othersAllocMap = Object.fromEntries(Object.entries(allocMap).filter(([id]) => id !== entry.id));
       if (Object.keys(othersAllocMap).length > 0) await saveReallocated(othersAllocMap);
       else qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] });
