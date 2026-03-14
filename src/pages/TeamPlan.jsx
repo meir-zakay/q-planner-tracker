@@ -622,7 +622,7 @@ export default function TeamPlan() {
                       <div className="p-2">
                         <div className="flex items-center justify-between mb-1.5">
                           <span className="text-[10px] font-medium text-muted-foreground uppercase">FE</span>
-                          <span className={`text-[10px] font-semibold ${feOver ? 'text-red-500' : 'text-emerald-500'}`}>{feUsed}/{thisFeSprintCap}w</span>
+                          <span className={`text-[10px] font-semibold ${feOver ? 'text-red-500' : 'text-muted-foreground'}`}>{feUsed}/{thisFeSprintCap}w</span>
                         </div>
                         <div className="w-full bg-muted rounded-full h-1 mb-2">
                           <div className="h-1 rounded-full" style={{ width: `${Math.min(100, thisFeSprintCap > 0 ? (feUsed / thisFeSprintCap) * 100 : 0)}%`, backgroundColor: feOver ? '#ef4444' : '#10b981' }} />
