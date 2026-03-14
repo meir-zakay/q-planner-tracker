@@ -371,7 +371,7 @@ export default function TeamPlan() {
 
   // Use a ref to always have fresh state in the drag handler (avoids stale closure)
   const dndStateRef = useRef({});
-  dndStateRef.current = { sortedEntries, sprints, beSprintCaps, feSprintCaps, canEdit };
+  dndStateRef.current = { sortedEntries, sprints, beSprintCaps, feSprintCaps, canEdit, manualMode };
 
   const handleDragEnd = useCallback((result) => {
     const { sortedEntries: currentEntries, sprints: sprintList, beSprintCaps: beCaps, feSprintCaps: feCaps, canEdit: canEditNow } = dndStateRef.current;
