@@ -704,7 +704,6 @@ export default function TeamPlan() {
                   const feat = featureMap[entry.feature_id];
                   if (!feat) return null;
                   const isEditing = editEntryId === entry.id;
-                  const isAssigning = assignSprintEntry?.id === entry.id;
                   return (
                     <Draggable key={entry.id} draggableId={`row-${entry.id}`} index={rowIdx} isDragDisabled={!canEdit || manualMode}>
                     {(rowDrag, rowSnapshot) => (
