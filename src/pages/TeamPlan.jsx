@@ -704,7 +704,7 @@ export default function TeamPlan() {
                   if (!feat) return null;
                   const isEditing = editEntryId === entry.id;
                   return (
-                    <Draggable key={entry.id} draggableId={`row-${entry.id}`} index={rowIdx} isDragDisabled={!canEdit || manualMode}>
+                    <Draggable key={entry.id} draggableId={`row-${entry.id}`} index={rowIdx} isDragDisabled={false}>
                     {(rowDrag, rowSnapshot) => (
                       <div
                         ref={rowDrag.innerRef}
