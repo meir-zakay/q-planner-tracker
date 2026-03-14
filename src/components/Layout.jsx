@@ -68,7 +68,7 @@ export default function Layout() {
 
   return (
     <TooltipProvider delayDuration={300}>
-      <div className="min-h-screen bg-background flex">
+      <div className="min-h-screen bg-background flex overflow-x-hidden">
         {/* Sidebar */}
         {/* Sidebar — always dark */}
         <aside
