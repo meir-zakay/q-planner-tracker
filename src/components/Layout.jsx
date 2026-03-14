@@ -163,7 +163,7 @@ export default function Layout() {
                       <button
                         onClick={() => base44.auth.logout()}
                         className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all duration-150 text-indigo-300/40 hover:text-red-400 hover:bg-red-500/15"
-                        style={{ background: 'hsl(234 35% 14%)', border: '1px solid hsl(234 35% 20%)' }}
+                        style={{ background: 'hsl(239 40% 15%)', border: '1px solid hsl(239 40% 22%)' }}
                       >
                         <LogOut className="w-3.5 h-3.5" />
                       </button>
