@@ -191,7 +191,7 @@ export default function Layout() {
           <button
             onClick={() => setCollapsed(!collapsed)}
             className="absolute -right-3 top-4 w-6 h-6 rounded-full flex items-center justify-center shadow-sm transition-colors z-10"
-            style={{ background: 'hsl(234 35% 11%)', border: '1px solid hsl(234 35% 18%)' }}
+            style={{ background: 'hsl(228 30% 7%)', border: '1px solid hsl(228 25% 14%)' }}
           >
             {collapsed ? <ChevronRight className="w-3 h-3 text-indigo-300/60" /> : <ChevronLeft className="w-3 h-3 text-indigo-300/60" />}
           </button>
