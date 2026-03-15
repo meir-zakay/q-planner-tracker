@@ -62,7 +62,7 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map(stat => (
-          <div key={stat.label} className="rounded-xl p-5 flex items-center gap-4 bg-card dark:bg-[#1a1530] border border-border dark:border-[hsl(228_25%_14%)]">
+          <div key={stat.label} className="rounded-xl p-5 flex items-center gap-4 bg-slate-50 dark:bg-[#1a1530] border border-border dark:border-[hsl(228_25%_14%)]">
             <div className={`w-10 h-10 rounded-lg ${stat.bg} flex items-center justify-center shrink-0`}>
               <stat.icon className={`w-5 h-5 ${stat.iconColor}`} />
             </div>
@@ -74,7 +74,7 @@ export default function Dashboard() {
         ))}
       </div>
 
-      <div className="rounded-xl p-6 bg-card dark:bg-[#1a1530] border border-border dark:border-[hsl(228_25%_14%)]">
+      <div className="rounded-xl p-6 bg-slate-50 dark:bg-[#1a1530] border border-border dark:border-[hsl(228_25%_14%)]">
         <h2 className="text-base font-semibold text-foreground mb-1">Effort by Objective</h2>
         <div className="flex items-center justify-between mb-1">
           <p className="text-xs text-muted-foreground">Capacity Utilization</p>

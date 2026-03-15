@@ -63,7 +63,7 @@ export default function Settings() {
             <Plus className="w-4 h-4" />Add Objective
           </Button>
         </div>
-        <div className="rounded-xl overflow-hidden bg-card dark:bg-[#1a1530] border border-border dark:border-[hsl(228_25%_14%)]">
+        <div className="rounded-xl overflow-hidden bg-slate-50 dark:bg-[#1a1530] border border-border dark:border-[hsl(228_25%_14%)]">
           <div className="px-6 py-4 space-y-2">
             {objectives.map(obj => (
               <div key={obj.id} className="flex items-center justify-between py-2 px-3 rounded-lg bg-muted/40 hover:bg-muted/70 transition-colors">
@@ -81,7 +81,7 @@ export default function Settings() {
         </div>
 
         {/* Sprint Config */}
-        <div className="rounded-xl overflow-hidden bg-card dark:bg-[#1a1530] border border-border dark:border-[hsl(228_25%_14%)]">
+        <div className="rounded-xl overflow-hidden bg-slate-50 dark:bg-[#1a1530] border border-border dark:border-[hsl(228_25%_14%)]">
           <div className="px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">

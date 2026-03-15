@@ -110,7 +110,7 @@ export default function Teams() {
 
         <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
           {teams.map(team => (
-            <div key={team.id} className="rounded-xl p-5 bg-card dark:bg-[#1a1530] border border-border">
+            <div key={team.id} className="rounded-xl p-5 bg-slate-50 dark:bg-[#1a1530] border border-border">
               <div className="flex items-start justify-between mb-4">
                 <h3 className="font-semibold text-foreground text-base">{team.name}</h3>
                 <div className="flex gap-1">
