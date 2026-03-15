@@ -131,7 +131,7 @@ export default function Settings() {
           )}
           <DialogFooter>
             <Button variant="outline" onClick={() => setObjForm(null)}>Cancel</Button>
-            <Button onClick={() => saveObjMutation.mutate(objForm)} disabled={saveObjMutation.isPending || !objForm?.name} className="bg-indigo-600 hover:bg-indigo-500 text-white border-0 font-semibold rounded-xl shadow-md">Save</Button>
+            <Button onClick={() => saveObjMutation.mutate(objForm)} disabled={saveObjMutation.isPending || !objForm?.name} className="font-semibold rounded-xl shadow-md">Save</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
