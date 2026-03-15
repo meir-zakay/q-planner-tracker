@@ -1026,6 +1026,7 @@ export default function TeamPlan() {
                 </>
               )}
               </div>
+              </div>
               </DragDropContext>
               )}
 
