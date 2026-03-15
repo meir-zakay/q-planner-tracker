@@ -41,7 +41,7 @@ export default function Dashboard() {
   }, [allEntries, featureMap]);
 
   const utilizationPct = totalCapacity > 0 ? Math.round((totalUsed / totalCapacity) * 100) : 0;
-  const utilizationColor = utilizationPct > 100 ? '#ef4444' : utilizationPct > 85 ? '#f59e0b' : '#4f46e5';
+  const utilizationColor = utilizationPct > 100 ? '#ef4444' : utilizationPct > 85 ? '#f59e0b' : '#0F52BA';
 
   const stats = [
     { label: 'Teams', value: teams.length, icon: Users, bg: 'bg-blue-50 dark:bg-blue-950/40', iconColor: 'text-blue-500' },
