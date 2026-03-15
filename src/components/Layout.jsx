@@ -143,7 +143,7 @@ export default function Layout() {
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground hidden sm:inline">Period:</span>
               <Select value={selectedQuarter} onValueChange={setSelectedQuarter}>
-                <SelectTrigger className="h-9 text-sm w-[70px] bg-background">
+                <SelectTrigger className="h-9 text-sm w-[70px]">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
