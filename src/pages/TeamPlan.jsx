@@ -989,8 +989,9 @@ export default function TeamPlan() {
             {/* Gantt Chart */}
             <GanttChart entries={sortedEntries} featureMap={featureMap} sprints={sprints} colorMap={colorMap} />
             </div>
+            </div>
 
-            {/* Pie Chart */}
+             {/* Pie Chart */}
             <div className="rounded-xl p-5 bg-slate-50 dark:bg-[#1a1530] border border-border">
               <h3 className="font-semibold text-foreground mb-1">Effort by Objective</h3>
               <div className="flex items-center justify-between mb-1">
