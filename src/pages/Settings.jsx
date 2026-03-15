@@ -167,7 +167,7 @@ function QuarterSprintEditor({ quarter, year, sprints, onSave }) {
         {editing ? (
           <div className="flex gap-1">
             <Button size="sm" variant="outline" onClick={() => { setLocalSprints(sprints); setEditing(false); }}>Cancel</Button>
-            <Button size="sm" onClick={handleSave}>Save</Button>
+            <Button size="sm" onClick={handleSave} className="bg-indigo-600 hover:bg-indigo-500 text-white border-0 font-semibold rounded-xl shadow-md">Save</Button>
           </div>
         ) : (
           <Button size="sm" variant="ghost" onClick={() => setEditing(true)}><Pencil className="w-3 h-3" /></Button>
