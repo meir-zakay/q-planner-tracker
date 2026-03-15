@@ -644,7 +644,7 @@ export default function TeamPlan() {
                       {/* BE Section */}
                       <div className="p-2.5 border-b border-border/40">
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs font-semibold text-blue-500">BE</span>
+                          <span className={`text-xs font-semibold ${beOver ? 'text-red-500' : 'text-blue-500'}`}>BE</span>
                           <span className={`text-xs font-semibold ${beOver ? 'text-red-500' : 'text-muted-foreground'}`}>{beUsed}/{thisBeSprintCap}w</span>
                         </div>
                         <div className="w-full bg-muted rounded-full h-1.5 mb-2">
