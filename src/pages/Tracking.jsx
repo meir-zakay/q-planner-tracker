@@ -320,11 +320,59 @@ export default function Tracking() {
                endSprint: progressForm.endSprint,
                status: progressForm.status,
                plannedStart: editingProgress.sprintRange?.start,
-               plannedEnd: editingProgress.sprintRange?.end
+               plannedEnd: editingProgress.sprintRange?.end,
+               notes: progressForm.notes
              })}
              disabled={updateProgressMutation.isPending}
             >
               Save Progress
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!notesOpen} onOpenChange={(o) => !o && setNotesOpen(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Notes: {notesOpen?.title}</DialogTitle></DialogHeader>
+          <div className="space-y-4 py-4">
+            <textarea
+              value={notesOpen?.actual?.notes || ''}
+              onChange={(e) => setNotesOpen(prev => ({ ...prev, actual: { ...prev.actual, notes: e.target.value } }))}
+              placeholder="Add notes about this feature's progress..."
+              className="w-full h-32 p-3 rounded-md border border-input bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setNotesOpen(null)}>Cancel</Button>
+            <Button
+              onClick={() => {
+                if (notesOpen?.actual) {
+                  updateProgressMutation.mutate({ 
+                    featureId: notesOpen.featureId, 
+                    percent: notesOpen.actualProgress, 
+                    startSprint: notesOpen.actualRange?.start || '', 
+                    endSprint: notesOpen.actualRange?.end || '',
+                    status: notesOpen.featureStatus,
+                    plannedStart: notesOpen.sprintRange?.start,
+                    plannedEnd: notesOpen.sprintRange?.end,
+                    notes: notesOpen.actual.notes
+                  });
+                } else {
+                  updateProgressMutation.mutate({ 
+                    featureId: notesOpen.featureId, 
+                    percent: notesOpen.actualProgress, 
+                    startSprint: notesOpen.actualRange?.start || '', 
+                    endSprint: notesOpen.actualRange?.end || '',
+                    status: notesOpen.featureStatus,
+                    plannedStart: notesOpen.sprintRange?.start,
+                    plannedEnd: notesOpen.sprintRange?.end,
+                    notes: ''
+                  });
+                }
+              }}
+              disabled={updateProgressMutation.isPending}
+            >
+              Save Notes
             </Button>
           </DialogFooter>
         </DialogContent>
