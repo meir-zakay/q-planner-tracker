@@ -82,7 +82,7 @@ export default function Settings() {
         </div>
 
         {/* Sprint Config */}
-        <div className="rounded-xl overflow-hidden" style={{ background: 'hsl(228 30% 7%)', border: '1px solid hsl(228 25% 14%)' }}>
+        <div className="rounded-xl overflow-hidden bg-card dark:bg-[hsl(228_30%_7%)] border border-border dark:border-[hsl(228_25%_14%)]">
           <div className="px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
