@@ -735,20 +735,26 @@ export default function TeamPlan() {
                     <Draggable key={entry.id} draggableId={`row-${entry.id}`} index={rowIdx} isDragDisabled={false}>
                     {(rowDrag, rowSnapshot) => (
                       <div
-                        ref={rowDrag.innerRef}
-                        {...rowDrag.draggableProps}
-                        {...rowDrag.dragHandleProps}
-                        style={{
-                          ...rowDrag.draggableProps.style,
-                          ...(rowSnapshot.isDragging ? { width: '128px' } : {}),
-                        }}
                         className={`flex flex-col gap-1 py-2 border-b border-border/50 last:border-0 ${entry.excluded_from_allocation ? 'opacity-50' : ''}`}
                       >
                        {rowSnapshot.isDragging ? (
-                         <div className="bg-indigo-600 text-white text-xs font-semibold px-2 py-1 rounded-md shadow-xl w-32 truncate">
+                         <div
+                           ref={rowDrag.innerRef}
+                           {...rowDrag.draggableProps}
+                           {...rowDrag.dragHandleProps}
+                           style={rowDrag.draggableProps.style}
+                           className="bg-indigo-600 text-white text-xs font-semibold px-2 py-1 rounded-md shadow-xl w-32 truncate"
+                         >
                            {feat.title}
                          </div>
                        ) : (
+                       <div
+                         ref={rowDrag.innerRef}
+                         {...rowDrag.draggableProps}
+                         {...rowDrag.dragHandleProps}
+                         style={rowDrag.draggableProps.style}
+                         className="w-32"
+                       />
                        <div className="flex items-center gap-3">
                          <div className={`cursor-grab active:cursor-grabbing shrink-0 ${manualMode ? 'text-indigo-400/60 hover:text-indigo-400' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}>
                             <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor"><circle cx="2" cy="2" r="1.5"/><circle cx="8" cy="2" r="1.5"/><circle cx="2" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="2" cy="14" r="1.5"/><circle cx="8" cy="14" r="1.5"/></svg>
