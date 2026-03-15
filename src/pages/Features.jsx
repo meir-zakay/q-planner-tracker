@@ -118,7 +118,7 @@ export default function Features() {
                             <GripVertical className="w-4 h-4" />
                           </div>
                         )}
-                        <div className="flex items-center justify-center w-6 h-6 rounded-lg text-[11px] font-bold text-white shrink-0 bg-gradient-to-b from-[#1e5bb8] to-[#0952CC] shadow-md">
+                        <div className="flex items-center justify-center w-6 h-6 rounded-lg text-[11px] font-bold text-indigo-400 shrink-0 bg-indigo-900 shadow-md">
                            {feature.priority}
                         </div>
                         <div className="flex-1 min-w-0">
