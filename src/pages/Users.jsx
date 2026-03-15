@@ -95,8 +95,8 @@ export default function Users() {
                 </tbody>
               </table>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Edit Dialog */}
         <Dialog open={!!editUser} onOpenChange={(o) => !o && setEditUser(null)}>
