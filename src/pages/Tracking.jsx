@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { AlertCircle, Edit2 } from 'lucide-react';
+import { AlertCircle, Edit2, StickyNote } from 'lucide-react';
 
 export default function Tracking() {
   const { user, selectedYear, selectedQuarter } = useOutletContext();
