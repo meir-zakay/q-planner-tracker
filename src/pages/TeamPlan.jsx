@@ -984,6 +984,9 @@ export default function TeamPlan() {
               </Droppable>
             </div>
 
+          {/* Gantt Chart */}
+          <GanttChart entries={sortedEntries} sprints={sprints} featureMap={featureMap} colorMap={colorMap} darkMode={darkMode} />
+
             {/* Pie Chart */}
             <div className="rounded-xl p-5 bg-slate-50 dark:bg-[#1a1530] border border-border">
               <h3 className="font-semibold text-foreground mb-1">Effort by Objective</h3>
