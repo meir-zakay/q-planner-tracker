@@ -161,12 +161,12 @@ export default function Layout() {
               {user && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg transition-all duration-150 hover:bg-white/5 ml-1">
-                      <div className="w-7 h-7 rounded-full bg-indigo-700/60 flex items-center justify-center shrink-0">
-                        <span className="text-xs font-bold text-indigo-200">{(user.full_name || user.email || '?')[0].toUpperCase()}</span>
+                    <button className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg transition-all duration-150 hover:bg-accent ml-1">
+                      <div className="w-7 h-7 rounded-full bg-indigo-600/20 dark:bg-indigo-700/60 flex items-center justify-center shrink-0">
+                        <span className="text-xs font-bold text-indigo-600 dark:text-indigo-200">{(user.full_name || user.email || '?')[0].toUpperCase()}</span>
                       </div>
-                      <span className="text-sm font-medium text-indigo-100 hidden sm:inline">{user.full_name || user.email}</span>
-                      <ChevronDown className="w-3.5 h-3.5 text-indigo-300/50 hidden sm:inline" />
+                      <span className="text-sm font-medium text-foreground hidden sm:inline">{user.full_name || user.email}</span>
+                      <ChevronDown className="w-3.5 h-3.5 text-muted-foreground hidden sm:inline" />
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
