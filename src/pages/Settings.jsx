@@ -79,24 +79,24 @@ export default function Settings() {
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Sprint Config */}
-        <Card>
-          <CardHeader>
+        <div className="rounded-xl overflow-hidden" style={{ background: 'hsl(228 30% 7%)', border: '1px solid hsl(228 25% 14%)' }}>
+          <div className="px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Calendar className="w-5 h-5 text-primary" />
-                <CardTitle className="text-base">Sprint Configuration</CardTitle>
+                <span className="text-base font-semibold text-foreground">Sprint Configuration</span>
               </div>
               <div className="flex items-center gap-2">
                 <Label className="text-xs text-muted-foreground">Year:</Label>
                 <Input type="number" value={configYear} onChange={e => setConfigYear(Number(e.target.value))} className="w-20 h-8 text-sm" />
               </div>
             </div>
-          </CardHeader>
-          <CardContent>
+          </div>
+          <div className="px-6 pb-5">
             <div className="grid md:grid-cols-2 gap-4">
               {QUARTERS.map(q => (
                 <QuarterSprintEditor
@@ -108,8 +108,8 @@ export default function Settings() {
                 />
               ))}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
       {/* Objective form */}
