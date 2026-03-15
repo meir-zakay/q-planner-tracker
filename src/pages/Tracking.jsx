@@ -207,14 +207,26 @@ export default function Tracking() {
                          </div>
                       </div>
                     </div>
-                    <Button
-                       variant="ghost"
-                       size="icon"
-                       onClick={() => { setEditingProgress(feature); setProgressForm({ percent: String(feature.actualProgress), startSprint: feature.actualRange?.start || '', endSprint: feature.actualRange?.end || '', status: feature.featureStatus }); }}
-                       className="shrink-0 mt-0"
-                    >
-                      <Edit2 className="w-4 h-4" />
-                    </Button>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full bg-slate-700 dark:bg-slate-800 ${
+                        feature.featureStatus === 'Done' ? 'text-green-400' :
+                        feature.featureStatus === 'Blocked' ? 'text-red-400' :
+                        feature.featureStatus === 'On Hold' ? 'text-yellow-400' :
+                        feature.featureStatus === 'Testing' ? 'text-blue-400' :
+                        feature.featureStatus === 'In Progress' ? 'text-purple-400' :
+                        'text-slate-300'
+                      }`}>
+                        {feature.featureStatus}
+                      </span>
+                      <Button
+                         variant="ghost"
+                         size="icon"
+                         onClick={() => { setEditingProgress(feature); setProgressForm({ percent: String(feature.actualProgress), startSprint: feature.actualRange?.start || '', endSprint: feature.actualRange?.end || '', status: feature.featureStatus }); }}
+                         className="shrink-0"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ))
