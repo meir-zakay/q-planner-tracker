@@ -51,6 +51,7 @@ export default function Settings() {
 
   return (
     <RoleGate allowed={['admin']}>
+      <>
       <div className="space-y-8">
         {/* Objectives */}
         <div className="flex items-center justify-between">
