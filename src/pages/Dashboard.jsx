@@ -5,6 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuarterSelection } from '@/components/QuarterContext';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { Users, ListChecks, Server, Monitor } from 'lucide-react';
+import TeamGanttChart from '@/components/TeamGanttChart';
 
 const FALLBACK_COLORS = ['#0F52BA','#0ea5e9','#f59e0b','#10b981','#f43f5e','#6366f1','#f97316'];
 
