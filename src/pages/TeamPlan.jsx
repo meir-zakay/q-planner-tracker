@@ -1026,12 +1026,12 @@ export default function TeamPlan() {
                   </div>
                 </>
               )}
-            </div>
+              </div>
 
-            {/* Gantt Chart */}
-            <GanttChart entries={sortedEntries} sprints={sprints} featureMap={featureMap} colorMap={colorMap} darkMode={darkMode} />
-          </div>
-        </DragDropContext>
+              {/* Gantt Chart */}
+              <GanttChart entries={sortedEntries} sprints={sprints} featureMap={featureMap} colorMap={colorMap} darkMode={darkMode} />
+              </div>
+              </DragDropContext>
       )}
 
       {/* Delete Plan Confirmation Dialog */}
