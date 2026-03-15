@@ -744,79 +744,81 @@ export default function TeamPlan() {
                         }}
                         className={`py-2 border-b border-border/50 last:border-0 ${entry.excluded_from_allocation ? 'opacity-50' : ''}`}
                       >
-                       {rowSnapshot.isDragging ? (
-                         <div className="bg-indigo-600 text-white text-xs font-semibold px-2 py-1 rounded-md shadow-xl truncate">
-                           {feat.title}
-                         </div>
-                       ) : (
-                       <div className="flex items-center gap-3">
-                         <div className={`cursor-grab active:cursor-grabbing shrink-0 ${manualMode ? 'text-indigo-400/60 hover:text-indigo-400' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}>
-                            <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor"><circle cx="2" cy="2" r="1.5"/><circle cx="8" cy="2" r="1.5"/><circle cx="2" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="2" cy="14" r="1.5"/><circle cx="8" cy="14" r="1.5"/></svg>
+                        {rowSnapshot.isDragging ? (
+                          <div className="bg-indigo-600 text-white text-xs font-semibold px-2 py-1 rounded-md shadow-xl truncate">
+                            {feat.title}
                           </div>
-                          <div className="flex items-center justify-center w-6 h-6 rounded-lg text-[11px] font-bold text-primary shrink-0" style={{ background: 'hsl(239 84% 67% / 0.18)' }}>
-                            {rowIdx + 1}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <p className="text-sm font-medium text-foreground truncate">{feat.title}</p>
-                              {feat.objective && (
-                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold text-white shrink-0" style={{ backgroundColor: objColor(feat.objective) }}>
-                                  {feat.objective}
-                                </span>
-                              )}
-                              {(() => { const range = getSprintRange(entry); return range ? (
-                                <span className="text-[10px] text-muted-foreground shrink-0">
-                                  {range.start === range.end ? range.start : `${range.start} → ${range.end}`}
-                                </span>
-                              ) : null; })()}
+                        ) : (
+                          <div className="flex items-center gap-3">
+                            <div className={`cursor-grab active:cursor-grabbing shrink-0 ${manualMode ? 'text-indigo-400/60 hover:text-indigo-400' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}>
+                              <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor"><circle cx="2" cy="2" r="1.5"/><circle cx="8" cy="2" r="1.5"/><circle cx="2" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="2" cy="14" r="1.5"/><circle cx="8" cy="14" r="1.5"/></svg>
                             </div>
-                          </div>
-                          {isEditing ? (
-                            <div className="flex items-center gap-2">
-                              <div className="flex items-center gap-1">
-                                <Server className="w-3 h-3 text-blue-500" />
-                                <Input type="number" min="0" step="0.5" value={editEffort.be} onChange={e => setEditEffort(p => ({ ...p, be: e.target.value }))} className="h-7 w-16 text-xs" placeholder="0" />
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <Monitor className="w-3 h-3 text-emerald-500" />
-                                <Input type="number" min="0" step="0.5" value={editEffort.fe} onChange={e => setEditEffort(p => ({ ...p, fe: e.target.value }))} className="h-7 w-16 text-xs" placeholder="0" />
-                              </div>
-                              <Button size="sm" className="h-7 text-xs px-2" onClick={() => updateEffortMutation.mutate({ entry, beEffort: Number(editEffort.be) || 0, feEffort: Number(editEffort.fe) || 0 })}>Save</Button>
-                              <Button size="sm" variant="ghost" className="h-7 text-xs px-2" onClick={() => setEditEntryId(null)}>Cancel</Button>
+                            <div className="flex items-center justify-center w-6 h-6 rounded-lg text-[11px] font-bold text-primary shrink-0" style={{ background: 'hsl(239 84% 67% / 0.18)' }}>
+                              {rowIdx + 1}
                             </div>
-                          ) : (
-                            <div className="flex items-center gap-3">
-                              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                <Server className="w-3 h-3 text-blue-500" />
-                                <span className="font-medium text-foreground">{entry.be_effort_weeks || 0}w</span>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <p className="text-sm font-medium text-foreground truncate">{feat.title}</p>
+                                {feat.objective && (
+                                  <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold text-white shrink-0" style={{ backgroundColor: objColor(feat.objective) }}>
+                                    {feat.objective}
+                                  </span>
+                                )}
+                                {(() => { const range = getSprintRange(entry); return range ? (
+                                  <span className="text-[10px] text-muted-foreground shrink-0">
+                                    {range.start === range.end ? range.start : `${range.start} → ${range.end}`}
+                                  </span>
+                                ) : null; })()}
                               </div>
-                              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                <Monitor className="w-3 h-3 text-emerald-500" />
-                                <span className="font-medium text-foreground">{entry.fe_effort_weeks || 0}w</span>
+                            </div>
+                            {isEditing ? (
+                              <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-1">
+                                  <Server className="w-3 h-3 text-blue-500" />
+                                  <Input type="number" min="0" step="0.5" value={editEffort.be} onChange={e => setEditEffort(p => ({ ...p, be: e.target.value }))} className="h-7 w-16 text-xs" placeholder="0" />
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <Monitor className="w-3 h-3 text-emerald-500" />
+                                  <Input type="number" min="0" step="0.5" value={editEffort.fe} onChange={e => setEditEffort(p => ({ ...p, fe: e.target.value }))} className="h-7 w-16 text-xs" placeholder="0" />
+                                </div>
+                                <Button size="sm" className="h-7 text-xs px-2" onClick={() => updateEffortMutation.mutate({ entry, beEffort: Number(editEffort.be) || 0, feEffort: Number(editEffort.fe) || 0 })}>Save</Button>
+                                <Button size="sm" variant="ghost" className="h-7 text-xs px-2" onClick={() => setEditEntryId(null)}>Cancel</Button>
                               </div>
-                              <Button
-                                variant="ghost" size="icon"
-                                className={`h-6 w-6 ${entry.excluded_from_allocation ? 'text-rose-400 hover:text-rose-300' : 'text-emerald-500 hover:text-emerald-400'}`}
-                                title={entry.excluded_from_allocation ? 'Excluded — click to include' : 'Included — click to exclude'}
-                                onClick={() => toggleExcludeMutation.mutate({ entry, excluded: !entry.excluded_from_allocation })}
-                              >
-                                {entry.excluded_from_allocation ? <CircleMinus className="w-3.5 h-3.5" /> : <CircleCheck className="w-3.5 h-3.5" />}
-                              </Button>
-                              {canEdit && (
-                                <>
-                                  <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-foreground" onClick={() => { setEditEntryId(entry.id); setEditEffort({ be: String(entry.be_effort_weeks || 0), fe: String(entry.fe_effort_weeks || 0) }); }}>
-                                    <Pencil className="w-3 h-3" />
-                                  </Button>
-                                  <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-destructive" onClick={() => removeEntryMutation.mutate(entry.id)}>
-                                    <Trash2 className="w-3 h-3" />
-                                  </Button>
-                                </>
-                              )}
-                            </div>
-                              )}
-                            </div>
+                            ) : (
+                              <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <Server className="w-3 h-3 text-blue-500" />
+                                  <span className="font-medium text-foreground">{entry.be_effort_weeks || 0}w</span>
+                                </div>
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <Monitor className="w-3 h-3 text-emerald-500" />
+                                  <span className="font-medium text-foreground">{entry.fe_effort_weeks || 0}w</span>
+                                </div>
+                                <Button
+                                  variant="ghost" size="icon"
+                                  className={`h-6 w-6 ${entry.excluded_from_allocation ? 'text-rose-400 hover:text-rose-300' : 'text-emerald-500 hover:text-emerald-400'}`}
+                                  title={entry.excluded_from_allocation ? 'Excluded — click to include' : 'Included — click to exclude'}
+                                  onClick={() => toggleExcludeMutation.mutate({ entry, excluded: !entry.excluded_from_allocation })}
+                                >
+                                  {entry.excluded_from_allocation ? <CircleMinus className="w-3.5 h-3.5" /> : <CircleCheck className="w-3.5 h-3.5" />}
+                                </Button>
+                                {canEdit && (
+                                  <>
+                                    <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-foreground" onClick={() => { setEditEntryId(entry.id); setEditEffort({ be: String(entry.be_effort_weeks || 0), fe: String(entry.fe_effort_weeks || 0) }); }}>
+                                      <Pencil className="w-3 h-3" />
+                                    </Button>
+                                    <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-destructive" onClick={() => removeEntryMutation.mutate(entry.id)}>
+                                      <Trash2 className="w-3 h-3" />
+                                    </Button>
+                                  </>
+                                )}
+                              </div>
                             )}
-                            </Draggable>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    </Draggable>
                   );
                 })}
                 {listProvided.placeholder}
