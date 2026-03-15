@@ -52,13 +52,19 @@ function reallocateAll(entriesInOrder, sprints, beSprintCaps, feSprintCaps, pinn
     const startIdx = pinnedStarts[entry.id] ?? 0;
     const beTotal = entry.be_effort_weeks || 0;
     const feTotal = entry.fe_effort_weeks || 0;
+    const beParallelism = entry.be_parallelism || 1;
+    const feParallelism = entry.fe_parallelism || 1;
+
+    // Max per sprint based on parallelism: total_effort / parallelism
+    const beMaxPerSprint = beTotal > 0 ? beTotal / beParallelism : Infinity;
+    const feMaxPerSprint = feTotal > 0 ? feTotal / feParallelism : Infinity;
 
     // Available caps from startIdx onward (zero before)
     const beCaps = beRem.map((c, i) => i < startIdx ? 0 : c);
     const feCaps = feRem.map((c, i) => i < startIdx ? 0 : c);
 
-    const beAllocs = distributeEffort(beTotal, beCaps);
-    const feAllocs = distributeEffort(feTotal, feCaps);
+    const beAllocs = distributeEffort(beTotal, beCaps, beMaxPerSprint);
+    const feAllocs = distributeEffort(feTotal, feCaps, feMaxPerSprint);
 
     // Subtract from remaining
     beAllocs.forEach((v, i) => { beRem[i] = Number((beRem[i] - v).toFixed(2)); });
