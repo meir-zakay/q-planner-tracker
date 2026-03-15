@@ -13,7 +13,7 @@ export default function Tracking() {
   const qc = useQueryClient();
   const [selectedTeamId, setSelectedTeamId] = useState(() => localStorage.getItem('selectedTeamId') || '');
   const [editingProgress, setEditingProgress] = useState(null);
-  const [progressForm, setProgressForm] = useState({ percent: '', sprint: '' });
+  const [progressForm, setProgressForm] = useState({ percent: '', startSprint: '', endSprint: '' });
 
   const { data: teamsRaw = [] } = useQuery({ queryKey: ['teams'], queryFn: () => base44.entities.Team.list() });
   const teams = useMemo(() => [...teamsRaw].sort((a, b) => a.name.localeCompare(b.name)), [teamsRaw]);
@@ -36,17 +36,21 @@ export default function Tracking() {
   const progressMap = useMemo(() => { const m = {}; actualProgress.forEach(p => { m[p.feature_id] = p; }); return m; }, [actualProgress]);
 
   const updateProgressMutation = useMutation({
-    mutationFn: async ({ featureId, percent, sprint }) => {
+    mutationFn: async ({ featureId, percent, startSprint, endSprint }) => {
       const existing = progressMap[featureId];
+      const data = { actual_progress_percent: percent };
+      if (startSprint) data.actual_start_sprint = startSprint;
+      if (endSprint) data.actual_end_sprint = endSprint;
+      
       if (existing) {
-        return base44.entities.ActualProgress.update(existing.id, { actual_progress_percent: percent });
+        return base44.entities.ActualProgress.update(existing.id, data);
       } else {
         return base44.entities.ActualProgress.create({
           team_id: selectedTeamId,
           feature_id: featureId,
           quarter: selectedQuarter,
           year: selectedYear,
-          actual_progress_percent: percent
+          ...data
         });
       }
     },
@@ -78,6 +82,11 @@ export default function Tracking() {
     const status = actualPercent > expectedProgress ? 'ahead' : actualPercent < expectedProgress - 10 ? 'behind' : 'on-track';
     const sprintRange = getSprintRange(entry);
 
+    const actualRange = actual?.actual_start_sprint && actual?.actual_end_sprint ? {
+      start: actual.actual_start_sprint,
+      end: actual.actual_end_sprint
+    } : null;
+
     return {
       id: entry.id,
       featureId: entry.feature_id,
@@ -87,7 +96,9 @@ export default function Tracking() {
       actualProgress: actualPercent,
       status,
       sprintRange,
-      entry
+      actualRange,
+      entry,
+      actual
     };
   });
 
@@ -151,6 +162,10 @@ export default function Tracking() {
                           <p className="font-medium text-foreground">{feature.sprintRange ? `${feature.sprintRange.start} → ${feature.sprintRange.end}` : '—'}</p>
                         </div>
                         <div>
+                          <p className="text-xs text-muted-foreground">Actual</p>
+                          <p className="font-medium text-foreground">{feature.actualRange ? `${feature.actualRange.start} → ${feature.actualRange.end}` : '—'}</p>
+                        </div>
+                        <div>
                           <p className="text-xs text-muted-foreground">Planned Effort</p>
                           <p className="font-medium text-foreground">{feature.plannedWeeks}w</p>
                         </div>
@@ -183,7 +198,7 @@ export default function Tracking() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => { setEditingProgress(feature); setProgressForm({ percent: String(feature.actualProgress), sprint: feature.sprintRange?.start || '' }); }}
+                      onClick={() => { setEditingProgress(feature); setProgressForm({ percent: String(feature.actualProgress), startSprint: feature.actual?.actual_start_sprint || '', endSprint: feature.actual?.actual_end_sprint || '' }); }}
                       className="shrink-0 mt-2"
                     >
                       <Edit2 className="w-4 h-4" />
@@ -200,16 +215,29 @@ export default function Tracking() {
         <DialogContent>
           <DialogHeader><DialogTitle>Update Progress: {editingProgress?.title}</DialogTitle></DialogHeader>
           <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Target Sprint</label>
-              <Select value={progressForm.sprint} onValueChange={v => setProgressForm(p => ({ ...p, sprint: v }))}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select sprint" />
-                </SelectTrigger>
-                <SelectContent>
-                  {sprints.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-                </SelectContent>
-              </Select>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">Start Sprint</label>
+                <Select value={progressForm.startSprint} onValueChange={v => setProgressForm(p => ({ ...p, startSprint: v }))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select sprint" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {sprints.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">End Sprint</label>
+                <Select value={progressForm.endSprint} onValueChange={v => setProgressForm(p => ({ ...p, endSprint: v }))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select sprint" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {sprints.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">Actual Progress (%)</label>
@@ -227,7 +255,7 @@ export default function Tracking() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditingProgress(null)}>Cancel</Button>
             <Button
-              onClick={() => updateProgressMutation.mutate({ featureId: editingProgress.featureId, percent: Number(progressForm.percent), sprint: progressForm.sprint })}
+              onClick={() => updateProgressMutation.mutate({ featureId: editingProgress.featureId, percent: Number(progressForm.percent), startSprint: progressForm.startSprint, endSprint: progressForm.endSprint })}
               disabled={updateProgressMutation.isPending}
             >
               Save Progress
