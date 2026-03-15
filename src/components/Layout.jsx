@@ -84,7 +84,7 @@ export default function Layout() {
               <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center shrink-0">
                 <span className="text-white font-bold text-xs">Q</span>
               </div>
-              {!collapsed && <span className="font-bold text-white text-base tracking-tight whitespace-nowrap">Quarter Planner</span>}
+              {!collapsed && <span className="font-bold text-white text-lg tracking-tight whitespace-nowrap">Quarter Planner</span>}
             </Link>
           </div>
 
@@ -137,8 +137,8 @@ export default function Layout() {
         {/* Main area */}
         <div className="flex-1 min-w-0 flex flex-col h-full overflow-hidden">
           {/* Top Header Bar — always visible */}
-          <header className="h-14 flex items-center px-6 gap-4 shrink-0 z-20 bg-card dark:bg-[hsl(228_30%_7%)] border-b border-border dark:border-[hsl(228_25%_14%)]">
-            <h1 className="text-lg font-bold text-foreground">{pageTitle}</h1>
+          <header className="h-16 flex items-center px-6 gap-4 shrink-0 z-20 bg-card dark:bg-[hsl(228_30%_7%)] border-b border-border dark:border-[hsl(228_25%_14%)]">
+            <h1 className="text-xl font-bold text-foreground">{pageTitle}</h1>
             <div className="flex-1" />
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground hidden sm:inline">Period:</span>

@@ -53,16 +53,17 @@ export default function Settings() {
     <RoleGate allowed={['admin']}>
       <div className="space-y-8">
         {/* Objectives */}
-        <div className="rounded-xl overflow-hidden bg-card dark:bg-[hsl(228_30%_7%)] border border-border dark:border-[hsl(228_25%_14%)]">
-          <div className="flex flex-row items-center justify-between px-6 py-4">
-            <div className="flex items-center gap-2">
-              <Target className="w-5 h-5 text-primary" />
-              <span className="text-base font-semibold text-foreground">Objectives</span>
-            </div>
-            <Button onClick={() => setObjForm({ name: '', color: '#6366f1' })} className="gap-2 bg-indigo-600 hover:bg-indigo-500 text-white border-0 px-5 py-2 text-sm font-semibold rounded-xl shadow-md">
-              <Plus className="w-4 h-4" />Add
-            </Button>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Target className="w-5 h-5 text-primary" />
+            <span className="text-base font-semibold text-foreground">Objectives</span>
           </div>
+          <Button onClick={() => setObjForm({ name: '', color: '#6366f1' })} className="gap-2 bg-indigo-600 hover:bg-indigo-500 text-white border-0 px-5 py-2 text-sm font-semibold rounded-xl shadow-md">
+            <Plus className="w-4 h-4" />Add Objective
+          </Button>
+        </div>
+        <div className="rounded-xl overflow-hidden bg-card dark:bg-[hsl(228_30%_7%)] border border-border dark:border-[hsl(228_25%_14%)]">
+          <div className="px-6 py-4">
           <div className="px-6 pb-5">
             <div className="space-y-2">
               {objectives.map(obj => (
