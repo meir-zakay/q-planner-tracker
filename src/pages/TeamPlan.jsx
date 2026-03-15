@@ -925,10 +925,16 @@ export default function TeamPlan() {
                                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
                                   <Server className="w-3 h-3 text-blue-500" />
                                   <span className="font-medium text-foreground">{entry.be_effort_weeks || 0}w</span>
+                                  <span className="text-muted-foreground">/</span>
+                                  <Users2 className="w-3 h-3 text-blue-400" />
+                                  <span className="font-medium text-foreground">{entry.be_parallelism || 1}</span>
                                 </div>
                                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
                                   <Monitor className="w-3 h-3 text-emerald-500" />
                                   <span className="font-medium text-foreground">{entry.fe_effort_weeks || 0}w</span>
+                                  <span className="text-muted-foreground">/</span>
+                                  <Users2 className="w-3 h-3 text-emerald-400" />
+                                  <span className="font-medium text-foreground">{entry.fe_parallelism || 1}</span>
                                 </div>
                                 <Button
                                   variant="ghost" size="icon"
