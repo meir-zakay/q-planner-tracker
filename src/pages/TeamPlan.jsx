@@ -886,7 +886,7 @@ export default function TeamPlan() {
             </div>
 
             {/* Pie Chart */}
-            <div className="rounded-xl p-5" style={{ background: 'hsl(228 30% 7%)', border: '1px solid hsl(228 25% 14%)' }}>
+            <div className="rounded-xl p-5 bg-card dark:bg-[hsl(228_30%_7%)] border border-border dark:border-[hsl(228_25%_14%)]">
               <h3 className="font-semibold text-foreground mb-1">Effort by Objective</h3>
               <div className="flex items-center justify-between mb-1">
                 <p className="text-xs text-muted-foreground">Capacity Utilization</p>
