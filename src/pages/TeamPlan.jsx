@@ -625,10 +625,10 @@ export default function TeamPlan() {
              <Button
                onClick={() => signedPlan ? setDeletePlanOpen(true) : signPlanMutation.mutate()}
                disabled={signPlanMutation.isPending || deletePlanMutation.isPending || entries.length === 0}
-               variant={signedPlan ? 'default' : 'outline'}
+               variant="outline"
              >
                <CheckCircle className="w-4 h-4" />
-               {signedPlan ? 'Plan Signed' : 'Sign Plan'}
+               {signedPlan ? 'Re-sign Plan' : 'Sign Plan'}
              </Button>
            )}
            {canEdit && (
@@ -997,10 +997,10 @@ export default function TeamPlan() {
       {/* Delete Plan Confirmation Dialog */}
       <Dialog open={deletePlanOpen} onOpenChange={setDeletePlanOpen}>
         <DialogContent>
-          <DialogHeader><DialogTitle>Resign Plan</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>Re-sign Plan</DialogTitle></DialogHeader>
           <div className="space-y-4 py-4">
             <p className="text-sm text-muted-foreground">
-              Resigning this plan will delete the current signed plan for <span className="font-semibold text-foreground">{selectedQuarter} {selectedYear}</span> and <span className="font-semibold text-foreground">remove all recorded progress</span> from the Tracking page. You will then be able to create a new plan for this quarter.
+              Re-signing this plan will delete the current signed plan for <span className="font-semibold text-foreground">{selectedQuarter} {selectedYear}</span> and <span className="font-semibold text-foreground">remove all recorded progress</span> from the Tracking page. You will then be able to create a new plan for this quarter.
             </p>
             <p className="text-xs text-muted-foreground italic">This action cannot be undone.</p>
           </div>
@@ -1011,7 +1011,7 @@ export default function TeamPlan() {
               onClick={() => deletePlanMutation.mutate()}
               disabled={deletePlanMutation.isPending}
             >
-              Resign Plan
+              Re-sign Plan
             </Button>
           </DialogFooter>
         </DialogContent>
