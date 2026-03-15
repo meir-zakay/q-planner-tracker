@@ -332,10 +332,6 @@ export default function Tracking() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={!!notesOpen} onOpenChange={(o) => !o && setNotesOpen(null)}>
-        <DialogContent>
-          <DialogHeader><DialogTitle>Notes: {notesOpen?.title}</DialogTitle></DialogHeader>
-
     </div>
   );
 }
