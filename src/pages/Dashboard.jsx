@@ -45,7 +45,7 @@ export default function Dashboard() {
 
   const stats = [
     { label: 'Teams', value: teams.length, icon: Users, bg: 'bg-blue-50 dark:bg-blue-950/40', iconColor: 'text-blue-500' },
-    { label: 'Features', value: features.length, icon: ListChecks, bg: 'bg-indigo-50 dark:bg-indigo-950/40', iconColor: 'text-indigo-500' },
+    { label: 'Features', value: features.length, icon: ListChecks, bg: 'bg-blue-50 dark:bg-blue-950/40', iconColor: 'text-blue-600' },
     { label: 'BE Effort (weeks)', value: totalBEEffort, icon: Server, bg: 'bg-blue-50 dark:bg-blue-950/40', iconColor: 'text-blue-500' },
     { label: 'FE Effort (weeks)', value: totalFEEffort, icon: Monitor, bg: 'bg-emerald-50 dark:bg-emerald-950/40', iconColor: 'text-emerald-500' },
   ];
