@@ -161,7 +161,7 @@ function QuarterSprintEditor({ quarter, year, sprints, onSave }) {
   const handleSave = () => { onSave(localSprints); setEditing(false); };
 
   return (
-    <div className="rounded-lg p-4 space-y-3" style={{ border: '1px solid hsl(228 25% 18%)' }}>
+    <div className="rounded-lg p-4 space-y-3 border border-border dark:border-[hsl(228_25%_18%)]">
       <div className="flex items-center justify-between">
         <h4 className="font-semibold text-sm text-foreground">{quarter} {year}</h4>
         {editing ? (
