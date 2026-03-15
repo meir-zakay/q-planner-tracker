@@ -75,10 +75,10 @@ export default function Layout() {
       <div className="h-screen flex overflow-hidden">
         {/* Sidebar */}
          <aside
-           className={`relative shrink-0 h-full flex flex-col transition-all duration-200 bg-slate-950 dark:bg-slate-950 ${sidebarWidth}`}
+           className={`relative shrink-0 h-full flex flex-col transition-all duration-200 bg-indigo-950 dark:bg-indigo-950 ${sidebarWidth}`}
          >
           {/* Logo */}
-          <div className="h-16 flex items-center gap-2 px-3 shrink-0 border-b border-blue-700 bg-blue-950 dark:bg-blue-950">
+          <div className="h-16 flex items-center gap-2 px-3 shrink-0 border-b border-indigo-700 bg-indigo-950 dark:bg-indigo-950">
             <Link to="/Dashboard" className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-lg bg-slate-700 flex items-center justify-center shrink-0">
                 <CalendarRange className="w-4 h-4 text-white" />
@@ -98,8 +98,8 @@ export default function Layout() {
                   className={`flex items-center gap-3 px-2.5 py-2 rounded-lg text-sm font-medium transition-all duration-150 ${
                     collapsed ? 'justify-center' : ''
                   } ${isActive
-                    ? 'bg-blue-600 text-white'
-                    : 'text-blue-100 hover:text-white hover:bg-blue-700'
+                    ? 'bg-indigo-600 text-white'
+                    : 'text-indigo-100 hover:text-white hover:bg-indigo-700'
                   }`}
                 >
                   <item.icon className="w-4 h-4 shrink-0" />
@@ -123,9 +123,9 @@ export default function Layout() {
           {/* Collapse toggle */}
           <button
             onClick={() => setCollapsed(!collapsed)}
-             className="absolute -right-3 top-4 w-6 h-6 rounded-full flex items-center justify-center shadow-sm transition-colors z-10 bg-blue-800 border border-blue-700"
+             className="absolute -right-3 top-4 w-6 h-6 rounded-full flex items-center justify-center shadow-sm transition-colors z-10 bg-indigo-800 border border-indigo-700 hover:bg-indigo-700"
             >
-             {collapsed ? <ChevronRight className="w-3 h-3 text-slate-400" /> : <ChevronLeft className="w-3 h-3 text-slate-400" />}
+             {collapsed ? <ChevronRight className="w-3 h-3 text-slate-300" /> : <ChevronLeft className="w-3 h-3 text-slate-300" />}
           </button>
         </aside>
 
@@ -156,7 +156,7 @@ export default function Layout() {
               {user && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg transition-all duration-150 hover:bg-slate-700 ml-1">
+                    <button className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg transition-all duration-150 hover:bg-slate-100 dark:hover:bg-slate-800 ml-1">
                       <div className="w-7 h-7 rounded-full bg-gradient-to-b from-slate-600 to-slate-700 shadow-md flex items-center justify-center shrink-0">
                         <span className="text-xs font-bold text-white">{(user.full_name || user.email || '?')[0].toUpperCase()}</span>
                       </div>
