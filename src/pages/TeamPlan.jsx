@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Plus, Trash2, Pencil, Info, Server, Monitor, CircleCheck, CircleMinus, Wrench } from 'lucide-react';
+import { Plus, Trash2, Pencil, Info, Server, Monitor, CircleCheck, CircleMinus, Wrench, CheckCircle } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
@@ -100,6 +100,13 @@ export default function TeamPlan() {
     queryFn: () => selectedTeamId
       ? base44.entities.TeamPlanEntry.filter({ team_id: selectedTeamId, year: selectedYear, quarter: selectedQuarter })
       : Promise.resolve([]),
+    enabled: !!selectedTeamId,
+  });
+  const { data: signedPlan = null } = useQuery({
+    queryKey: ['signedPlan', selectedTeamId, selectedYear, selectedQuarter],
+    queryFn: () => selectedTeamId
+      ? base44.entities.SignedQuarterPlan.filter({ team_id: selectedTeamId, year: selectedYear, quarter: selectedQuarter }).then(r => r[0] || null)
+      : Promise.resolve(null),
     enabled: !!selectedTeamId,
   });
 
@@ -395,6 +402,33 @@ export default function TeamPlan() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] }),
   });
 
+  const signPlanMutation = useMutation({
+    mutationFn: async () => {
+      const snapshot = JSON.stringify(entries.map(e => ({
+        id: e.id,
+        feature_id: e.feature_id,
+        be_effort_weeks: e.be_effort_weeks,
+        fe_effort_weeks: e.fe_effort_weeks,
+        sprint_allocations: e.sprint_allocations
+      })));
+      
+      if (signedPlan) {
+        return base44.entities.SignedQuarterPlan.update(signedPlan.id, { allocations_snapshot: snapshot, signed_date: new Date().toISOString() });
+      } else {
+        return base44.entities.SignedQuarterPlan.create({
+          team_id: selectedTeamId,
+          quarter: selectedQuarter,
+          year: selectedYear,
+          allocations_snapshot: snapshot,
+          signed_by: user?.email
+        });
+      }
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['signedPlan', selectedTeamId, selectedYear, selectedQuarter] });
+    }
+  });
+
 
 
   // Use a ref to always have fresh state in the drag handler (avoids stale closure)
@@ -566,9 +600,22 @@ export default function TeamPlan() {
             {teams.map(t => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}
           </SelectContent>
         </Select>
-        {canEdit && (
-          <Button onClick={() => setAddFeatureOpen(true)} disabled={!selectedTeamId}><Plus className="w-4 h-4" />Add Feature</Button>
-        )}
+        <div className="flex items-center gap-2">
+          {canEdit && (
+            <Button onClick={() => setAddFeatureOpen(true)} disabled={!selectedTeamId}><Plus className="w-4 h-4" />Add Feature</Button>
+          )}
+          {selectedTeamId && (
+            <Button
+              onClick={() => signPlanMutation.mutate()}
+              disabled={signPlanMutation.isPending || entries.length === 0}
+              variant={signedPlan ? 'default' : 'outline'}
+              className={signedPlan ? '' : ''}
+            >
+              <CheckCircle className="w-4 h-4" />
+              {signedPlan ? 'Plan Signed' : 'Sign Plan'}
+            </Button>
+          )}
+        </div>
       </div>
 
 
