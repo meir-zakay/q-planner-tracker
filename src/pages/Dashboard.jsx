@@ -76,7 +76,12 @@ export default function Dashboard() {
         ))}
       </div>
 
-      <TeamGanttChart teams={teams} planEntries={allEntries} features={features} sprints={[]} />
+      <TeamGanttChart 
+        teams={teams} 
+        planEntries={allEntries} 
+        features={features} 
+        sprints={quarterConfigs.find(c => c.year === selectedYear && c.quarter === selectedQuarter)?.sprints || []} 
+      />
 
       <div className="rounded-xl p-6 bg-slate-50 dark:bg-[#1a1530] border border-border dark:border-[hsl(228_25%_14%)]">
         <h2 className="text-base font-semibold text-foreground mb-1">Effort by Objective</h2>
