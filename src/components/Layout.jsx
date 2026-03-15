@@ -156,8 +156,8 @@ export default function Layout() {
               {user && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg transition-all duration-150 hover:bg-accent ml-1">
-                      <div className="w-7 h-7 rounded-full bg-gradient-to-b from-[#1e5bb8] to-[#0952CC] shadow-md flex items-center justify-center shrink-0">
+                    <button className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg transition-all duration-150 hover:bg-slate-700 ml-1">
+                      <div className="w-7 h-7 rounded-full bg-gradient-to-b from-slate-600 to-slate-700 shadow-md flex items-center justify-center shrink-0">
                         <span className="text-xs font-bold text-white">{(user.full_name || user.email || '?')[0].toUpperCase()}</span>
                       </div>
                       <span className="text-sm font-medium text-foreground hidden sm:inline">{user.full_name || user.email}</span>
