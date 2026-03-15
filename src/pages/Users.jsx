@@ -146,7 +146,7 @@ export default function Users() {
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setInviteOpen(false)}>Cancel</Button>
-              <Button onClick={handleInvite}>Send Invitation</Button>
+              <Button onClick={handleInvite} className="bg-indigo-600 hover:bg-indigo-500 text-white border-0 font-semibold rounded-xl shadow-md">Send Invitation</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
