@@ -63,8 +63,8 @@ export default function Settings() {
             <Button size="sm" onClick={() => setObjForm({ name: '', color: '#6366f1' })} className="gap-2">
               <Plus className="w-3.5 h-3.5" />Add
             </Button>
-          </CardHeader>
-          <CardContent>
+          </div>
+          <div className="px-6 pb-5">
             <div className="space-y-2">
               {objectives.map(obj => (
                 <div key={obj.id} className="flex items-center justify-between py-2 px-3 rounded-lg bg-muted/40 hover:bg-muted/70 transition-colors">
