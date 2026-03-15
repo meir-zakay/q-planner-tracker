@@ -75,7 +75,7 @@ export default function Layout() {
       <div className="h-screen flex overflow-hidden">
         {/* Sidebar */}
          <aside
-           className={`relative shrink-0 h-full flex flex-col transition-all duration-200 bg-blue-950 dark:bg-blue-950 ${sidebarWidth}`}
+           className={`relative shrink-0 h-full flex flex-col transition-all duration-200 bg-slate-950 dark:bg-slate-950 ${sidebarWidth}`}
          >
           {/* Logo */}
           <div className="h-16 flex items-center gap-2 px-3 shrink-0 border-b border-blue-700 bg-blue-950 dark:bg-blue-950">
