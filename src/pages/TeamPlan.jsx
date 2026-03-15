@@ -773,7 +773,7 @@ export default function TeamPlan() {
           {/* Bottom: Planned Features + Pie Chart */}
           <div className="grid lg:grid-cols-[1fr_380px] gap-6">
             {/* Planned Features */}
-            <div className="rounded-xl p-5" style={{ background: 'hsl(228 30% 7%)', border: '1px solid hsl(228 25% 14%)' }}>
+            <div className="rounded-xl p-5 bg-card dark:bg-[hsl(228_30%_7%)] border border-border dark:border-[hsl(228_25%_14%)]">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-foreground">Planned Features</h3>
                 {canEdit && <p className="text-xs text-muted-foreground italic">
