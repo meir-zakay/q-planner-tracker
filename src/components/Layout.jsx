@@ -174,6 +174,7 @@ export default function Layout() {
                       {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                       {darkMode ? 'Light Mode' : 'Dark Mode'}
                     </DropdownMenuItem>
+                    <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => base44.auth.logout()} className="text-destructive focus:text-destructive gap-2">
                       <LogOut className="w-4 h-4" /> Logout
                     </DropdownMenuItem>
