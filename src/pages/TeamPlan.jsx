@@ -738,7 +738,10 @@ export default function TeamPlan() {
                         ref={rowDrag.innerRef}
                         {...rowDrag.draggableProps}
                         {...rowDrag.dragHandleProps}
-                        style={rowDrag.draggableProps.style}
+                        style={{
+                          ...rowDrag.draggableProps.style,
+                          ...(rowSnapshot.isDragging ? { width: '128px' } : {}),
+                        }}
                         className={`flex flex-col gap-1 py-2 border-b border-border/50 last:border-0 ${entry.excluded_from_allocation ? 'opacity-50' : ''}`}
                       >
                        {rowSnapshot.isDragging ? (
