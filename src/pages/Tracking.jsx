@@ -36,12 +36,13 @@ export default function Tracking() {
   const progressMap = useMemo(() => { const m = {}; actualProgress.forEach(p => { m[p.feature_id] = p; }); return m; }, [actualProgress]);
 
   const updateProgressMutation = useMutation({
-    mutationFn: async ({ featureId, percent, startSprint, endSprint, plannedStart, plannedEnd }) => {
+    mutationFn: async ({ featureId, percent, startSprint, endSprint, plannedStart, plannedEnd, status }) => {
       const existing = progressMap[featureId];
       const data = { 
         actual_progress_percent: percent,
         actual_start_sprint: startSprint || plannedStart,
-        actual_end_sprint: endSprint || plannedEnd
+        actual_end_sprint: endSprint || plannedEnd,
+        status: status || "Didn't Start"
       };
       
       if (existing) {
