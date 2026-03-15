@@ -62,7 +62,7 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map(stat => (
-          <div key={stat.label} className="bg-card border border-border rounded-xl p-5 flex items-center gap-4">
+          <div key={stat.label} className="rounded-xl p-5 flex items-center gap-4" style={{ background: 'hsl(228 30% 7%)', border: '1px solid hsl(228 25% 14%)' }}>
             <div className={`w-10 h-10 rounded-lg ${stat.bg} flex items-center justify-center shrink-0`}>
               <stat.icon className={`w-5 h-5 ${stat.iconColor}`} />
             </div>
