@@ -208,13 +208,13 @@ export default function Tracking() {
                           <span>Actual</span>
                         </div>
                         <div className="flex gap-2">
-                          <div className="flex-1 bg-muted rounded-full h-2">
-                            <div className="h-2 rounded-full bg-blue-500" style={{ width: `${feature.expectedProgress}%` }} />
-                          </div>
-                          <div className="flex-1 bg-muted rounded-full h-2">
-                            <div className={`h-2 rounded-full ${feature.status === 'ahead' ? 'bg-green-500' : feature.status === 'behind' ? 'bg-red-500' : 'bg-blue-500'}`} style={{ width: `${feature.actualProgress}%` }} />
-                          </div>
-                        </div>
+                           <div className="flex-1 bg-muted rounded-full h-2">
+                             <div className="h-2 rounded-full bg-blue-500" style={{ width: `${feature.expectedProgress}%` }} />
+                           </div>
+                           <div className="flex-1 bg-muted rounded-full h-2">
+                             <div className={`h-2 rounded-full ${feature.healthStatus === 'ahead' ? 'bg-green-500' : feature.healthStatus === 'behind' ? 'bg-red-500' : 'bg-blue-500'}`} style={{ width: `${feature.actualProgress}%` }} />
+                           </div>
+                         </div>
                       </div>
                     </div>
                     <Button
