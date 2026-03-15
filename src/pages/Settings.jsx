@@ -147,6 +147,7 @@ export default function Settings() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      </>
     </RoleGate>
   );
 }
