@@ -5,17 +5,27 @@ export default function TeamGanttChart({ teams, planEntries, features, sprints }
   const chartData = useMemo(() => {
     if (!teams.length || !sprints.length) return [];
 
-    return teams.map(team => {
-      const teamEntries = planEntries.filter(e => e.team_id === team.id);
-      const beTotal = teamEntries.reduce((sum, e) => sum + (e.be_effort_weeks || 0), 0);
-      const feTotal = teamEntries.reduce((sum, e) => sum + (e.fe_effort_weeks || 0), 0);
+    return sprints.map(sprint => {
+      let beTotalUsed = 0;
+      let feTotalUsed = 0;
+
+      planEntries.forEach(entry => {
+        const alloc = entry.sprint_allocations?.find(a => a.sprint === sprint);
+        if (alloc) {
+          beTotalUsed += alloc.be_weeks || 0;
+          feTotalUsed += alloc.fe_weeks || 0;
+        }
+      });
+
+      const beTotalCapacity = teams.reduce((sum, t) => sum + (t.be_capacity_weeks || 0) / sprints.length, 0);
+      const feTotalCapacity = teams.reduce((sum, t) => sum + (t.fe_capacity_weeks || 0) / sprints.length, 0);
 
       return {
-        team: team.name,
-        beCapacity: team.be_capacity_weeks || 0,
-        feCapacity: team.fe_capacity_weeks || 0,
-        beAllocated: beTotal,
-        feAllocated: feTotal,
+        sprint,
+        beCapacity: Math.round(beTotalCapacity * 2) / 2,
+        feCapacity: Math.round(feTotalCapacity * 2) / 2,
+        beUsed: Math.round(beTotalUsed * 2) / 2,
+        feUsed: Math.round(feTotalUsed * 2) / 2,
       };
     });
   }, [teams, planEntries, sprints]);
