@@ -195,7 +195,7 @@ export default function Teams() {
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => { setFormOpen(false); setEditId(null); }}>Cancel</Button>
-              <Button onClick={() => saveMutation.mutate(formData)} disabled={saveMutation.isPending || !formData.name} className="bg-indigo-600 hover:bg-indigo-500 text-white border-0 font-semibold rounded-xl shadow-md">{editId ? 'Update' : 'Create'}</Button>
+              <Button onClick={() => saveMutation.mutate(formData)} disabled={saveMutation.isPending || !formData.name} className="font-semibold rounded-xl shadow-md">{editId ? 'Update' : 'Create'}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
