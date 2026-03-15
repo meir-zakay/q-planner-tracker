@@ -158,7 +158,7 @@ export default function Tracking() {
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
                       <h3 className="font-medium text-foreground mb-2">{feature.title}</h3>
-                      <div className="flex flex-wrap gap-6 text-sm">
+                      <div className="grid grid-cols-5 gap-4 text-sm">
                         <div className="text-left">
                           <p className="text-xs text-muted-foreground">Plan</p>
                           <p className="font-medium text-foreground">{feature.sprintRange ? `${feature.sprintRange.start} → ${feature.sprintRange.end}` : '—'}</p>
