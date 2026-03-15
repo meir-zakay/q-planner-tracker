@@ -156,6 +156,12 @@ export default function Tracking() {
         </div>
       ) : (
         <div className="space-y-4">
+          {plannedFeatures.length > 0 && (
+            <div className="flex justify-between text-xs text-muted-foreground px-2">
+              <span>Expected</span>
+              <span>Actual</span>
+            </div>
+          )}
           <div className="grid gap-4">
             {plannedFeatures.length === 0 ? (
               <div className="rounded-xl p-8 bg-slate-50 dark:bg-[#1a1530] border border-border text-center text-muted-foreground">
