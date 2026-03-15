@@ -53,7 +53,7 @@ export default function Settings() {
     <RoleGate allowed={['admin']}>
       <div className="space-y-8">
         {/* Objectives */}
-        <div className="rounded-xl overflow-hidden" style={{ background: 'hsl(228 30% 7%)', border: '1px solid hsl(228 25% 14%)' }}>
+        <div className="rounded-xl overflow-hidden bg-card dark:bg-[hsl(228_30%_7%)] border border-border dark:border-[hsl(228_25%_14%)]">
           <div className="flex flex-row items-center justify-between px-6 py-4">
             <div className="flex items-center gap-2">
               <Target className="w-5 h-5 text-primary" />
