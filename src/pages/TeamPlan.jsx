@@ -251,17 +251,18 @@ export default function TeamPlan() {
   });
 
   const addEntryMutation = useMutation({
-    mutationFn: async ({ featureId, customTitle, beEffort, feEffort }) => {
+    mutationFn: async ({ featureId, customTitle, beEffort, feEffort, beParallelism, feParallelism }) => {
       let fid = featureId;
       if (!fid && customTitle) {
         const maxPriority = allFeatures.length > 0 ? Math.max(...allFeatures.map(f => f.priority || 0)) : 0;
         const newFeature = await base44.entities.Feature.create({ title: customTitle, objective: customFeatureObjective || undefined, priority: maxPriority + 1, quarter: selectedQuarter, year: selectedYear, team_plan_only: true });
         fid = newFeature.id;
       }
-      // Temporarily add new entry with zero allocs to get its priority, then reallocate all
+      // Create new entry with parallelism settings
       const newEntry = await base44.entities.TeamPlanEntry.create({
         team_id: selectedTeamId, feature_id: fid,
         be_effort_weeks: beEffort, fe_effort_weeks: feEffort,
+        be_parallelism: beParallelism, fe_parallelism: feParallelism,
         sprint_allocations: sprints.map(s => ({ sprint: s, be_weeks: 0, fe_weeks: 0 })),
         year: selectedYear, quarter: selectedQuarter
       });
@@ -281,7 +282,7 @@ export default function TeamPlan() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] });
       qc.invalidateQueries({ queryKey: ['features', selectedYear, selectedQuarter] });
-      setAddFeatureOpen(false); setSelectedFeatureId(''); setCustomFeatureTitle(''); setCustomFeatureObjective(''); setAddMode('existing'); setEffortForm({ be: '', fe: '' });
+      setAddFeatureOpen(false); setSelectedFeatureId(''); setCustomFeatureTitle(''); setCustomFeatureObjective(''); setAddMode('existing'); setEffortForm({ be: '', fe: '', beParallelism: '1', feParallelism: '1' });
     },
   });
 
