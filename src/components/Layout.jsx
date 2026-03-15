@@ -97,13 +97,13 @@ export default function Layout() {
                   key={item.path}
                   to={item.path}
                   style={isActive
-                    ? { backgroundColor: 'hsl(239 84% 67% / 0.18)', color: 'hsl(239 84% 80%)' }
+                    ? { backgroundColor: 'hsl(217 85% 39% / 0.20)', color: 'hsl(217 85% 75%)' }
                     : {}}
                   className={`flex items-center gap-3 px-2.5 py-2 rounded-lg text-sm font-medium transition-all duration-150 ${
                     collapsed ? 'justify-center' : ''
                   } ${isActive
                     ? ''
-                    : 'text-indigo-200/60 hover:text-indigo-100 hover:bg-white/5'
+                    : 'text-blue-200/60 hover:text-blue-100 hover:bg-white/5'
                   }`}
                 >
                   <item.icon className="w-4 h-4 shrink-0" />
