@@ -87,7 +87,7 @@ export default function Features() {
           <span className="text-primary font-medium">{selectedQuarter} {selectedYear}</span>
         </p>
         {canEdit && (
-          <Button onClick={openNew} className="gap-2 bg-indigo-600 hover:bg-indigo-500 text-white border-0 px-5 py-2 text-sm font-semibold rounded-xl shadow-md"><Plus className="w-4 h-4" />Add Feature</Button>
+          <Button onClick={openNew} className="gap-2 px-5 py-2 text-sm font-semibold rounded-xl shadow-md"><Plus className="w-4 h-4" />Add Feature</Button>
         )}
       </div>
 
