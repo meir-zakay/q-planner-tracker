@@ -162,7 +162,7 @@ export default function Layout() {
         {/* Main area */}
         <div className="flex-1 min-w-0 flex flex-col h-full overflow-hidden">
           {/* Top Header Bar — always visible */}
-          <header className="h-14 bg-card border-b border-border flex items-center px-6 gap-4 shrink-0 z-20">
+          <header className="h-14 flex items-center px-6 gap-4 shrink-0 z-20" style={{ background: 'hsl(228 30% 7%)', borderBottom: '1px solid hsl(228 25% 14%)' }}>
             <h1 className="text-lg font-bold text-foreground">{pageTitle}</h1>
             <div className="flex-1" />
             <div className="flex items-center gap-2">
@@ -183,6 +183,24 @@ export default function Layout() {
                   {[currentYear - 1, currentYear, currentYear + 1].map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}
                 </SelectContent>
               </Select>
+              {user && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg transition-all duration-150 hover:bg-white/5 ml-1">
+                      <div className="w-7 h-7 rounded-full bg-indigo-700/60 flex items-center justify-center shrink-0">
+                        <span className="text-xs font-bold text-indigo-200">{(user.full_name || user.email || '?')[0].toUpperCase()}</span>
+                      </div>
+                      <span className="text-sm font-medium text-indigo-100 hidden sm:inline">{user.full_name || user.email}</span>
+                      <ChevronDown className="w-3.5 h-3.5 text-indigo-300/50 hidden sm:inline" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => base44.auth.logout()} className="text-destructive focus:text-destructive gap-2">
+                      <LogOut className="w-4 h-4" /> Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </div>
           </header>
 
