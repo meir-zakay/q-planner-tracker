@@ -995,6 +995,28 @@ export default function TeamPlan() {
         </DragDropContext>
       )}
 
+      {/* Delete Plan Confirmation Dialog */}
+      <Dialog open={deletePlanOpen} onOpenChange={setDeletePlanOpen}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Delete Signed Plan</DialogTitle></DialogHeader>
+          <div className="space-y-4 py-4">
+            <p className="text-sm text-muted-foreground">
+              This will delete the signed plan for <span className="font-semibold text-foreground">{selectedQuarter} {selectedYear}</span> and <span className="font-semibold text-foreground">remove all recorded progress</span> in the Tracking page. This action cannot be undone.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeletePlanOpen(false)}>Cancel</Button>
+            <Button
+              variant="destructive"
+              onClick={() => deletePlanMutation.mutate()}
+              disabled={deletePlanMutation.isPending}
+            >
+              Delete Plan & Progress
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Add Feature Dialog */}
       <Dialog open={addFeatureOpen} onOpenChange={(o) => { if (!o) { setAddFeatureOpen(false); setAddMode('existing'); setSelectedFeatureId(''); setCustomFeatureTitle(''); setCustomFeatureObjective(''); setEffortForm({ be: '', fe: '' }); } }}>
         <DialogContent>
