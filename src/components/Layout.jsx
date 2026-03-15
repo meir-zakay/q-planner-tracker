@@ -137,7 +137,7 @@ export default function Layout() {
         {/* Main area */}
         <div className="flex-1 min-w-0 flex flex-col h-full overflow-hidden">
           {/* Top Header Bar — always visible */}
-          <header className="h-16 flex items-center px-6 gap-4 shrink-0 z-20 bg-card dark:bg-[hsl(228_30%_7%)] border-b border-border dark:border-[hsl(228_25%_14%)]">
+          <header className="h-16 flex items-center px-6 gap-4 shrink-0 z-20 bg-background dark:bg-[hsl(228_30%_7%)] border-b border-border dark:border-[hsl(228_25%_14%)]">
             <h1 className="text-xl font-bold text-foreground">{pageTitle}</h1>
             <div className="flex-1" />
             <div className="flex items-center gap-2">
