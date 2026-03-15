@@ -154,7 +154,7 @@ export default function Tracking() {
               </div>
             ) : (
               plannedFeatures.map(feature => (
-                <div key={feature.id} className="rounded-xl p-3 bg-slate-50 dark:bg-[#1a1530] border border-border">
+                <div key={feature.id} className="rounded-xl p-3 bg-slate-50 dark:bg-[#1a1530] border border-border transition-all duration-200 hover:shadow-md hover:border-primary/40 hover:bg-slate-100 dark:hover:bg-[#2d1f47]">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
                       <h3 className="font-medium text-foreground mb-2">{feature.title}</h3>
