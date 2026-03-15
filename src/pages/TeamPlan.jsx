@@ -805,7 +805,7 @@ export default function TeamPlan() {
                             <div
                               {...(!manualMode ? rowDrag.dragHandleProps : {})}
                               onPointerDown={manualMode ? (e) => startNativeDrag(e, entry, feat) : undefined}
-                              className={`cursor-grab active:cursor-grabbing shrink-0 ${manualMode ? 'text-indigo-400/60 hover:text-indigo-400' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}
+                              className={`cursor-grab active:cursor-grabbing shrink-0 ${manualMode ? 'text-primary/50 hover:text-primary' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}
                             >
                               <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor"><circle cx="2" cy="2" r="1.5"/><circle cx="8" cy="2" r="1.5"/><circle cx="2" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="2" cy="14" r="1.5"/><circle cx="8" cy="14" r="1.5"/></svg>
                             </div>
