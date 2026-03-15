@@ -402,6 +402,8 @@ export default function TeamPlan() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] }),
   });
 
+  const [deletePlanOpen, setDeletePlanOpen] = useState(false);
+
   const signPlanMutation = useMutation({
     mutationFn: async () => {
       const snapshot = JSON.stringify(entries.map(e => ({
@@ -426,6 +428,24 @@ export default function TeamPlan() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['signedPlan', selectedTeamId, selectedYear, selectedQuarter] });
+    }
+  });
+
+  const deletePlanMutation = useMutation({
+    mutationFn: async () => {
+      if (signedPlan) {
+        await base44.entities.SignedQuarterPlan.delete(signedPlan.id);
+      }
+      // Delete all actual progress records for this team and quarter
+      const actualProgressRecords = await base44.entities.ActualProgress.filter({ team_id: selectedTeamId, year: selectedYear, quarter: selectedQuarter });
+      if (actualProgressRecords.length > 0) {
+        await Promise.all(actualProgressRecords.map(record => base44.entities.ActualProgress.delete(record.id)));
+      }
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['signedPlan', selectedTeamId, selectedYear, selectedQuarter] });
+      qc.invalidateQueries({ queryKey: ['actualProgress', selectedTeamId, selectedYear, selectedQuarter] });
+      setDeletePlanOpen(false);
     }
   });
 
@@ -601,21 +621,21 @@ export default function TeamPlan() {
           </SelectContent>
         </Select>
         <div className="flex items-center gap-2">
-          {selectedTeamId && (
-            <Button
-              onClick={() => signPlanMutation.mutate()}
-              disabled={signPlanMutation.isPending || entries.length === 0}
-              variant={signedPlan ? 'default' : 'outline'}
-              className={signedPlan ? '' : ''}
-            >
-              <CheckCircle className="w-4 h-4" />
-              {signedPlan ? 'Plan Signed' : 'Sign Plan'}
-            </Button>
-          )}
-          {canEdit && (
-            <Button onClick={() => setAddFeatureOpen(true)} disabled={!selectedTeamId}><Plus className="w-4 h-4" />Add Feature</Button>
-          )}
-        </div>
+           {selectedTeamId && (
+             <Button
+               onClick={() => signedPlan ? setDeletePlanOpen(true) : signPlanMutation.mutate()}
+               disabled={signPlanMutation.isPending || deletePlanMutation.isPending || entries.length === 0}
+               variant={signedPlan ? 'default' : 'outline'}
+               className={signedPlan ? '' : ''}
+             >
+               <CheckCircle className="w-4 h-4" />
+               {signedPlan ? 'Plan Signed' : 'Sign Plan'}
+             </Button>
+           )}
+           {canEdit && (
+             <Button onClick={() => setAddFeatureOpen(true)} disabled={!selectedTeamId}><Plus className="w-4 h-4" />Add Feature</Button>
+           )}
+         </div>
       </div>
 
 
