@@ -159,7 +159,19 @@ export default function Tracking() {
                 <div key={feature.id} className="rounded-xl p-2 bg-slate-50 dark:bg-[#1a1530] border border-border transition-all duration-200 hover:shadow-md hover:border-primary/40 hover:bg-slate-100 dark:hover:bg-[#2d1f47]">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-foreground mb-1.5">{feature.title}</h3>
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <h3 className="font-medium text-foreground">{feature.title}</h3>
+                        <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                          feature.featureStatus === 'Done' ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300' :
+                          feature.featureStatus === 'Blocked' ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300' :
+                          feature.featureStatus === 'On Hold' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-300' :
+                          feature.featureStatus === 'Testing' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300' :
+                          feature.featureStatus === 'In Progress' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300' :
+                          'bg-gray-100 text-gray-700 dark:bg-gray-900/40 dark:text-gray-300'
+                        }`}>
+                          {feature.featureStatus}
+                        </span>
+                      </div>
                       <div className="grid grid-cols-5 gap-3 text-sm">
                         <div className="text-left">
                           <p className="text-xs text-muted-foreground">Plan</p>
