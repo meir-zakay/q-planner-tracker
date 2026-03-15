@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
-import { LayoutDashboard, Users, UsersRound, ListChecks, CalendarRange, Settings, LogOut, Sun, Moon, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
+import { LayoutDashboard, Users, UsersRound, ListChecks, CalendarRange, Settings, LogOut, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -30,10 +30,6 @@ const navItems = [
 export default function Layout() {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
-  const [darkMode, setDarkMode] = useState(() => {
-    const saved = localStorage.getItem('theme');
-    return saved ? saved === 'dark' : true; // default to dark mode
-  });
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
@@ -56,10 +52,7 @@ export default function Layout() {
     window.dispatchEvent(new Event('quarterChanged'));
   }, [selectedYear, selectedQuarter]);
 
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', darkMode);
-    localStorage.setItem('theme', darkMode ? 'dark' : 'light');
-  }, [darkMode]);
+
 
   const filteredNav = navItems.filter(item => item.roles.includes(userRole));
 
@@ -70,16 +63,12 @@ export default function Layout() {
   return (
     <TooltipProvider delayDuration={300}>
       <div className="h-screen flex overflow-hidden">
-        {/* Sidebar — always dark indigo */}
+        {/* Sidebar */}
         <aside
           className={`relative shrink-0 h-full flex flex-col transition-all duration-200 ${sidebarWidth}`}
-          style={{
-            background: 'hsl(228 30% 7%)',
-            borderRight: '1px solid hsl(228 25% 14%)',
-          }}
         >
           {/* Logo */}
-          <div className="h-16 flex items-center gap-2 px-3 shrink-0" style={{ borderBottom: '1px solid hsl(228 25% 14%)' }}>
+          <div className="h-16 flex items-center gap-2 px-3 shrink-0 border-b border-border">
             <Link to="/Dashboard" className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center shrink-0">
                 <CalendarRange className="w-4 h-4 text-white" />
@@ -127,8 +116,7 @@ export default function Layout() {
           {/* Collapse toggle */}
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="absolute -right-3 top-4 w-6 h-6 rounded-full flex items-center justify-center shadow-sm transition-colors z-10"
-            style={{ background: 'hsl(228 30% 7%)', border: '1px solid hsl(228 25% 14%)' }}
+            className="absolute -right-3 top-4 w-6 h-6 rounded-full flex items-center justify-center shadow-sm transition-colors z-10 bg-background border border-border"
           >
             {collapsed ? <ChevronRight className="w-3 h-3 text-blue-300/60" /> : <ChevronLeft className="w-3 h-3 text-blue-300/60" />}
           </button>
@@ -136,8 +124,8 @@ export default function Layout() {
 
         {/* Main area */}
         <div className="flex-1 min-w-0 flex flex-col h-full overflow-hidden">
-          {/* Top Header Bar — always visible */}
-          <header className="h-16 flex items-center px-6 gap-4 shrink-0 z-20 bg-background dark:bg-[hsl(228_30%_7%)] border-b border-border dark:border-[hsl(228_25%_14%)]">
+          {/* Top Header Bar */}
+          <header className="h-16 flex items-center px-6 gap-4 shrink-0 z-20 bg-background border-b border-border">
             <h1 className="text-xl font-bold text-foreground">{pageTitle}</h1>
             <div className="flex-1" />
             <div className="flex items-center gap-2">
@@ -170,11 +158,6 @@ export default function Layout() {
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => setDarkMode(!darkMode)} className="gap-2">
-                      {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-                      {darkMode ? 'Light Mode' : 'Dark Mode'}
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => base44.auth.logout()} className="text-destructive focus:text-destructive gap-2">
                       <LogOut className="w-4 h-4" /> Logout
                     </DropdownMenuItem>

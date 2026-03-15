@@ -582,7 +582,7 @@ export default function TeamPlan() {
         <DragDropContext onDragEnd={handleDragEnd}>
           <div className="space-y-6">
           {/* Sprint Allocation Section */}
-          <div className="rounded-xl p-5 bg-card dark:bg-[hsl(228_30%_7%)] border border-border dark:border-[hsl(228_25%_14%)]">
+          <div className="rounded-xl p-5 bg-card border border-border">
             <div className="flex items-center justify-between mb-1 flex-wrap gap-2">
               <h2 className="text-base font-semibold text-foreground">Sprints Allocation — {selectedTeam?.name}</h2>
               <TooltipProvider delayDuration={200}>
@@ -630,15 +630,15 @@ export default function TeamPlan() {
                   const feFeatures = sortedEntries.filter(e => (e.sprint_allocations?.find(a => a.sprint === sprint)?.fe_weeks || 0) > 0);
 
                   return (
-                    <div key={sprint} className="rounded-xl min-w-0 overflow-hidden bg-card dark:bg-[hsl(228_28%_10%)] border border-border dark:border-[hsl(228_25%_16%)]">
+                    <div key={sprint} className="rounded-xl min-w-0 overflow-hidden bg-card border border-border">
                       {/* Sprint header */}
-                      <div className="px-3 py-2.5 border-b text-center bg-muted/30 dark:bg-[hsl(228_30%_7%)] border-border dark:border-[hsl(228_25%_16%)]">
+                      <div className="px-3 py-2.5 border-b text-center bg-muted/30 border-border">
                         <p className="font-bold text-foreground text-sm">{sprint}</p>
                         <p className="text-[10px] text-muted-foreground">2 weeks</p>
                       </div>
 
                       {/* BE Section */}
-                      <div className="p-2.5 border-b border-border dark:border-[hsl(228_25%_16%)]">
+                      <div className="p-2.5 border-b border-border">
                         <div className="flex items-center justify-between mb-1">
                           <span className={`text-xs font-semibold ${beOver ? 'text-red-500' : 'text-blue-500'}`}>BE</span>
                           <span className={`text-xs font-semibold ${beOver ? 'text-red-500' : 'text-muted-foreground'}`}>{beUsed}/{thisBeSprintCap}w</span>
@@ -669,7 +669,7 @@ export default function TeamPlan() {
                                        {...drag.draggableProps}
                                        {...drag.dragHandleProps}
                                        style={drag.draggableProps.style}
-                                       className={`rounded-lg px-2 py-1.5 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 cursor-grab active:cursor-grabbing ${dragSnapshot.isDragging ? 'shadow-lg opacity-95 z-50' : ''}`}
+                                       className={`rounded-lg px-2 py-1.5 bg-blue-50 border border-blue-200 cursor-grab active:cursor-grabbing ${dragSnapshot.isDragging ? 'shadow-lg opacity-95 z-50' : ''}`}
                                        >
                                        <p className="text-[11px] text-blue-600 dark:text-blue-400 font-semibold leading-tight truncate">{feat?.title}</p>
                                        {canEdit && editCell?.key === cellKey ? (
@@ -731,7 +731,7 @@ export default function TeamPlan() {
                                        {...drag.draggableProps}
                                        {...drag.dragHandleProps}
                                        style={drag.draggableProps.style}
-                                       className={`rounded-lg px-2 py-1.5 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 cursor-grab active:cursor-grabbing ${dragSnapshot.isDragging ? 'shadow-lg opacity-95 z-50' : ''}`}
+                                       className={`rounded-lg px-2 py-1.5 bg-emerald-50 border border-emerald-200 cursor-grab active:cursor-grabbing ${dragSnapshot.isDragging ? 'shadow-lg opacity-95 z-50' : ''}`}
                                        >
                                        <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold leading-tight truncate">{feat?.title}</p>
                                        {canEdit && editCell?.key === cellKey ? (
@@ -769,7 +769,7 @@ export default function TeamPlan() {
           {/* Bottom: Planned Features + Pie Chart */}
           <div className="grid lg:grid-cols-[1fr_380px] gap-6">
             {/* Planned Features */}
-            <div className="rounded-xl p-5 bg-card dark:bg-[hsl(228_30%_7%)] border border-border dark:border-[hsl(228_25%_14%)]">
+            <div className="rounded-xl p-5 bg-card border border-border">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-foreground">Planned Features</h3>
                 {canEdit && <p className="text-xs text-muted-foreground italic">
@@ -882,7 +882,7 @@ export default function TeamPlan() {
             </div>
 
             {/* Pie Chart */}
-            <div className="rounded-xl p-5 bg-card dark:bg-[hsl(228_30%_7%)] border border-border dark:border-[hsl(228_25%_14%)]">
+            <div className="rounded-xl p-5 bg-card border border-border">
               <h3 className="font-semibold text-foreground mb-1">Effort by Objective</h3>
               <div className="flex items-center justify-between mb-1">
                 <p className="text-xs text-muted-foreground">Capacity Utilization</p>
