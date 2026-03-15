@@ -559,7 +559,7 @@ export default function TeamPlan() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <Select value={selectedTeamId} onValueChange={handleTeamChange}>
-          <SelectTrigger className="w-52 bg-card">
+          <SelectTrigger className="w-52">
             <SelectValue placeholder="Select a team..." />
           </SelectTrigger>
           <SelectContent>
