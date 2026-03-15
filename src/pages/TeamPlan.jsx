@@ -87,7 +87,7 @@ export default function TeamPlan() {
   const [customFeatureTitle, setCustomFeatureTitle] = useState('');
   const [customFeatureObjective, setCustomFeatureObjective] = useState('');
   const [addMode, setAddMode] = useState('existing'); // 'existing' | 'custom'
-  const [effortForm, setEffortForm] = useState({ be: '', fe: '' });
+  const [effortForm, setEffortForm] = useState({ be: '', fe: '', beParallelism: '1', feParallelism: '1' });
   const [editEntryId, setEditEntryId] = useState(null);
   const [editEffort, setEditEffort] = useState({ be: '', fe: '', beParallelism: '', feParallelism: '' });
   const [editCell, setEditCell] = useState(null);
