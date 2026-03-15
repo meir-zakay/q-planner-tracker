@@ -47,7 +47,7 @@ export default function Users() {
     <RoleGate allowed={['admin']}>
       <div className="space-y-6">
         <div className="flex items-center justify-end">
-          <Button onClick={() => setInviteOpen(true)} className="gap-2 px-5 py-2 text-sm font-semibold rounded-xl shadow-md">
+          <Button onClick={() => setInviteOpen(true)}>
             <UserPlus className="w-4 h-4" /> Invite User
           </Button>
         </div>
@@ -120,7 +120,7 @@ export default function Users() {
             )}
             <DialogFooter>
               <Button variant="outline" onClick={() => setEditUser(null)}>Cancel</Button>
-              <Button onClick={() => updateMutation.mutate({ id: editUser.id, data: { role: editUser.role } })} disabled={updateMutation.isPending} className="font-semibold rounded-xl shadow-md">Save</Button>
+              <Button onClick={() => updateMutation.mutate({ id: editUser.id, data: { role: editUser.role } })} disabled={updateMutation.isPending}>Save</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -146,7 +146,7 @@ export default function Users() {
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setInviteOpen(false)}>Cancel</Button>
-              <Button onClick={handleInvite} className="font-semibold rounded-xl shadow-md">Send Invitation</Button>
+              <Button onClick={handleInvite}>Send Invitation</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
