@@ -8,9 +8,9 @@
   :root {
     --background: 0 0% 98%;
     --foreground: 222 47% 11%;
-    --card: 0 0% 100%;
+    --card: 228 28% 21%;
     --card-foreground: 222 47% 11%;
-    --popover: 0 0% 100%;
+    --popover: 228 28% 21%;
     --popover-foreground: 222 47% 11%;
     --primary: 217 85% 39%;
     --primary-foreground: 0 0% 100%;
@@ -22,8 +22,8 @@
     --accent-foreground: 222 47% 11%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
+    --border: 228 28% 28%;
+    --input: 228 28% 28%;
     --ring: 217 85% 39%;
     --radius: 0.625rem;
     --sidebar-background: 0 0% 100%;
@@ -39,9 +39,9 @@
   html.dark {
     --background: 15 23% 9%;
     --foreground: 210 40% 96%;
-    --card: 15 25% 14%;
+    --card: 228 30% 18%;
     --card-foreground: 210 40% 96%;
-    --popover: 15 25% 14%;
+    --popover: 228 30% 18%;
     --popover-foreground: 210 40% 96%;
     --primary: 217 85% 39%;
     --primary-foreground: 0 0% 100%;
@@ -53,8 +53,8 @@
     --accent-foreground: 210 40% 96%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 15 25% 18%;
-    --input: 15 25% 18%;
+    --border: 228 25% 25%;
+    --input: 228 25% 25%;
     --ring: 217 85% 39%;
     --sidebar-background: 15 20% 6%;
     --sidebar-foreground: 210 40% 96%;
