@@ -83,7 +83,7 @@ export default function Layout() {
               <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center shrink-0">
                 <CalendarRange className="w-4 h-4 text-primary-foreground" />
               </div>
-              {!collapsed && <span className="font-bold text-foreground text-lg tracking-tight whitespace-nowrap">Quarter Planner</span>}
+              {!collapsed && <span className="font-bold text-[#0F3A7D] text-lg tracking-tight whitespace-nowrap">Quarter Planner</span>}
             </Link>
           </div>
 
