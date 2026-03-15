@@ -797,7 +797,7 @@ export default function TeamPlan() {
                         className={`py-2 border-b border-border/50 last:border-0 ${entry.excluded_from_allocation ? 'opacity-50' : ''}`}
                       >
                         {rowSnapshot.isDragging ? (
-                          <div className="bg-indigo-600 text-white text-xs font-semibold px-2 py-1 rounded-md shadow-xl truncate w-32">
+                          <div className="bg-primary text-primary-foreground text-xs font-semibold px-2 py-1 rounded-md shadow-xl truncate w-32">
                             {feat.title}
                           </div>
                         ) : (
