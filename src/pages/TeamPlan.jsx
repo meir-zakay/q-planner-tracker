@@ -769,7 +769,7 @@ export default function TeamPlan() {
           {/* Bottom: Planned Features + Pie Chart */}
           <div className="grid lg:grid-cols-[1fr_380px] gap-6">
             {/* Planned Features */}
-            <div className="rounded-xl p-5 bg-card border border-border">
+            <div className="rounded-xl p-5 bg-card dark:bg-[#1a1530] border border-border">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-foreground">Planned Features</h3>
                 {canEdit && <p className="text-xs text-muted-foreground italic">
@@ -882,7 +882,7 @@ export default function TeamPlan() {
             </div>
 
             {/* Pie Chart */}
-            <div className="rounded-xl p-5 bg-card border border-border">
+            <div className="rounded-xl p-5 bg-card dark:bg-[#1a1530] border border-border">
               <h3 className="font-semibold text-foreground mb-1">Effort by Objective</h3>
               <div className="flex items-center justify-between mb-1">
                 <p className="text-xs text-muted-foreground">Capacity Utilization</p>
