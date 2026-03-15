@@ -401,48 +401,94 @@ export default function TeamPlan() {
   const dndStateRef = useRef({});
   dndStateRef.current = { sortedEntries, sprints, beSprintCaps, feSprintCaps, canEdit, manualMode };
 
+  // --- Native pointer drag state for feature-row → sprint drops ---
+  const [nativeDrag, setNativeDrag] = useState(null); // { entryId, x, y } while dragging
+  const nativeDragRef = useRef(null);
+  const ghostRef = useRef(null);
+
+  const startNativeDrag = useCallback((e, entry, feat) => {
+    if (!manualMode) return; // only in manual mode
+    e.preventDefault();
+    const startX = e.clientX;
+    const startY = e.clientY;
+    let started = false;
+
+    const onMove = (ev) => {
+      if (!started && Math.abs(ev.clientX - startX) + Math.abs(ev.clientY - startY) > 4) {
+        started = true;
+        nativeDragRef.current = { entryId: entry.id, feat };
+        setNativeDrag({ entryId: entry.id, feat, x: ev.clientX, y: ev.clientY });
+      }
+      if (started) {
+        setNativeDrag(d => d ? { ...d, x: ev.clientX, y: ev.clientY } : null);
+        // Highlight sprint zone under cursor
+        document.querySelectorAll('[data-sprint-drop]').forEach(el => {
+          const r = el.getBoundingClientRect();
+          const over = ev.clientX >= r.left && ev.clientX <= r.right && ev.clientY >= r.top && ev.clientY <= r.bottom;
+          el.setAttribute('data-drop-active', over ? '1' : '0');
+        });
+      }
+    };
+
+    const onUp = (ev) => {
+      document.removeEventListener('pointermove', onMove);
+      document.removeEventListener('pointerup', onUp);
+      document.querySelectorAll('[data-sprint-drop]').forEach(el => el.setAttribute('data-drop-active', '0'));
+
+      if (!started || !nativeDragRef.current) { setNativeDrag(null); nativeDragRef.current = null; return; }
+
+      // Find which sprint zone the pointer is over
+      const { sortedEntries: currentEntries, sprints: sprintList } = dndStateRef.current;
+      let target = null;
+      document.querySelectorAll('[data-sprint-drop]').forEach(el => {
+        const r = el.getBoundingClientRect();
+        if (ev.clientX >= r.left && ev.clientX <= r.right && ev.clientY >= r.top && ev.clientY <= r.bottom) {
+          target = el.getAttribute('data-sprint-drop'); // e.g. "S9-be"
+        }
+      });
+
+      setNativeDrag(null);
+      nativeDragRef.current = null;
+
+      if (!target) return;
+      const match = target.match(/^(.+)-(be|fe)$/);
+      if (!match) return;
+      const [, destSprint, type] = match;
+      const key = type === 'be' ? 'be_weeks' : 'fe_weeks';
+      const totalKey = type === 'be' ? 'be_effort_weeks' : 'fe_effort_weeks';
+
+      const entryObj = currentEntries.find(e => e.id === entry.id);
+      if (!entryObj) return;
+      const effort = entryObj[totalKey] || 0;
+      if (effort === 0) return;
+
+      const newAllocs = sprintList.map(s => {
+        const a = entryObj.sprint_allocations?.find(a => a.sprint === s) || { sprint: s, be_weeks: 0, fe_weeks: 0 };
+        if (s === destSprint) return { ...a, [key]: (a[key] || 0) + effort };
+        return { ...a };
+      });
+      const newBE = newAllocs.reduce((s, a) => s + (a.be_weeks || 0), 0);
+      const newFE = newAllocs.reduce((s, a) => s + (a.fe_weeks || 0), 0);
+      base44.entities.TeamPlanEntry.update(entry.id, { sprint_allocations: newAllocs, be_effort_weeks: newBE, fe_effort_weeks: newFE })
+        .then(() => qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] }));
+    };
+
+    document.addEventListener('pointermove', onMove);
+    document.addEventListener('pointerup', onUp);
+  }, [manualMode, qc, selectedYear, selectedQuarter, selectedTeamId]);
+
   const handleDragEnd = useCallback((result) => {
     const { sortedEntries: currentEntries, sprints: sprintList, beSprintCaps: beCaps, feSprintCaps: feCaps, manualMode: isManual } = dndStateRef.current;
     if (!result.destination) return;
     const { draggableId, source, destination } = result;
 
-    // --- Feature reorder in Planned Features list (auto mode only) ---
+    // --- Feature reorder in Planned Features list ---
     if (source.droppableId === 'planned-features-list' && destination.droppableId === 'planned-features-list') {
       if (source.index === destination.index) return;
       const reordered = Array.from(currentEntries);
       const [moved] = reordered.splice(source.index, 1);
       reordered.splice(destination.index, 0, moved);
       reorderEntryMutation.mutate(reordered);
-      return;
-    }
-
-    // --- Manual mode: drag feature from list into a sprint ---
-    if (isManual && source.droppableId === 'planned-features-list') {
-      const destMatch = destination.droppableId.match(/^(.+)-(be|fe)$/);
-      if (!destMatch) return;
-      const [, destSprint, type] = destMatch;
-      const key = type === 'be' ? 'be_weeks' : 'fe_weeks';
-      const totalKey = type === 'be' ? 'be_effort_weeks' : 'fe_effort_weeks';
-
-      // draggableId is `row-${entry.id}`
-      const entryId = draggableId.replace(/^row-/, '');
-      const entry = currentEntries.find(e => e.id === entryId);
-      if (!entry) return;
-
-      const effort = entry[totalKey] || 0;
-      if (effort === 0) return;
-
-      // In manual mode: add effort to destination sprint without clearing others
-      // (allows the same feature to appear in multiple sprints)
-      const newAllocs = sprintList.map(s => {
-        const a = entry.sprint_allocations?.find(a => a.sprint === s) || { sprint: s, be_weeks: 0, fe_weeks: 0 };
-        if (s === destSprint) return { ...a, [key]: (a[key] || 0) + effort };
-        return { ...a };
-      });
-      const newBE = newAllocs.reduce((s, a) => s + (a.be_weeks || 0), 0);
-      const newFE = newAllocs.reduce((s, a) => s + (a.fe_weeks || 0), 0);
-      base44.entities.TeamPlanEntry.update(entryId, { sprint_allocations: newAllocs, be_effort_weeks: newBE, fe_effort_weeks: newFE })
-        .then(() => qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] }));
       return;
     }
 
@@ -456,7 +502,6 @@ export default function TeamPlan() {
       const destSprint = destination.droppableId.replace(new RegExp(`-${type}$`), '');
 
       if (isManual) {
-        // Move value from src to dest sprint
         const entry = currentEntries.find(e => e.id === entryId);
         if (!entry) return;
         const movedVal = entry.sprint_allocations?.find(a => a.sprint === srcSprint)?.[key] || 0;
@@ -472,7 +517,6 @@ export default function TeamPlan() {
         base44.entities.TeamPlanEntry.update(entryId, { sprint_allocations: newAllocs, be_effort_weeks: newBE, fe_effort_weeks: newFE })
           .then(() => qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] }));
       } else {
-        // Auto mode: repin to dest sprint
         const destSprintIdx = sprintList.indexOf(destSprint);
         if (destSprintIdx < 0) return;
         const pinnedStarts = { [entryId]: destSprintIdx };
