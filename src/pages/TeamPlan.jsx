@@ -737,20 +737,19 @@ export default function TeamPlan() {
                       <div
                         ref={rowDrag.innerRef}
                         {...rowDrag.draggableProps}
-                        {...rowDrag.dragHandleProps}
-                        style={{
-                          ...rowDrag.draggableProps.style,
-                          width: rowSnapshot.isDragging ? '128px' : undefined,
-                        }}
+                        style={rowDrag.draggableProps.style}
                         className={`py-2 border-b border-border/50 last:border-0 ${entry.excluded_from_allocation ? 'opacity-50' : ''}`}
                       >
                         {rowSnapshot.isDragging ? (
-                          <div className="bg-indigo-600 text-white text-xs font-semibold px-2 py-1 rounded-md shadow-xl truncate">
+                          <div className="bg-indigo-600 text-white text-xs font-semibold px-2 py-1 rounded-md shadow-xl truncate w-32">
                             {feat.title}
                           </div>
                         ) : (
                           <div className="flex items-center gap-3">
-                            <div className={`cursor-grab active:cursor-grabbing shrink-0 ${manualMode ? 'text-indigo-400/60 hover:text-indigo-400' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}>
+                            <div
+                              {...rowDrag.dragHandleProps}
+                              className={`cursor-grab active:cursor-grabbing shrink-0 ${manualMode ? 'text-indigo-400/60 hover:text-indigo-400' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}
+                            >
                               <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor"><circle cx="2" cy="2" r="1.5"/><circle cx="8" cy="2" r="1.5"/><circle cx="2" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="2" cy="14" r="1.5"/><circle cx="8" cy="14" r="1.5"/></svg>
                             </div>
                             <div className="flex items-center justify-center w-6 h-6 rounded-lg text-[11px] font-bold text-primary shrink-0" style={{ background: 'hsl(239 84% 67% / 0.18)' }}>
