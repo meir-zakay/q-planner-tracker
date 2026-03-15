@@ -72,7 +72,7 @@ export default function Layout() {
       <div className="h-screen flex overflow-hidden">
         {/* Sidebar — always dark indigo */}
         <aside
-          className={`relative shrink-0 h-full flex flex-col transition-all duration-200 ${sidebarWidth} overflow-y-auto`}
+          className={`relative shrink-0 h-full flex flex-col transition-all duration-200 ${sidebarWidth}`}
           style={{
             background: 'hsl(228 30% 7%)',
             borderRight: '1px solid hsl(228 25% 14%)',
