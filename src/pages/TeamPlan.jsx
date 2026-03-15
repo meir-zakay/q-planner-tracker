@@ -859,133 +859,132 @@ export default function TeamPlan() {
           </div>
 
           {/* Bottom: Planned Features + Pie Chart */}
-          <div className="space-y-6">
-            <div className="grid lg:grid-cols-[1fr_380px] gap-6">
-              {/* Planned Features */}
-              <div className="rounded-xl p-5 bg-slate-50 dark:bg-[#1a1530] border border-border min-h-96">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-foreground">Planned Features</h3>
-                  {canEdit && <p className="text-xs text-muted-foreground italic">
-                    {manualMode ? 'Drag a feature into a sprint to assign it · ' : (sortedEntries.length > 1 ? 'Drag rows to reorder · ' : '')}
-                    Click <Pencil className="w-3 h-3 inline" /> to set effort
-                  </p>}
-                </div>
-                <Droppable droppableId="planned-features-list">
-                  {(listProvided) => (
-                  <div ref={listProvided.innerRef} {...listProvided.droppableProps} className="space-y-0">
-                  {sortedEntries.length === 0 && <p className="text-sm text-muted-foreground text-center py-8">No features planned yet</p>}
-                  {sortedEntries.map((entry, rowIdx) => {
-                    const feat = featureMap[entry.feature_id];
-                    if (!feat) return null;
-                    const isEditing = editEntryId === entry.id;
-                    return (
-                      <Draggable key={entry.id} draggableId={`row-${entry.id}`} index={rowIdx} isDragDisabled={manualMode}>
-                      {(rowDrag, rowSnapshot) => (
-                        <div
-                          ref={rowDrag.innerRef}
-                          {...rowDrag.draggableProps}
-                          style={rowDrag.draggableProps.style}
-                          className={`py-2 border-b border-border/50 last:border-0 ${entry.excluded_from_allocation ? 'opacity-50' : ''}`}
-                        >
-                          {rowSnapshot.isDragging ? (
-                            <div className="bg-primary text-primary-foreground text-xs font-semibold px-2 py-1 rounded-md shadow-xl truncate w-32">
-                              {feat.title}
-                            </div>
-                          ) : (
-                            <div className="flex items-center gap-3">
-                              <div
-                                {...(!manualMode ? rowDrag.dragHandleProps : {})}
-                                onPointerDown={manualMode ? (e) => startNativeDrag(e, entry, feat) : undefined}
-                                className={`cursor-grab active:cursor-grabbing shrink-0 ${manualMode ? 'text-primary/50 hover:text-primary' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}
-                              >
-                                <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor"><circle cx="2" cy="2" r="1.5"/><circle cx="8" cy="2" r="1.5"/><circle cx="2" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="2" cy="14" r="1.5"/><circle cx="8" cy="14" r="1.5"/></svg>
-                              </div>
-                              <div className="flex items-center justify-center w-6 h-6 rounded-lg text-[11px] font-bold text-indigo-400 shrink-0 bg-indigo-900 shadow-md">
-                                {rowIdx + 1}
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 flex-wrap">
-                                  <p className="text-sm font-medium text-foreground truncate">{feat.title}</p>
-                                  {feat.objective && (
-                                    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold text-white shrink-0" style={{ backgroundColor: objColor(feat.objective) }}>
-                                      {feat.objective}
-                                    </span>
-                                  )}
-                                  {(() => { const range = getSprintRange(entry); return range ? (
-                                    <span className="text-[10px] text-muted-foreground shrink-0">
-                                      {range.start === range.end ? range.start : `${range.start} → ${range.end}`}
-                                    </span>
-                                  ) : null; })()}
-                                </div>
-                              </div>
-                              {isEditing ? (
-                                <div className="flex items-center gap-2">
-                                  <div className="flex items-center gap-1">
-                                    <Server className="w-3 h-3 text-blue-500" />
-                                    <Input type="number" min="0" step="0.5" value={editEffort.be} onChange={e => setEditEffort(p => ({ ...p, be: e.target.value }))} className="h-7 w-14 text-xs" placeholder="0" title="BE effort" />
-                                    <span className="text-xs text-muted-foreground">/</span>
-                                    <Input type="number" min="1" value={editEffort.beParallelism} onChange={e => setEditEffort(p => ({ ...p, beParallelism: e.target.value }))} className="h-7 w-14 text-xs" placeholder="1" title="BE parallelism" />
-                                  </div>
-                                  <div className="flex items-center gap-1">
-                                    <Monitor className="w-3 h-3 text-emerald-500" />
-                                    <Input type="number" min="0" step="0.5" value={editEffort.fe} onChange={e => setEditEffort(p => ({ ...p, fe: e.target.value }))} className="h-7 w-14 text-xs" placeholder="0" title="FE effort" />
-                                    <span className="text-xs text-muted-foreground">/</span>
-                                    <Input type="number" min="1" value={editEffort.feParallelism} onChange={e => setEditEffort(p => ({ ...p, feParallelism: e.target.value }))} className="h-7 w-14 text-xs" placeholder="1" title="FE parallelism" />
-                                  </div>
-                                  <Button size="sm" className="h-7 text-xs px-2" onClick={() => updateEffortMutation.mutate({ entry, beEffort: Number(editEffort.be) || 0, feEffort: Number(editEffort.fe) || 0, beParallelism: Number(editEffort.beParallelism) || 1, feParallelism: Number(editEffort.feParallelism) || 1 })}>Save</Button>
-                                  <Button size="sm" variant="ghost" className="h-7 text-xs px-2" onClick={() => setEditEntryId(null)}>Cancel</Button>
-                                </div>
-                              ) : (
-                                <div className="flex items-center gap-3">
-                                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                    <Server className="w-3 h-3 text-blue-500" />
-                                    <span className="font-medium text-foreground">{entry.be_effort_weeks || 0}w</span>
-                                    <span className="text-muted-foreground">/</span>
-                                    <Users2 className="w-3 h-3 text-blue-400" />
-                                    <span className="font-medium text-foreground">{entry.be_parallelism || 1}</span>
-                                  </div>
-                                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                    <Monitor className="w-3 h-3 text-emerald-500" />
-                                    <span className="font-medium text-foreground">{entry.fe_effort_weeks || 0}w</span>
-                                    <span className="text-muted-foreground">/</span>
-                                    <Users2 className="w-3 h-3 text-emerald-400" />
-                                    <span className="font-medium text-foreground">{entry.fe_parallelism || 1}</span>
-                                  </div>
-                                  <Button
-                                    variant="ghost" size="icon"
-                                    className={`h-6 w-6 ${entry.excluded_from_allocation ? 'text-rose-400 hover:text-rose-300' : 'text-emerald-500 hover:text-emerald-400'}`}
-                                    title={entry.excluded_from_allocation ? 'Excluded — click to include' : 'Included — click to exclude'}
-                                    onClick={() => toggleExcludeMutation.mutate({ entry, excluded: !entry.excluded_from_allocation })}
-                                  >
-                                    {entry.excluded_from_allocation ? <CircleMinus className="w-3.5 h-3.5" /> : <CircleCheck className="w-3.5 h-3.5" />}
-                                  </Button>
-                                  {canEdit && (
-                                    <>
-                                      <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-foreground" onClick={() => { setEditEntryId(entry.id); setEditEffort({ be: String(entry.be_effort_weeks || 0), fe: String(entry.fe_effort_weeks || 0), beParallelism: String(entry.be_parallelism || 1), feParallelism: String(entry.fe_parallelism || 1) }); }}>
-                                        <Pencil className="w-3 h-3" />
-                                      </Button>
-                                      <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-destructive" onClick={() => removeEntryMutation.mutate(entry.id)}>
-                                        <Trash2 className="w-3 h-3" />
-                                      </Button>
-                                    </>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      )}
-                      </Draggable>
-                    );
-                  })}
-                  {listProvided.placeholder}
-                  </div>
-                  )}
-                </Droppable>
+          <div className="grid lg:grid-cols-[1fr_380px] gap-6">
+            {/* Planned Features */}
+            <div className="rounded-xl p-5 bg-slate-50 dark:bg-[#1a1530] border border-border">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-foreground">Planned Features</h3>
+                {canEdit && <p className="text-xs text-muted-foreground italic">
+                  {manualMode ? 'Drag a feature into a sprint to assign it · ' : (sortedEntries.length > 1 ? 'Drag rows to reorder · ' : '')}
+                  Click <Pencil className="w-3 h-3 inline" /> to set effort
+                </p>}
               </div>
+              <Droppable droppableId="planned-features-list">
+                {(listProvided) => (
+                <div ref={listProvided.innerRef} {...listProvided.droppableProps} className="space-y-0">
+                {sortedEntries.length === 0 && <p className="text-sm text-muted-foreground text-center py-8">No features planned yet</p>}
+                {sortedEntries.map((entry, rowIdx) => {
+                  const feat = featureMap[entry.feature_id];
+                  if (!feat) return null;
+                  const isEditing = editEntryId === entry.id;
+                  return (
+                    <Draggable key={entry.id} draggableId={`row-${entry.id}`} index={rowIdx} isDragDisabled={manualMode}>
+                    {(rowDrag, rowSnapshot) => (
+                      <div
+                        ref={rowDrag.innerRef}
+                        {...rowDrag.draggableProps}
+                        style={rowDrag.draggableProps.style}
+                        className={`py-2 border-b border-border/50 last:border-0 ${entry.excluded_from_allocation ? 'opacity-50' : ''}`}
+                      >
+                        {rowSnapshot.isDragging ? (
+                          <div className="bg-primary text-primary-foreground text-xs font-semibold px-2 py-1 rounded-md shadow-xl truncate w-32">
+                            {feat.title}
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-3">
+                            <div
+                              {...(!manualMode ? rowDrag.dragHandleProps : {})}
+                              onPointerDown={manualMode ? (e) => startNativeDrag(e, entry, feat) : undefined}
+                              className={`cursor-grab active:cursor-grabbing shrink-0 ${manualMode ? 'text-primary/50 hover:text-primary' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}
+                            >
+                              <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor"><circle cx="2" cy="2" r="1.5"/><circle cx="8" cy="2" r="1.5"/><circle cx="2" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="2" cy="14" r="1.5"/><circle cx="8" cy="14" r="1.5"/></svg>
+                            </div>
+                            <div className="flex items-center justify-center w-6 h-6 rounded-lg text-[11px] font-bold text-indigo-400 shrink-0 bg-indigo-900 shadow-md">
+                              {rowIdx + 1}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <p className="text-sm font-medium text-foreground truncate">{feat.title}</p>
+                                {feat.objective && (
+                                  <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold text-white shrink-0" style={{ backgroundColor: objColor(feat.objective) }}>
+                                    {feat.objective}
+                                  </span>
+                                )}
+                                {(() => { const range = getSprintRange(entry); return range ? (
+                                  <span className="text-[10px] text-muted-foreground shrink-0">
+                                    {range.start === range.end ? range.start : `${range.start} → ${range.end}`}
+                                  </span>
+                                ) : null; })()}
+                              </div>
+                            </div>
+                            {isEditing ? (
+                              <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-1">
+                                  <Server className="w-3 h-3 text-blue-500" />
+                                  <Input type="number" min="0" step="0.5" value={editEffort.be} onChange={e => setEditEffort(p => ({ ...p, be: e.target.value }))} className="h-7 w-14 text-xs" placeholder="0" title="BE effort" />
+                                  <span className="text-xs text-muted-foreground">/</span>
+                                  <Input type="number" min="1" value={editEffort.beParallelism} onChange={e => setEditEffort(p => ({ ...p, beParallelism: e.target.value }))} className="h-7 w-14 text-xs" placeholder="1" title="BE parallelism" />
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <Monitor className="w-3 h-3 text-emerald-500" />
+                                  <Input type="number" min="0" step="0.5" value={editEffort.fe} onChange={e => setEditEffort(p => ({ ...p, fe: e.target.value }))} className="h-7 w-14 text-xs" placeholder="0" title="FE effort" />
+                                  <span className="text-xs text-muted-foreground">/</span>
+                                  <Input type="number" min="1" value={editEffort.feParallelism} onChange={e => setEditEffort(p => ({ ...p, feParallelism: e.target.value }))} className="h-7 w-14 text-xs" placeholder="1" title="FE parallelism" />
+                                </div>
+                                <Button size="sm" className="h-7 text-xs px-2" onClick={() => updateEffortMutation.mutate({ entry, beEffort: Number(editEffort.be) || 0, feEffort: Number(editEffort.fe) || 0, beParallelism: Number(editEffort.beParallelism) || 1, feParallelism: Number(editEffort.feParallelism) || 1 })}>Save</Button>
+                                <Button size="sm" variant="ghost" className="h-7 text-xs px-2" onClick={() => setEditEntryId(null)}>Cancel</Button>
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <Server className="w-3 h-3 text-blue-500" />
+                                  <span className="font-medium text-foreground">{entry.be_effort_weeks || 0}w</span>
+                                  <span className="text-muted-foreground">/</span>
+                                  <Users2 className="w-3 h-3 text-blue-400" />
+                                  <span className="font-medium text-foreground">{entry.be_parallelism || 1}</span>
+                                </div>
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <Monitor className="w-3 h-3 text-emerald-500" />
+                                  <span className="font-medium text-foreground">{entry.fe_effort_weeks || 0}w</span>
+                                  <span className="text-muted-foreground">/</span>
+                                  <Users2 className="w-3 h-3 text-emerald-400" />
+                                  <span className="font-medium text-foreground">{entry.fe_parallelism || 1}</span>
+                                </div>
+                                <Button
+                                  variant="ghost" size="icon"
+                                  className={`h-6 w-6 ${entry.excluded_from_allocation ? 'text-rose-400 hover:text-rose-300' : 'text-emerald-500 hover:text-emerald-400'}`}
+                                  title={entry.excluded_from_allocation ? 'Excluded — click to include' : 'Included — click to exclude'}
+                                  onClick={() => toggleExcludeMutation.mutate({ entry, excluded: !entry.excluded_from_allocation })}
+                                >
+                                  {entry.excluded_from_allocation ? <CircleMinus className="w-3.5 h-3.5" /> : <CircleCheck className="w-3.5 h-3.5" />}
+                                </Button>
+                                {canEdit && (
+                                  <>
+                                    <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-foreground" onClick={() => { setEditEntryId(entry.id); setEditEffort({ be: String(entry.be_effort_weeks || 0), fe: String(entry.fe_effort_weeks || 0), beParallelism: String(entry.be_parallelism || 1), feParallelism: String(entry.fe_parallelism || 1) }); }}>
+                                      <Pencil className="w-3 h-3" />
+                                    </Button>
+                                    <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-destructive" onClick={() => removeEntryMutation.mutate(entry.id)}>
+                                      <Trash2 className="w-3 h-3" />
+                                    </Button>
+                                  </>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    </Draggable>
+                  );
+                })}
+                {listProvided.placeholder}
+                </div>
+                )}
+              </Droppable>
+            </div>
 
-              {/* Pie Chart */}
-              <div className="rounded-xl p-5 bg-slate-50 dark:bg-[#1a1530] border border-border">
+            {/* Pie Chart */}
+            <div className="rounded-xl p-5 bg-slate-50 dark:bg-[#1a1530] border border-border">
               <h3 className="font-semibold text-foreground mb-1">Effort by Objective</h3>
               <div className="flex items-center justify-between mb-1">
                 <p className="text-xs text-muted-foreground">Capacity Utilization</p>
@@ -1023,13 +1022,16 @@ export default function TeamPlan() {
                       );
                     })}
                   </div>
-                  </>
-                  )}
-                  </DragDropContext>
-                  )}
+                </>
+              )}
+            </div>
+          </div>
+          </div>
+        </DragDropContext>
+      )}
 
-              {/* Delete Plan Confirmation Dialog */}
-              <Dialog open={deletePlanOpen} onOpenChange={setDeletePlanOpen}>
+      {/* Delete Plan Confirmation Dialog */}
+      <Dialog open={deletePlanOpen} onOpenChange={setDeletePlanOpen}>
         <DialogContent>
           <DialogHeader><DialogTitle>Re-sign Plan</DialogTitle></DialogHeader>
           <div className="space-y-4 py-4">
