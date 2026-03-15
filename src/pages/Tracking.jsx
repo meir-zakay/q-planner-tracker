@@ -37,7 +37,7 @@ export default function Tracking() {
   const progressMap = useMemo(() => { const m = {}; actualProgress.forEach(p => { m[p.feature_id] = p; }); return m; }, [actualProgress]);
 
   const updateProgressMutation = useMutation({
-    mutationFn: async ({ featureId, percent, startSprint, endSprint, plannedStart, plannedEnd, status }) => {
+    mutationFn: async ({ featureId, percent, startSprint, endSprint, plannedStart, plannedEnd, status, notes = '' }) => {
       const existing = progressMap[featureId];
       let finalStatus = status;
       
@@ -50,7 +50,8 @@ export default function Tracking() {
         actual_progress_percent: percent,
         actual_start_sprint: startSprint || plannedStart,
         actual_end_sprint: endSprint || plannedEnd,
-        status: finalStatus
+        status: finalStatus,
+        notes: notes
       };
       
       if (existing) {
@@ -68,6 +69,7 @@ export default function Tracking() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['actualProgress'] });
       setEditingProgress(null);
+      setNotesOpen(null);
     }
   });
 
