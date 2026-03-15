@@ -293,15 +293,16 @@ export default function Tracking() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditingProgress(null)}>Cancel</Button>
             <Button
-              onClick={() => updateProgressMutation.mutate({ 
-                featureId: editingProgress.featureId, 
-                percent: Number(progressForm.percent), 
-                startSprint: progressForm.startSprint, 
-                endSprint: progressForm.endSprint,
-                plannedStart: editingProgress.sprintRange?.start,
-                plannedEnd: editingProgress.sprintRange?.end
-              })}
-              disabled={updateProgressMutation.isPending}
+             onClick={() => updateProgressMutation.mutate({ 
+               featureId: editingProgress.featureId, 
+               percent: Number(progressForm.percent), 
+               startSprint: progressForm.startSprint, 
+               endSprint: progressForm.endSprint,
+               status: progressForm.status,
+               plannedStart: editingProgress.sprintRange?.start,
+               plannedEnd: editingProgress.sprintRange?.end
+             })}
+             disabled={updateProgressMutation.isPending}
             >
               Save Progress
             </Button>
