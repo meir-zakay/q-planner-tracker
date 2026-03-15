@@ -23,7 +23,7 @@ const navItems = [
   { path: '/Dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['admin', 'editor', 'viewer'] },
   { path: '/Features', label: 'Features', icon: ListChecks, roles: ['admin', 'editor', 'viewer'] },
   { path: '/TeamPlan', label: 'Team Plan', icon: CalendarRange, roles: ['admin', 'editor', 'viewer'] },
-  { path: '/Tracking', label: 'Tracking', icon: Users, roles: ['admin', 'editor', 'viewer'] },
+  { path: '/Tracking', label: 'Tracking', icon: Eye, roles: ['admin', 'editor', 'viewer'] },
   { path: '/Teams', label: 'Teams', icon: UsersRound, roles: ['admin'] },
   { path: '/Users', label: 'Users', icon: Users, roles: ['admin'] },
   { path: '/Settings', label: 'Settings', icon: Settings, roles: ['admin'] },

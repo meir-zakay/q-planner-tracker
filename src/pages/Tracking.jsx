@@ -11,27 +11,38 @@ import { AlertCircle, Edit2 } from 'lucide-react';
 export default function Tracking() {
   const { user, selectedYear, selectedQuarter } = useOutletContext();
   const qc = useQueryClient();
-  const [selectedTeam, setSelectedTeam] = useState(null);
+  const [selectedTeamId, setSelectedTeamId] = useState(() => localStorage.getItem('selectedTeamId') || '');
   const [editingProgress, setEditingProgress] = useState(null);
-  const [progressValue, setProgressValue] = useState('');
+  const [progressForm, setProgressForm] = useState({ percent: '', sprint: '' });
 
-  const { data: teams = [] } = useQuery({ queryKey: ['teams'], queryFn: () => base44.entities.Team.list() });
+  const { data: teamsRaw = [] } = useQuery({ queryKey: ['teams'], queryFn: () => base44.entities.Team.list() });
+  const teams = useMemo(() => [...teamsRaw].sort((a, b) => a.name.localeCompare(b.name)), [teamsRaw]);
+  const selectedTeam = teams.find(t => t.id === selectedTeamId);
+  
   const { data: features = [] } = useQuery({ queryKey: ['features', selectedYear, selectedQuarter], queryFn: () => base44.entities.Feature.filter({ year: selectedYear, quarter: selectedQuarter }) });
-  const { data: signedPlan = null } = useQuery({ queryKey: ['signedPlan', selectedTeam?.id, selectedYear, selectedQuarter], queryFn: () => selectedTeam ? base44.entities.SignedQuarterPlan.filter({ team_id: selectedTeam.id, year: selectedYear, quarter: selectedQuarter }).then(r => r[0] || null) : null, enabled: !!selectedTeam });
-  const { data: teamPlanEntries = [] } = useQuery({ queryKey: ['teamPlanEntries', selectedTeam?.id, selectedYear, selectedQuarter], queryFn: () => selectedTeam ? base44.entities.TeamPlanEntry.filter({ team_id: selectedTeam.id, year: selectedYear, quarter: selectedQuarter }) : [], enabled: !!selectedTeam });
-  const { data: actualProgress = [] } = useQuery({ queryKey: ['actualProgress', selectedTeam?.id, selectedYear, selectedQuarter], queryFn: () => selectedTeam ? base44.entities.ActualProgress.filter({ team_id: selectedTeam.id, year: selectedYear, quarter: selectedQuarter }) : [], enabled: !!selectedTeam });
+  const { data: quarterConfigs = [] } = useQuery({ queryKey: ['quarterConfigs'], queryFn: () => base44.entities.QuarterConfig.list() });
+  const { data: signedPlan = null } = useQuery({ queryKey: ['signedPlan', selectedTeamId, selectedYear, selectedQuarter], queryFn: () => selectedTeamId ? base44.entities.SignedQuarterPlan.filter({ team_id: selectedTeamId, year: selectedYear, quarter: selectedQuarter }).then(r => r[0] || null) : null, enabled: !!selectedTeamId });
+  const { data: teamPlanEntries = [] } = useQuery({ queryKey: ['teamPlanEntries', selectedTeamId, selectedYear, selectedQuarter], queryFn: () => selectedTeamId ? base44.entities.TeamPlanEntry.filter({ team_id: selectedTeamId, year: selectedYear, quarter: selectedQuarter }) : [], enabled: !!selectedTeamId });
+  const { data: actualProgress = [] } = useQuery({ queryKey: ['actualProgress', selectedTeamId, selectedYear, selectedQuarter], queryFn: () => selectedTeamId ? base44.entities.ActualProgress.filter({ team_id: selectedTeamId, year: selectedYear, quarter: selectedQuarter }) : [], enabled: !!selectedTeamId });
+
+  const handleTeamChange = (id) => { setSelectedTeamId(id); localStorage.setItem('selectedTeamId', id); };
+
+  const sprints = useMemo(() => {
+    const config = quarterConfigs.find(c => c.year === selectedYear && c.quarter === selectedQuarter);
+    return config?.sprints || ['S1','S2','S3','S4','S5','S6'];
+  }, [quarterConfigs, selectedYear, selectedQuarter]);
 
   const featureMap = useMemo(() => { const m = {}; features.forEach(f => { m[f.id] = f; }); return m; }, [features]);
   const progressMap = useMemo(() => { const m = {}; actualProgress.forEach(p => { m[p.feature_id] = p; }); return m; }, [actualProgress]);
 
   const updateProgressMutation = useMutation({
-    mutationFn: async ({ featureId, percent }) => {
+    mutationFn: async ({ featureId, percent, sprint }) => {
       const existing = progressMap[featureId];
       if (existing) {
         return base44.entities.ActualProgress.update(existing.id, { actual_progress_percent: percent });
       } else {
         return base44.entities.ActualProgress.create({
-          team_id: selectedTeam.id,
+          team_id: selectedTeamId,
           feature_id: featureId,
           quarter: selectedQuarter,
           year: selectedYear,
@@ -45,6 +56,15 @@ export default function Tracking() {
     }
   });
 
+  const getSprintRange = (entry) => {
+    const activeSprints = sprints.filter(s => {
+      const alloc = entry.sprint_allocations?.find(a => a.sprint === s);
+      return (alloc?.be_weeks || 0) + (alloc?.fe_weeks || 0) > 0;
+    });
+    if (activeSprints.length === 0) return null;
+    return { start: activeSprints[0], end: activeSprints[activeSprints.length - 1] };
+  };
+
   const plannedFeatures = teamPlanEntries.map(entry => {
     const feat = featureMap[entry.feature_id];
     const actual = progressMap[entry.feature_id];
@@ -56,6 +76,7 @@ export default function Tracking() {
     const expectedProgress = Math.min(100, Math.round((daysSinceStart / quarterDays) * 100));
     const actualPercent = actual?.actual_progress_percent || 0;
     const status = actualPercent > expectedProgress ? 'ahead' : actualPercent < expectedProgress - 10 ? 'behind' : 'on-track';
+    const sprintRange = getSprintRange(entry);
 
     return {
       id: entry.id,
@@ -64,11 +85,13 @@ export default function Tracking() {
       plannedWeeks: totalPlannedWeeks,
       expectedProgress,
       actualProgress: actualPercent,
-      status
+      status,
+      sprintRange,
+      entry
     };
   });
 
-  if (!selectedTeam) {
+  if (!selectedTeamId) {
     return (
       <div className="space-y-6">
         <div>
@@ -79,7 +102,7 @@ export default function Tracking() {
         <div className="rounded-xl p-8 bg-slate-50 dark:bg-[#1a1530] border border-border flex flex-col items-center gap-4">
           <AlertCircle className="w-8 h-8 text-muted-foreground" />
           <p className="text-center text-muted-foreground">Select a team to view tracking data</p>
-          <Select value={selectedTeam?.id || ''} onValueChange={id => setSelectedTeam(teams.find(t => t.id === id))}>
+          <Select value={selectedTeamId} onValueChange={handleTeamChange}>
             <SelectTrigger className="w-64">
               <SelectValue placeholder="Choose a team..." />
             </SelectTrigger>
@@ -97,10 +120,10 @@ export default function Tracking() {
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm text-muted-foreground">
-            {selectedTeam.name} · <span className="text-primary font-medium">{selectedQuarter} {selectedYear}</span>
+            {selectedTeam?.name} · <span className="text-primary font-medium">{selectedQuarter} {selectedYear}</span>
           </p>
         </div>
-        <Select value={selectedTeam?.id || ''} onValueChange={id => setSelectedTeam(teams.find(t => t.id === id))}>
+        <Select value={selectedTeamId} onValueChange={handleTeamChange}>
           <SelectTrigger className="w-56">
             <SelectValue />
           </SelectTrigger>
@@ -128,6 +151,10 @@ export default function Tracking() {
                     <div className="flex-1 min-w-0">
                       <h3 className="font-medium text-foreground mb-2">{feature.title}</h3>
                       <div className="flex flex-wrap gap-4 text-sm">
+                        <div>
+                          <p className="text-xs text-muted-foreground">Plan</p>
+                          <p className="font-medium text-foreground">{feature.sprintRange ? `${feature.sprintRange.start} → ${feature.sprintRange.end}` : '—'}</p>
+                        </div>
                         <div>
                           <p className="text-xs text-muted-foreground">Planned Effort</p>
                           <p className="font-medium text-foreground">{feature.plannedWeeks}w</p>
@@ -161,7 +188,7 @@ export default function Tracking() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => { setEditingProgress(feature); setProgressValue(String(feature.actualProgress)); }}
+                      onClick={() => { setEditingProgress(feature); setProgressForm({ percent: String(feature.actualProgress), sprint: feature.sprintRange?.start || '' }); }}
                       className="shrink-0 mt-2"
                     >
                       <Edit2 className="w-4 h-4" />
@@ -179,13 +206,24 @@ export default function Tracking() {
           <DialogHeader><DialogTitle>Update Progress: {editingProgress?.title}</DialogTitle></DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
+              <label className="text-sm font-medium text-foreground">Target Sprint</label>
+              <Select value={progressForm.sprint} onValueChange={v => setProgressForm(p => ({ ...p, sprint: v }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select sprint" />
+                </SelectTrigger>
+                <SelectContent>
+                  {sprints.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">Actual Progress (%)</label>
               <Input
                 type="number"
                 min="0"
                 max="100"
-                value={progressValue}
-                onChange={e => setProgressValue(e.target.value)}
+                value={progressForm.percent}
+                onChange={e => setProgressForm(p => ({ ...p, percent: e.target.value }))}
                 placeholder="0"
                 className="text-lg"
               />
@@ -194,7 +232,7 @@ export default function Tracking() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditingProgress(null)}>Cancel</Button>
             <Button
-              onClick={() => updateProgressMutation.mutate({ featureId: editingProgress.featureId, percent: Number(progressValue) })}
+              onClick={() => updateProgressMutation.mutate({ featureId: editingProgress.featureId, percent: Number(progressForm.percent), sprint: progressForm.sprint })}
               disabled={updateProgressMutation.isPending}
             >
               Save Progress
