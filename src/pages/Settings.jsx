@@ -63,22 +63,19 @@ export default function Settings() {
           </Button>
         </div>
         <div className="rounded-xl overflow-hidden bg-card dark:bg-[hsl(228_30%_7%)] border border-border dark:border-[hsl(228_25%_14%)]">
-          <div className="px-6 py-4">
-          <div className="px-6 pb-5">
-            <div className="space-y-2">
-              {objectives.map(obj => (
-                <div key={obj.id} className="flex items-center justify-between py-2 px-3 rounded-lg bg-muted/40 hover:bg-muted/70 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="w-4 h-4 rounded-full border border-border" style={{ backgroundColor: obj.color }} />
-                    <span className="text-sm font-medium text-foreground">{obj.name}</span>
-                  </div>
-                  <div className="flex gap-1">
-                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setObjForm({ ...obj })}><Pencil className="w-3 h-3" /></Button>
-                    <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => setDeleteObjConfirm(obj)}><Trash2 className="w-3 h-3" /></Button>
-                  </div>
+          <div className="px-6 py-4 space-y-2">
+            {objectives.map(obj => (
+              <div key={obj.id} className="flex items-center justify-between py-2 px-3 rounded-lg bg-muted/40 hover:bg-muted/70 transition-colors">
+                <div className="flex items-center gap-3">
+                  <div className="w-4 h-4 rounded-full border border-border" style={{ backgroundColor: obj.color }} />
+                  <span className="text-sm font-medium text-foreground">{obj.name}</span>
                 </div>
-              ))}
-            </div>
+                <div className="flex gap-1">
+                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setObjForm({ ...obj })}><Pencil className="w-3 h-3" /></Button>
+                  <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => setDeleteObjConfirm(obj)}><Trash2 className="w-3 h-3" /></Button>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
