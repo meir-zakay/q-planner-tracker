@@ -80,8 +80,8 @@ export default function Layout() {
           {/* Logo */}
           <div className="h-16 flex items-center gap-2 px-3 shrink-0 border-b border-indigo-700 bg-indigo-950 dark:bg-indigo-950">
             <Link to="/Dashboard" className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-slate-700 flex items-center justify-center shrink-0">
-                <CalendarRange className="w-4 h-4 text-white" />
+              <div className="w-7 h-7 rounded-lg bg-indigo-900 flex items-center justify-center shrink-0">
+                <CalendarRange className="w-4 h-4 text-indigo-400" />
               </div>
                {!collapsed && <span className="font-bold text-white dark:text-white text-lg tracking-tight whitespace-nowrap">Quarter Planner</span>}
             </Link>
@@ -157,8 +157,8 @@ export default function Layout() {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg transition-all duration-150 hover:bg-slate-100 dark:hover:bg-slate-800 ml-1">
-                      <div className="w-7 h-7 rounded-full bg-gradient-to-b from-slate-600 to-slate-700 shadow-md flex items-center justify-center shrink-0">
-                        <span className="text-xs font-bold text-white">{(user.full_name || user.email || '?')[0].toUpperCase()}</span>
+                      <div className="w-7 h-7 rounded-full bg-indigo-900 shadow-md flex items-center justify-center shrink-0">
+                        <span className="text-xs font-bold text-indigo-400">{(user.full_name || user.email || '?')[0].toUpperCase()}</span>
                       </div>
                       <span className="text-sm font-medium text-foreground hidden sm:inline">{user.full_name || user.email}</span>
                       <ChevronDown className="w-3.5 h-3.5 text-muted-foreground hidden sm:inline" />
