@@ -636,7 +636,7 @@ export default function TeamPlan() {
                   return (
                     <div key={sprint} className="rounded-xl min-w-0 overflow-hidden bg-card dark:bg-[hsl(228_28%_10%)] border border-border dark:border-[hsl(228_25%_16%)]">
                       {/* Sprint header */}
-                      <div className="px-3 py-2.5 border-b text-center" style={{ background: 'hsl(228 30% 7%)', borderColor: 'hsl(228 25% 16%)' }}>
+                      <div className="px-3 py-2.5 border-b text-center bg-muted/30 dark:bg-[hsl(228_30%_7%)] border-border dark:border-[hsl(228_25%_16%)]">
                         <p className="font-bold text-foreground text-sm">{sprint}</p>
                         <p className="text-[10px] text-muted-foreground">2 weeks</p>
                       </div>
