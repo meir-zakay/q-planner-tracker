@@ -634,7 +634,7 @@ export default function TeamPlan() {
                   const feFeatures = sortedEntries.filter(e => (e.sprint_allocations?.find(a => a.sprint === sprint)?.fe_weeks || 0) > 0);
 
                   return (
-                    <div key={sprint} className="rounded-xl min-w-0 overflow-hidden" style={{ background: 'hsl(228 28% 10%)', border: '1px solid hsl(228 25% 16%)' }}>
+                    <div key={sprint} className="rounded-xl min-w-0 overflow-hidden bg-card dark:bg-[hsl(228_28%_10%)] border border-border dark:border-[hsl(228_25%_16%)]">
                       {/* Sprint header */}
                       <div className="px-3 py-2.5 border-b text-center" style={{ background: 'hsl(228 30% 7%)', borderColor: 'hsl(228 25% 16%)' }}>
                         <p className="font-bold text-foreground text-sm">{sprint}</p>
