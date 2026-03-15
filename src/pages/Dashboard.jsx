@@ -17,6 +17,7 @@ export default function Dashboard() {
   const { data: features = [] } = useQuery({ queryKey: ['features', selectedYear, selectedQuarter], queryFn: () => base44.entities.Feature.filter({ year: selectedYear, quarter: selectedQuarter }) });
   const { data: objectives = [] } = useQuery({ queryKey: ['objectives'], queryFn: () => base44.entities.Objective.list() });
   const { data: allEntries = [] } = useQuery({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter], queryFn: () => base44.entities.TeamPlanEntry.filter({ year: selectedYear, quarter: selectedQuarter }) });
+  const { data: quarterConfigs = [] } = useQuery({ queryKey: ['quarterConfigs'], queryFn: () => base44.entities.QuarterConfig.list() });
 
   const featureMap = useMemo(() => { const m = {}; features.forEach(f => { m[f.id] = f; }); return m; }, [features]);
   const colorMap = useMemo(() => { const m = {}; objectives.forEach(o => { m[o.name] = o.color; }); return m; }, [objectives]);
