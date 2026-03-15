@@ -122,32 +122,7 @@ export default function Layout() {
             })}
           </nav>
 
-          {/* Bottom section */}
-          <div className="p-2 space-y-0.5" style={{ borderTop: '1px solid hsl(228 25% 14%)' }}>
-            {/* Theme toggle */}
-            {(() => {
-              const themeBtn = (
-                <button
-                  onClick={() => setDarkMode(!darkMode)}
-                  className={`flex items-center gap-3 px-2.5 py-2 rounded-lg text-sm font-medium transition-all duration-150 text-indigo-200/60 hover:text-indigo-100 hover:bg-white/5 w-full ${collapsed ? 'justify-center' : ''}`}
-                >
-                  {darkMode ? <Sun className="w-4 h-4 shrink-0" /> : <Moon className="w-4 h-4 shrink-0" />}
-                  {!collapsed && <span>{darkMode ? 'Light Mode' : 'Dark Mode'}</span>}
-                </button>
-              );
-              if (collapsed) {
-                return (
-                  <Tooltip>
-                    <TooltipTrigger asChild>{themeBtn}</TooltipTrigger>
-                    <TooltipContent side="right">{darkMode ? 'Light Mode' : 'Dark Mode'}</TooltipContent>
-                  </Tooltip>
-                );
-              }
-              return themeBtn;
-            })()}
 
-
-          </div>
 
           {/* Collapse toggle */}
           <button
