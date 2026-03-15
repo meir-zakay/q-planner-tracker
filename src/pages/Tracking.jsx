@@ -161,16 +161,6 @@ export default function Tracking() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1.5">
                         <h3 className="font-medium text-foreground">{feature.title}</h3>
-                        <span className={`text-xs font-medium px-2 py-0.5 rounded-full bg-slate-700 dark:bg-slate-800 ${
-                          feature.featureStatus === 'Done' ? 'text-green-400' :
-                          feature.featureStatus === 'Blocked' ? 'text-red-400' :
-                          feature.featureStatus === 'On Hold' ? 'text-yellow-400' :
-                          feature.featureStatus === 'Testing' ? 'text-blue-400' :
-                          feature.featureStatus === 'In Progress' ? 'text-purple-400' :
-                          'text-slate-300'
-                        }`}>
-                          {feature.featureStatus}
-                        </span>
                       </div>
                       <div className="grid grid-cols-5 gap-3 text-sm">
                         <div className="text-left">
