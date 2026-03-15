@@ -100,11 +100,11 @@ export default function Teams() {
           <p className="text-sm text-muted-foreground">{teams.length} teams in {selectedQuarter} {selectedYear}</p>
           <div className="flex gap-2">
             {sourceQuarters.length > 0 && (
-              <Button variant="outline" onClick={() => setCopyOpen(true)} className="gap-2">
+              <Button variant="outline" onClick={() => setCopyOpen(true)} className="gap-2 border-0 px-5 py-2 text-sm font-semibold rounded-xl shadow-md bg-secondary hover:bg-secondary/80">
                 <Copy className="w-4 h-4" />Copy from quarter
               </Button>
             )}
-            <Button onClick={openNew} className="gap-2"><Plus className="w-4 h-4" />Add Team</Button>
+            <Button onClick={openNew} className="gap-2 bg-indigo-600 hover:bg-indigo-500 text-white border-0 px-5 py-2 text-sm font-semibold rounded-xl shadow-md"><Plus className="w-4 h-4" />Add Team</Button>
           </div>
         </div>
 
