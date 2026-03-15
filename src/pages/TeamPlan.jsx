@@ -546,6 +546,16 @@ export default function TeamPlan() {
 
   return (
     <div className="space-y-6">
+      {/* Native drag ghost */}
+      {nativeDrag && (
+        <div
+          ref={ghostRef}
+          style={{ position: 'fixed', left: nativeDrag.x + 12, top: nativeDrag.y + 12, pointerEvents: 'none', zIndex: 9999 }}
+          className="bg-indigo-600 text-white text-xs font-semibold px-3 py-1.5 rounded-md shadow-xl max-w-[160px] truncate"
+        >
+          {nativeDrag.feat?.title}
+        </div>
+      )}
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <Select value={selectedTeamId} onValueChange={handleTeamChange}>
