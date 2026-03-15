@@ -790,7 +790,7 @@ export default function TeamPlan() {
                   if (!feat) return null;
                   const isEditing = editEntryId === entry.id;
                   return (
-                    <Draggable key={entry.id} draggableId={`row-${entry.id}`} index={rowIdx} isDragDisabled={false}>
+                    <Draggable key={entry.id} draggableId={`row-${entry.id}`} index={rowIdx} isDragDisabled={manualMode}>
                     {(rowDrag, rowSnapshot) => (
                       <div
                         ref={rowDrag.innerRef}
@@ -805,7 +805,8 @@ export default function TeamPlan() {
                         ) : (
                           <div className="flex items-center gap-3">
                             <div
-                              {...rowDrag.dragHandleProps}
+                              {...(!manualMode ? rowDrag.dragHandleProps : {})}
+                              onPointerDown={manualMode ? (e) => startNativeDrag(e, entry, feat) : undefined}
                               className={`cursor-grab active:cursor-grabbing shrink-0 ${manualMode ? 'text-indigo-400/60 hover:text-indigo-400' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}
                             >
                               <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor"><circle cx="2" cy="2" r="1.5"/><circle cx="8" cy="2" r="1.5"/><circle cx="2" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="2" cy="14" r="1.5"/><circle cx="8" cy="14" r="1.5"/></svg>
