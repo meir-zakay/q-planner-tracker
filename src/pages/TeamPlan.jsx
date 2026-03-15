@@ -12,7 +12,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Plus, Trash2, Pencil, Info, Server, Monitor, CircleCheck, CircleMinus, Wrench, CheckCircle, Users2 } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import GanttChart from '@/components/GanttChart';
 
 
 const DEFAULT_SPRINTS = { Q1: ['S1','S2','S3','S4','S5','S6'], Q2: ['S7','S8','S9','S10','S11','S12'], Q3: ['S13','S14','S15','S16','S17','S18'], Q4: ['S19','S20','S21','S22','S23','S24'] };
@@ -859,10 +858,8 @@ export default function TeamPlan() {
               </div>
           </div>
 
-          {/* Bottom: Planned Features, Gantt, + Pie Chart */}
+          {/* Bottom: Planned Features + Pie Chart */}
           <div className="grid lg:grid-cols-[1fr_380px] gap-6">
-            {/* Planned Features & Gantt */}
-            <div className="space-y-6">
             {/* Planned Features */}
             <div className="rounded-xl p-5 bg-slate-50 dark:bg-[#1a1530] border border-border">
               <div className="flex items-center justify-between mb-4">
@@ -986,12 +983,7 @@ export default function TeamPlan() {
               </Droppable>
             </div>
 
-            {/* Gantt Chart */}
-            <GanttChart entries={sortedEntries} featureMap={featureMap} sprints={sprints} colorMap={colorMap} />
-            </div>
-            </div>
-
-             {/* Pie Chart */}
+            {/* Pie Chart */}
             <div className="rounded-xl p-5 bg-slate-50 dark:bg-[#1a1530] border border-border">
               <h3 className="font-semibold text-foreground mb-1">Effort by Objective</h3>
               <div className="flex items-center justify-between mb-1">
