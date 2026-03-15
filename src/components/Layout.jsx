@@ -151,7 +151,7 @@ export default function Layout() {
                 </SelectContent>
               </Select>
               <Select value={String(selectedYear)} onValueChange={v => setSelectedYear(parseInt(v))}>
-                <SelectTrigger className="h-9 text-sm w-[80px] bg-background">
+                <SelectTrigger className="h-9 text-sm w-[80px]">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
