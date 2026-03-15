@@ -132,8 +132,8 @@ export default function Layout() {
         {/* Main area */}
         <div className="flex-1 min-w-0 flex flex-col h-full overflow-hidden">
           {/* Top Header Bar */}
-          <header className="h-16 flex items-center px-6 gap-4 shrink-0 z-20 bg-blue-900 dark:bg-blue-900 border-b border-border">
-            <h1 className="text-xl font-bold text-white">{pageTitle}</h1>
+          <header className="h-16 flex items-center px-6 gap-4 shrink-0 z-20 border-b border-border">
+            <h1 className="text-xl font-bold text-foreground">{pageTitle}</h1>
             <div className="flex-1" />
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground hidden sm:inline">Period:</span>
