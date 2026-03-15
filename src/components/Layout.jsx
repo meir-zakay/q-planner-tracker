@@ -95,14 +95,11 @@ export default function Layout() {
                 <Link
                   key={item.path}
                   to={item.path}
-                  style={isActive
-                    ? { backgroundColor: 'rgb(15 82 204 / 0.25)', color: 'rgb(225 239 254)' }
-                    : {}}
                   className={`flex items-center gap-3 px-2.5 py-2 rounded-lg text-sm font-medium transition-all duration-150 ${
                     collapsed ? 'justify-center' : ''
                   } ${isActive
-                    ? ''
-                    : 'text-foreground/60 hover:text-foreground hover:bg-primary/10'
+                    ? 'bg-blue-600 text-white'
+                    : 'text-slate-300 hover:text-slate-100 hover:bg-slate-700'
                   }`}
                 >
                   <item.icon className="w-4 h-4 shrink-0" />
