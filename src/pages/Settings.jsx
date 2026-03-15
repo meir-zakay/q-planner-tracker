@@ -54,11 +54,11 @@ export default function Settings() {
     <RoleGate allowed={['admin']}>
       <div className="space-y-8">
         {/* Objectives */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
+        <div className="rounded-xl overflow-hidden" style={{ background: 'hsl(228 30% 7%)', border: '1px solid hsl(228 25% 14%)' }}>
+          <div className="flex flex-row items-center justify-between px-6 py-4">
             <div className="flex items-center gap-2">
               <Target className="w-5 h-5 text-primary" />
-              <CardTitle className="text-base">Objectives</CardTitle>
+              <span className="text-base font-semibold text-foreground">Objectives</span>
             </div>
             <Button size="sm" onClick={() => setObjForm({ name: '', color: '#6366f1' })} className="gap-2">
               <Plus className="w-3.5 h-3.5" />Add
