@@ -630,22 +630,22 @@ export default function TeamPlan() {
                   const feFeatures = sortedEntries.filter(e => (e.sprint_allocations?.find(a => a.sprint === sprint)?.fe_weeks || 0) > 0);
 
                   return (
-                    <div key={sprint} className="rounded-xl min-w-0 overflow-hidden bg-card border border-border">
-                      {/* Sprint header */}
-                      <div className="px-3 py-2.5 border-b text-center bg-muted/30 border-border">
-                        <p className="font-bold text-foreground text-sm">{sprint}</p>
-                        <p className="text-[10px] text-muted-foreground">2 weeks</p>
-                      </div>
+                   <div key={sprint} className="rounded-xl min-w-0 overflow-hidden bg-slate-900 border border-slate-700">
+                     {/* Sprint header */}
+                     <div className="px-3 py-2.5 border-b text-center bg-slate-800 border-slate-700">
+                       <p className="font-bold text-slate-100 text-sm">{sprint}</p>
+                       <p className="text-[10px] text-slate-400">2 weeks</p>
+                     </div>
 
-                      {/* BE Section */}
-                      <div className="p-2.5 border-b border-border">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className={`text-xs font-semibold ${beOver ? 'text-red-500' : 'text-blue-500'}`}>BE</span>
-                          <span className={`text-xs font-semibold ${beOver ? 'text-red-500' : 'text-muted-foreground'}`}>{beUsed}/{thisBeSprintCap}w</span>
-                        </div>
-                        <div className="w-full bg-muted rounded-full h-1.5 mb-2">
-                          <div className="h-1.5 rounded-full" style={{ width: `${Math.min(100, thisBeSprintCap > 0 ? (beUsed / thisBeSprintCap) * 100 : 0)}%`, backgroundColor: beOver ? '#ef4444' : '#0F52BA' }} />
-                        </div>
+                     {/* BE Section */}
+                     <div className="p-2.5 border-b border-slate-700">
+                       <div className="flex items-center justify-between mb-1">
+                         <span className={`text-xs font-semibold ${beOver ? 'text-red-400' : 'text-blue-400'}`}>BE</span>
+                         <span className={`text-xs font-semibold ${beOver ? 'text-red-400' : 'text-slate-400'}`}>{beUsed}/{thisBeSprintCap}w</span>
+                       </div>
+                       <div className="w-full bg-slate-700 rounded-full h-1.5 mb-2">
+                         <div className="h-1.5 rounded-full" style={{ width: `${Math.min(100, thisBeSprintCap > 0 ? (beUsed / thisBeSprintCap) * 100 : 0)}%`, backgroundColor: beOver ? '#ef4444' : '#6366f1' }} />
+                       </div>
                         <Droppable droppableId={`${sprint}-be`}>
                           {(provided, snapshot) => (
                             <div
@@ -669,9 +669,9 @@ export default function TeamPlan() {
                                        {...drag.draggableProps}
                                        {...drag.dragHandleProps}
                                        style={drag.draggableProps.style}
-                                       className={`rounded-lg px-2 py-1.5 bg-blue-50 border border-blue-200 cursor-grab active:cursor-grabbing ${dragSnapshot.isDragging ? 'shadow-lg opacity-95 z-50' : ''}`}
+                                       className={`rounded-lg px-2 py-1.5 bg-blue-900 border border-blue-700 cursor-grab active:cursor-grabbing ${dragSnapshot.isDragging ? 'shadow-lg opacity-95 z-50' : ''}`}
                                        >
-                                       <p className="text-[11px] text-blue-600 dark:text-blue-400 font-semibold leading-tight truncate">{feat?.title}</p>
+                                       <p className="text-[11px] text-blue-200 font-semibold leading-tight truncate">{feat?.title}</p>
                                        {canEdit && editCell?.key === cellKey ? (
                                          <Input autoFocus type="number" min="0" step="0.5" value={editCellValue}
                                            onChange={e => setEditCellValue(e.target.value)}
@@ -702,10 +702,10 @@ export default function TeamPlan() {
                       {/* FE Section */}
                       <div className="p-2.5">
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs font-semibold text-emerald-500">FE</span>
-                          <span className={`text-xs font-semibold ${feOver ? 'text-red-500' : 'text-muted-foreground'}`}>{feUsed}/{thisFeSprintCap}w</span>
+                          <span className="text-xs font-semibold text-emerald-400">FE</span>
+                          <span className={`text-xs font-semibold ${feOver ? 'text-red-400' : 'text-slate-400'}`}>{feUsed}/{thisFeSprintCap}w</span>
                         </div>
-                        <div className="w-full bg-muted rounded-full h-1.5 mb-2">
+                        <div className="w-full bg-slate-700 rounded-full h-1.5 mb-2">
                           <div className="h-1.5 rounded-full" style={{ width: `${Math.min(100, thisFeSprintCap > 0 ? (feUsed / thisFeSprintCap) * 100 : 0)}%`, backgroundColor: feOver ? '#ef4444' : '#10b981' }} />
                         </div>
                         <Droppable droppableId={`${sprint}-fe`}>
@@ -731,9 +731,9 @@ export default function TeamPlan() {
                                        {...drag.draggableProps}
                                        {...drag.dragHandleProps}
                                        style={drag.draggableProps.style}
-                                       className={`rounded-lg px-2 py-1.5 bg-emerald-50 border border-emerald-200 cursor-grab active:cursor-grabbing ${dragSnapshot.isDragging ? 'shadow-lg opacity-95 z-50' : ''}`}
+                                       className={`rounded-lg px-2 py-1.5 bg-emerald-900 border border-emerald-700 cursor-grab active:cursor-grabbing ${dragSnapshot.isDragging ? 'shadow-lg opacity-95 z-50' : ''}`}
                                        >
-                                       <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold leading-tight truncate">{feat?.title}</p>
+                                       <p className="text-[11px] text-emerald-200 font-semibold leading-tight truncate">{feat?.title}</p>
                                        {canEdit && editCell?.key === cellKey ? (
                                          <Input autoFocus type="number" min="0" step="0.5" value={editCellValue}
                                            onChange={e => setEditCellValue(e.target.value)}
