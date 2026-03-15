@@ -122,14 +122,14 @@ export default function Teams() {
               <div className="space-y-2 mb-4">
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2 text-muted-foreground">
-                    <Server className="w-3.5 h-3.5" />
+                    <Server className="w-3.5 h-3.5 text-blue-500" />
                     <span>{team.be_developers || 0} BE devs</span>
                   </div>
                   <span className="text-muted-foreground">{team.be_capacity_weeks || 0}w capacity</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2 text-muted-foreground">
-                    <Monitor className="w-3.5 h-3.5" />
+                    <Monitor className="w-3.5 h-3.5 text-emerald-500" />
                     <span>{team.fe_developers || 0} FE devs</span>
                   </div>
                   <span className="text-muted-foreground">{team.fe_capacity_weeks || 0}w capacity</span>
