@@ -262,6 +262,22 @@ export default function Tracking() {
               </div>
             </div>
             <div className="space-y-2">
+              <label className="text-sm font-medium text-foreground">Status</label>
+              <Select value={progressForm.status} onValueChange={v => setProgressForm(p => ({ ...p, status: v }))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Didn't Start">Didn't Start</SelectItem>
+                  <SelectItem value="In Progress">In Progress</SelectItem>
+                  <SelectItem value="On Hold">On Hold</SelectItem>
+                  <SelectItem value="Blocked">Blocked</SelectItem>
+                  <SelectItem value="Testing">Testing</SelectItem>
+                  <SelectItem value="Done">Done</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">Actual Progress (%)</label>
               <Input
                 type="number"
