@@ -197,7 +197,7 @@ export default function Tracking() {
                         </div>
                         <div className="text-left">
                           <p className="text-xs text-muted-foreground">Actual Progress</p>
-                          <p className={`font-medium ${feature.status === 'ahead' ? 'text-green-600' : feature.status === 'behind' ? 'text-red-600' : 'text-blue-600'}`}>
+                          <p className={`font-medium ${feature.healthStatus === 'ahead' ? 'text-green-600' : feature.healthStatus === 'behind' ? 'text-red-600' : 'text-blue-600'}`}>
                             {feature.actualProgress}%
                           </p>
                         </div>
