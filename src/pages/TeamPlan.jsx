@@ -1082,6 +1082,16 @@ export default function TeamPlan() {
                 <Input type="number" min="0" step="0.5" value={effortForm.fe} onChange={e => setEffortForm(p => ({ ...p, fe: e.target.value }))} placeholder="0" />
               </div>
             </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label className="flex items-center gap-1.5"><Users2 className="w-3.5 h-3.5 text-blue-400" />BE Parallelism</Label>
+                <Input type="number" min="1" value={effortForm.beParallelism} onChange={e => setEffortForm(p => ({ ...p, beParallelism: e.target.value }))} placeholder="1" />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="flex items-center gap-1.5"><Users2 className="w-3.5 h-3.5 text-emerald-400" />FE Parallelism</Label>
+                <Input type="number" min="1" value={effortForm.feParallelism} onChange={e => setEffortForm(p => ({ ...p, feParallelism: e.target.value }))} placeholder="1" />
+              </div>
+            </div>
 
           </div>
           <DialogFooter>
