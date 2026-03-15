@@ -59,8 +59,8 @@ export default function Settings() {
               <Target className="w-5 h-5 text-primary" />
               <span className="text-base font-semibold text-foreground">Objectives</span>
             </div>
-            <Button size="sm" onClick={() => setObjForm({ name: '', color: '#6366f1' })} className="gap-2 bg-indigo-600 hover:bg-indigo-500 text-white border-0 font-semibold rounded-xl shadow-md">
-              <Plus className="w-3.5 h-3.5" />Add
+            <Button onClick={() => setObjForm({ name: '', color: '#6366f1' })} className="gap-2 bg-indigo-600 hover:bg-indigo-500 text-white border-0 px-5 py-2 text-sm font-semibold rounded-xl shadow-md">
+              <Plus className="w-4 h-4" />Add
             </Button>
           </div>
           <div className="px-6 pb-5">
