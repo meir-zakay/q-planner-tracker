@@ -38,11 +38,18 @@ export default function Tracking() {
   const updateProgressMutation = useMutation({
     mutationFn: async ({ featureId, percent, startSprint, endSprint, plannedStart, plannedEnd, status }) => {
       const existing = progressMap[featureId];
+      let finalStatus = status;
+      
+      // Auto-update status to "In Progress" if progress > 0 and current status is "Didn't Start"
+      if (percent > 0 && status === "Didn't Start") {
+        finalStatus = "In Progress";
+      }
+      
       const data = { 
         actual_progress_percent: percent,
         actual_start_sprint: startSprint || plannedStart,
         actual_end_sprint: endSprint || plannedEnd,
-        status: status || "Didn't Start"
+        status: finalStatus
       };
       
       if (existing) {
