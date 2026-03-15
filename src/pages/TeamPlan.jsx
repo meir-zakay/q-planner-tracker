@@ -89,7 +89,7 @@ export default function TeamPlan() {
   const [addMode, setAddMode] = useState('existing'); // 'existing' | 'custom'
   const [effortForm, setEffortForm] = useState({ be: '', fe: '' });
   const [editEntryId, setEditEntryId] = useState(null);
-  const [editEffort, setEditEffort] = useState({ be: '', fe: '' });
+  const [editEffort, setEditEffort] = useState({ be: '', fe: '', beParallelism: '', feParallelism: '' });
   const [editCell, setEditCell] = useState(null);
   const [editCellValue, setEditCellValue] = useState('');
   // assignSprintEntry removed — using DnD for manual mode sprint assignment
