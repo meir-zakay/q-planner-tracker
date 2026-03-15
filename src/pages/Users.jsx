@@ -120,7 +120,7 @@ export default function Users() {
             )}
             <DialogFooter>
               <Button variant="outline" onClick={() => setEditUser(null)}>Cancel</Button>
-              <Button onClick={() => updateMutation.mutate({ id: editUser.id, data: { role: editUser.role } })} disabled={updateMutation.isPending}>Save</Button>
+              <Button onClick={() => updateMutation.mutate({ id: editUser.id, data: { role: editUser.role } })} disabled={updateMutation.isPending} className="bg-indigo-600 hover:bg-indigo-500 text-white border-0 font-semibold rounded-xl shadow-md">Save</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
