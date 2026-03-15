@@ -83,7 +83,7 @@ export default function Layout() {
               <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center shrink-0">
                 <CalendarRange className="w-4 h-4 text-primary-foreground" />
               </div>
-              {!collapsed && <span className="font-bold text-[#0952CC] text-lg tracking-tight whitespace-nowrap">Quarter Planner</span>}
+              {!collapsed && <span className="font-bold text-foreground text-lg tracking-tight whitespace-nowrap">Quarter Planner</span>}
             </Link>
           </div>
 
@@ -102,7 +102,7 @@ export default function Layout() {
                     collapsed ? 'justify-center' : ''
                   } ${isActive
                     ? ''
-                    : 'text-blue-200/60 hover:text-blue-100 hover:bg-white/5'
+                    : 'text-foreground/60 hover:text-foreground hover:bg-primary/10'
                   }`}
                 >
                   <item.icon className="w-4 h-4 shrink-0" />
