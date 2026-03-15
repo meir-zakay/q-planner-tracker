@@ -195,6 +195,10 @@ export default function Layout() {
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => setDarkMode(!darkMode)} className="gap-2">
+                      {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                      {darkMode ? 'Light Mode' : 'Dark Mode'}
+                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => base44.auth.logout()} className="text-destructive focus:text-destructive gap-2">
                       <LogOut className="w-4 h-4" /> Logout
                     </DropdownMenuItem>
