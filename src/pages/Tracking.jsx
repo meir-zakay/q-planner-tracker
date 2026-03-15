@@ -117,12 +117,7 @@ export default function Tracking() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm text-muted-foreground">
-            {selectedTeam?.name} · <span className="text-primary font-medium">{selectedQuarter} {selectedYear}</span>
-          </p>
-        </div>
+      {selectedTeamId && (
         <Select value={selectedTeamId} onValueChange={handleTeamChange}>
           <SelectTrigger className="w-56">
             <SelectValue />
@@ -131,7 +126,7 @@ export default function Tracking() {
             {teams.map(t => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}
           </SelectContent>
         </Select>
-      </div>
+      )}
 
       {!signedPlan ? (
         <div className="rounded-xl p-6 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/40">
