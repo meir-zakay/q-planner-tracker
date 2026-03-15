@@ -218,7 +218,7 @@ export default function Teams() {
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => { setCopyOpen(false); setCopySource(''); }}>Cancel</Button>
-              <Button onClick={() => copyMutation.mutate(copySource)} disabled={!copySource || copyMutation.isPending} className="bg-indigo-600 hover:bg-indigo-500 text-white border-0 font-semibold rounded-xl shadow-md">
+              <Button onClick={() => copyMutation.mutate(copySource)} disabled={!copySource || copyMutation.isPending} className="font-semibold rounded-xl shadow-md">
                 {copyMutation.isPending ? 'Copying…' : 'Copy Teams'}
               </Button>
             </DialogFooter>
