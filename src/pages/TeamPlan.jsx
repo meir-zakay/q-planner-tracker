@@ -626,7 +626,6 @@ export default function TeamPlan() {
                onClick={() => signedPlan ? setDeletePlanOpen(true) : signPlanMutation.mutate()}
                disabled={signPlanMutation.isPending || deletePlanMutation.isPending || entries.length === 0}
                variant={signedPlan ? 'default' : 'outline'}
-               className={signedPlan ? '' : ''}
              >
                <CheckCircle className="w-4 h-4" />
                {signedPlan ? 'Plan Signed' : 'Sign Plan'}
