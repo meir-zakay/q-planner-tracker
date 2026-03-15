@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
-import { LayoutDashboard, Users, UsersRound, ListChecks, CalendarRange, Settings, LogOut, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
+import { LayoutDashboard, Users, UsersRound, ListChecks, CalendarRange, Settings, LogOut, Moon, Sun, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -30,6 +30,16 @@ const navItems = [
 export default function Layout() {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('darkMode', String(darkMode));
+  }, [darkMode]);
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
@@ -158,6 +168,11 @@ export default function Layout() {
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => setDarkMode(!darkMode)} className="gap-2">
+                      {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                      {darkMode ? 'Light Mode' : 'Dark Mode'}
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => base44.auth.logout()} className="text-destructive focus:text-destructive gap-2">
                       <LogOut className="w-4 h-4" /> Logout
                     </DropdownMenuItem>
