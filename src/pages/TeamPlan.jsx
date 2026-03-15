@@ -24,6 +24,7 @@ function roundHalf(n) {
 // Distribute totalEffort across sprints greedily from the first sprint with capacity,
 // filling each sprint up to its cap (rounded to 0.5 steps).
 // If maxPerSprint is set, cap each sprint's allocation to that value.
+// Any remainder is placed in the last sprint (allows overallocation).
 function distributeEffort(totalEffort, sprintCapacities, maxPerSprint = Infinity) {
   const allocations = sprintCapacities.map(() => 0);
   let remaining = Number(totalEffort.toFixed(2));
@@ -35,6 +36,10 @@ function distributeEffort(totalEffort, sprintCapacities, maxPerSprint = Infinity
     const actual = Math.min(alloc, cap);
     allocations[i] = actual;
     remaining = Number((remaining - actual).toFixed(2));
+  }
+  // If there's still remaining effort, place it in the last sprint
+  if (remaining > 0.01 && sprintCapacities.length > 0) {
+    allocations[sprintCapacities.length - 1] = Number((allocations[sprintCapacities.length - 1] + remaining).toFixed(2));
   }
   return allocations;
 }
