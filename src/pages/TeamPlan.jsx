@@ -590,8 +590,8 @@ export default function TeamPlan() {
                   <TooltipTrigger asChild>
                     <Button
                       onClick={toggleManualMode}
-                      className={`gap-2 bg-indigo-600 hover:bg-indigo-500 text-white border-0 px-5 py-2 text-sm font-semibold rounded-xl shadow-md ${
-                        manualMode ? 'ring-2 ring-indigo-400/60 ring-inset' : 'opacity-60'
+                      className={`gap-2 px-5 py-2 text-sm font-semibold rounded-xl shadow-md ${
+                        manualMode ? 'ring-2 ring-primary/40 ring-inset' : 'opacity-60'
                       }`}
                     >
                       <Wrench className="w-4 h-4" />
