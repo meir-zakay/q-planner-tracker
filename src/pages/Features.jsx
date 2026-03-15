@@ -87,7 +87,7 @@ export default function Features() {
           <span className="text-primary font-medium">{selectedQuarter} {selectedYear}</span>
         </p>
         {canEdit && (
-          <Button onClick={openNew} className="gap-2 px-5 py-2 text-sm font-semibold rounded-xl shadow-md"><Plus className="w-4 h-4" />Add Feature</Button>
+          <Button onClick={openNew}><Plus className="w-4 h-4" />Add Feature</Button>
         )}
       </div>
 
@@ -187,7 +187,7 @@ export default function Features() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => { setFormOpen(false); setEditId(null); }}>Cancel</Button>
-            <Button onClick={() => saveMutation.mutate(formData)} disabled={saveMutation.isPending || !formData.title} className="font-semibold rounded-xl shadow-md">{editId ? 'Update' : 'Add'}</Button>
+            <Button onClick={() => saveMutation.mutate(formData)} disabled={saveMutation.isPending || !formData.title}>{editId ? 'Update' : 'Add'}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

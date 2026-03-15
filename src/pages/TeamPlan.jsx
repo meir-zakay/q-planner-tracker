@@ -567,7 +567,7 @@ export default function TeamPlan() {
           </SelectContent>
         </Select>
         {canEdit && (
-          <Button onClick={() => setAddFeatureOpen(true)} disabled={!selectedTeamId} className="gap-2 px-5 py-2 text-sm font-semibold rounded-xl shadow-md"><Plus className="w-4 h-4" />Add Feature</Button>
+          <Button onClick={() => setAddFeatureOpen(true)} disabled={!selectedTeamId}><Plus className="w-4 h-4" />Add Feature</Button>
         )}
       </div>
 
@@ -590,9 +590,7 @@ export default function TeamPlan() {
                   <TooltipTrigger asChild>
                     <Button
                       onClick={toggleManualMode}
-                      className={`gap-2 px-5 py-2 text-sm font-semibold rounded-xl shadow-md ${
-                        manualMode ? 'ring-2 ring-primary/40 ring-inset' : 'opacity-60'
-                      }`}
+                      className={manualMode ? 'ring-2 ring-primary/40 ring-inset' : 'opacity-60'}
                     >
                       <Wrench className="w-4 h-4" />
                       {manualMode ? 'Manual' : 'Auto'}
@@ -980,7 +978,6 @@ export default function TeamPlan() {
             <Button
               onClick={() => addEntryMutation.mutate({ featureId: selectedFeatureId, customTitle: customFeatureTitle, beEffort: Number(effortForm.be) || 0, feEffort: Number(effortForm.fe) || 0 })}
               disabled={addEntryMutation.isPending || (addMode === 'existing' ? !selectedFeatureId : (!customFeatureTitle.trim() || !customFeatureObjective))}
-              className="font-semibold rounded-xl shadow-md"
             >Add to Plan</Button>
           </DialogFooter>
         </DialogContent>
