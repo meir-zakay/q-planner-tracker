@@ -146,46 +146,7 @@ export default function Layout() {
               return themeBtn;
             })()}
 
-            {/* User + Logout */}
-            {user && (
-              !collapsed ? (
-                <div className="flex items-center justify-between px-2.5 py-2">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div className="w-7 h-7 rounded-full bg-indigo-700/60 flex items-center justify-center shrink-0">
-                      <span className="text-xs font-bold text-indigo-200">{(user.full_name || user.email || '?')[0].toUpperCase()}</span>
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-xs font-semibold text-indigo-100 leading-none truncate">{user.full_name || user.email}</p>
-                      <p className="text-[10px] text-indigo-300/50 capitalize mt-0.5">{userRole}</p>
-                    </div>
-                  </div>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button
-                        onClick={() => base44.auth.logout()}
-                        className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all duration-150 text-indigo-300/40 hover:text-red-400 hover:bg-red-500/15"
-                        style={{ background: 'hsl(228 25% 13%)', border: '1px solid hsl(228 25% 20%)' }}
-                      >
-                        <LogOut className="w-3.5 h-3.5" />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent side="right">Logout</TooltipContent>
-                  </Tooltip>
-                </div>
-              ) : (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={() => base44.auth.logout()}
-                      className={`flex items-center justify-center px-2.5 py-2 rounded-lg text-sm font-medium transition-all duration-150 text-indigo-200/60 hover:text-red-400 hover:bg-red-500/10 w-full`}
-                    >
-                      <LogOut className="w-4 h-4 shrink-0" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="right">Logout</TooltipContent>
-                </Tooltip>
-              )
-            )}
+
           </div>
 
           {/* Collapse toggle */}
