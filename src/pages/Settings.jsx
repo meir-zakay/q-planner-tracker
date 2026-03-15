@@ -131,7 +131,7 @@ export default function Settings() {
           )}
           <DialogFooter>
             <Button variant="outline" onClick={() => setObjForm(null)}>Cancel</Button>
-            <Button onClick={() => saveObjMutation.mutate(objForm)} disabled={saveObjMutation.isPending || !objForm?.name} className="font-semibold rounded-xl shadow-md">Save</Button>
+            <Button onClick={() => saveObjMutation.mutate(objForm)} disabled={saveObjMutation.isPending || !objForm?.name}>Save</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -167,7 +167,7 @@ function QuarterSprintEditor({ quarter, year, sprints, onSave }) {
         {editing ? (
           <div className="flex gap-1">
             <Button size="sm" variant="outline" onClick={() => { setLocalSprints(sprints); setEditing(false); }}>Cancel</Button>
-            <Button size="sm" onClick={handleSave} className="font-semibold rounded-xl shadow-md">Save</Button>
+            <Button size="sm" onClick={handleSave}>Save</Button>
           </div>
         ) : (
           <Button size="sm" variant="ghost" onClick={() => setEditing(true)}><Pencil className="w-3 h-3" /></Button>

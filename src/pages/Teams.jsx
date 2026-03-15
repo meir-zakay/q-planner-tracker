@@ -100,11 +100,11 @@ export default function Teams() {
           <p className="text-sm text-muted-foreground">{teams.length} teams in {selectedQuarter} {selectedYear}</p>
           <div className="flex gap-2">
             {sourceQuarters.length > 0 && (
-              <Button variant="outline" onClick={() => setCopyOpen(true)} className="gap-2 border-0 px-5 py-2 text-sm font-semibold rounded-xl shadow-md bg-secondary hover:bg-secondary/80">
+              <Button variant="outline" onClick={() => setCopyOpen(true)} className="gap-2">
                 <Copy className="w-4 h-4" />Copy from quarter
               </Button>
             )}
-            <Button onClick={openNew} className="gap-2 px-5 py-2 text-sm font-semibold rounded-xl shadow-md"><Plus className="w-4 h-4" />Add Team</Button>
+            <Button onClick={openNew} className="gap-2"><Plus className="w-4 h-4" />Add Team</Button>
           </div>
         </div>
 
@@ -195,7 +195,7 @@ export default function Teams() {
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => { setFormOpen(false); setEditId(null); }}>Cancel</Button>
-              <Button onClick={() => saveMutation.mutate(formData)} disabled={saveMutation.isPending || !formData.name} className="font-semibold rounded-xl shadow-md">{editId ? 'Update' : 'Create'}</Button>
+              <Button onClick={() => saveMutation.mutate(formData)} disabled={saveMutation.isPending || !formData.name}>{editId ? 'Update' : 'Create'}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -218,7 +218,7 @@ export default function Teams() {
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => { setCopyOpen(false); setCopySource(''); }}>Cancel</Button>
-              <Button onClick={() => copyMutation.mutate(copySource)} disabled={!copySource || copyMutation.isPending} className="font-semibold rounded-xl shadow-md">
+              <Button onClick={() => copyMutation.mutate(copySource)} disabled={!copySource || copyMutation.isPending}>
                 {copyMutation.isPending ? 'Copying…' : 'Copy Teams'}
               </Button>
             </DialogFooter>
