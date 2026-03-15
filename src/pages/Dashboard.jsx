@@ -6,7 +6,7 @@ import { useQuarterSelection } from '@/components/QuarterContext';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { Users, ListChecks, Server, Monitor } from 'lucide-react';
 
-const FALLBACK_COLORS = ['#4f46e5','#0ea5e9','#f59e0b','#10b981','#f43f5e','#8b5cf6','#f97316'];
+const FALLBACK_COLORS = ['#0F52BA','#0ea5e9','#f59e0b','#10b981','#f43f5e','#6366f1','#f97316'];
 
 export default function Dashboard() {
   const { user } = useOutletContext();
