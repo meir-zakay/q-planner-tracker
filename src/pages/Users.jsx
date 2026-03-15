@@ -47,7 +47,7 @@ export default function Users() {
     <RoleGate allowed={['admin']}>
       <div className="space-y-6">
         <div className="flex items-center justify-end">
-          <Button onClick={() => setInviteOpen(true)} className="gap-2 bg-indigo-600 hover:bg-indigo-500 text-white border-0 px-5 py-2 text-sm font-semibold rounded-xl shadow-md">
+          <Button onClick={() => setInviteOpen(true)} className="gap-2 px-5 py-2 text-sm font-semibold rounded-xl shadow-md">
             <UserPlus className="w-4 h-4" /> Invite User
           </Button>
         </div>
