@@ -271,7 +271,7 @@ export default function TeamPlan() {
       const newEntry = await base44.entities.TeamPlanEntry.create({
         team_id: selectedTeamId, feature_id: fid,
         be_effort_weeks: beEffort, fe_effort_weeks: feEffort,
-        be_parallelism: beParallelism, fe_parallelism: feParallelism,
+        be_parallelism: beParallelism || 1, fe_parallelism: feParallelism || 1,
         sprint_allocations: sprints.map(s => ({ sprint: s, be_weeks: 0, fe_weeks: 0 })),
         year: selectedYear, quarter: selectedQuarter
       });
@@ -285,7 +285,7 @@ export default function TeamPlan() {
           return oa - ob;
         });
         const allocMap = reallocateAll(ordered, sprints, beSprintCaps, feSprintCaps);
-        await saveReallocated(allocMap);
+        await saveReallocated(allocMap, ordered);
       }
     },
     onSuccess: () => {
