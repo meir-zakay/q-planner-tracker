@@ -1032,7 +1032,7 @@ export default function TeamPlan() {
               )}
 
               {/* Delete Plan Confirmation Dialog */}
-      <Dialog open={deletePlanOpen} onOpenChange={setDeletePlanOpen}>
+              <Dialog open={deletePlanOpen} onOpenChange={setDeletePlanOpen}>
         <DialogContent>
           <DialogHeader><DialogTitle>Re-sign Plan</DialogTitle></DialogHeader>
           <div className="space-y-4 py-4">
