@@ -78,11 +78,11 @@ export default function Layout() {
            className={`relative shrink-0 h-full flex flex-col transition-all duration-200 bg-blue-950 dark:bg-blue-950 ${sidebarWidth}`}
          >
           {/* Logo */}
-           <div className="h-16 flex items-center gap-2 px-3 shrink-0 border-b border-blue-700 bg-blue-900 dark:bg-blue-900">
-             <Link to="/Dashboard" className="flex items-center gap-2">
-               <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center shrink-0">
-                 <CalendarRange className="w-4 h-4 text-primary-foreground" />
-               </div>
+          <div className="h-16 flex items-center gap-2 px-3 shrink-0 border-b border-blue-700 bg-blue-950 dark:bg-blue-950">
+            <Link to="/Dashboard" className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-slate-700 flex items-center justify-center shrink-0">
+                <CalendarRange className="w-4 h-4 text-white" />
+              </div>
                {!collapsed && <span className="font-bold text-white dark:text-white text-lg tracking-tight whitespace-nowrap">Quarter Planner</span>}
             </Link>
           </div>
