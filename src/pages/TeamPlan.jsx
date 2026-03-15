@@ -1023,11 +1023,10 @@ export default function TeamPlan() {
                       );
                     })}
                   </div>
-                </>
-              )}
-              </div>
-              </DragDropContext>
-              )}
+                  </>
+                  )}
+                  </DragDropContext>
+                  )}
 
               {/* Delete Plan Confirmation Dialog */}
               <Dialog open={deletePlanOpen} onOpenChange={setDeletePlanOpen}>
