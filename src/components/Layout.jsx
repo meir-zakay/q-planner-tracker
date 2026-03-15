@@ -81,7 +81,7 @@ export default function Layout() {
           {/* Logo */}
           <div className="h-16 flex items-center gap-2 px-3 shrink-0" style={{ borderBottom: '1px solid hsl(228 25% 14%)' }}>
             <Link to="/Dashboard" className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center shrink-0">
+              <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center shrink-0">
                 <span className="text-white font-bold text-xs">Q</span>
               </div>
               {!collapsed && <span className="font-bold text-white text-lg tracking-tight whitespace-nowrap">Quarter Planner</span>}
