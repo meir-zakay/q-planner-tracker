@@ -655,8 +655,10 @@ export default function TeamPlan() {
                             <div
                               ref={provided.innerRef}
                               {...provided.droppableProps}
+                              data-sprint-drop={`${sprint}-be`}
+                              data-drop-active="0"
                               style={{ minHeight: beDropHeight }}
-                              className={`space-y-1.5 rounded-lg transition-colors duration-150 ${snapshot.isDraggingOver ? 'bg-blue-500/10 ring-1 ring-blue-400/30 ring-inset' : ''}`}
+                              className={`space-y-1.5 rounded-lg transition-colors duration-150 ${snapshot.isDraggingOver || nativeDrag ? '' : ''} [&[data-drop-active='1']]:bg-blue-500/20 [&[data-drop-active='1']]:ring-2 [&[data-drop-active='1']]:ring-blue-400/60 [&[data-drop-active='1']]:ring-inset ${snapshot.isDraggingOver ? 'bg-blue-500/10 ring-1 ring-blue-400/30 ring-inset' : ''}`}
                             >
                               {beFeatures.map((entry, idx) => {
                                const feat = featureMap[entry.feature_id];
