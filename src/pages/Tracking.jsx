@@ -36,11 +36,13 @@ export default function Tracking() {
   const progressMap = useMemo(() => { const m = {}; actualProgress.forEach(p => { m[p.feature_id] = p; }); return m; }, [actualProgress]);
 
   const updateProgressMutation = useMutation({
-    mutationFn: async ({ featureId, percent, startSprint, endSprint }) => {
+    mutationFn: async ({ featureId, percent, startSprint, endSprint, plannedStart, plannedEnd }) => {
       const existing = progressMap[featureId];
-      const data = { actual_progress_percent: percent };
-      if (startSprint) data.actual_start_sprint = startSprint;
-      if (endSprint) data.actual_end_sprint = endSprint;
+      const data = { 
+        actual_progress_percent: percent,
+        actual_start_sprint: startSprint || plannedStart,
+        actual_end_sprint: endSprint || plannedEnd
+      };
       
       if (existing) {
         return base44.entities.ActualProgress.update(existing.id, data);
@@ -82,10 +84,10 @@ export default function Tracking() {
     const status = actualPercent > expectedProgress ? 'ahead' : actualPercent < expectedProgress - 10 ? 'behind' : 'on-track';
     const sprintRange = getSprintRange(entry);
 
-    const actualRange = actual?.actual_start_sprint && actual?.actual_end_sprint ? {
-      start: actual.actual_start_sprint,
-      end: actual.actual_end_sprint
-    } : null;
+    const actualRange = {
+      start: actual?.actual_start_sprint || sprintRange?.start || '',
+      end: actual?.actual_end_sprint || sprintRange?.end || ''
+    };
 
     return {
       id: entry.id,
@@ -163,7 +165,13 @@ export default function Tracking() {
                         </div>
                         <div>
                           <p className="text-xs text-muted-foreground">Actual</p>
-                          <p className="font-medium text-foreground">{feature.actualRange ? `${feature.actualRange.start} → ${feature.actualRange.end}` : '—'}</p>
+                          <p className="font-medium" style={{
+                            color: sprints.indexOf(feature.actualRange?.start) > sprints.indexOf(feature.sprintRange?.start) ? '#f97316'
+                              : sprints.indexOf(feature.actualRange?.end) > sprints.indexOf(feature.sprintRange?.end) ? '#dc2626'
+                              : 'hsl(var(--foreground))'
+                          }}>
+                            {feature.actualRange?.start && feature.actualRange?.end ? `${feature.actualRange.start} → ${feature.actualRange.end}` : '—'}
+                          </p>
                         </div>
                         <div>
                           <p className="text-xs text-muted-foreground">Planned Effort</p>
@@ -198,7 +206,7 @@ export default function Tracking() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => { setEditingProgress(feature); setProgressForm({ percent: String(feature.actualProgress), startSprint: feature.actual?.actual_start_sprint || '', endSprint: feature.actual?.actual_end_sprint || '' }); }}
+                      onClick={() => { setEditingProgress(feature); setProgressForm({ percent: String(feature.actualProgress), startSprint: feature.actualRange?.start || '', endSprint: feature.actualRange?.end || '' }); }}
                       className="shrink-0 mt-2"
                     >
                       <Edit2 className="w-4 h-4" />
@@ -255,7 +263,14 @@ export default function Tracking() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditingProgress(null)}>Cancel</Button>
             <Button
-              onClick={() => updateProgressMutation.mutate({ featureId: editingProgress.featureId, percent: Number(progressForm.percent), startSprint: progressForm.startSprint, endSprint: progressForm.endSprint })}
+              onClick={() => updateProgressMutation.mutate({ 
+                featureId: editingProgress.featureId, 
+                percent: Number(progressForm.percent), 
+                startSprint: progressForm.startSprint, 
+                endSprint: progressForm.endSprint,
+                plannedStart: editingProgress.sprintRange?.start,
+                plannedEnd: editingProgress.sprintRange?.end
+              })}
               disabled={updateProgressMutation.isPending}
             >
               Save Progress
