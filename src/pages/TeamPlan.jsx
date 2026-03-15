@@ -588,17 +588,17 @@ export default function TeamPlan() {
               <TooltipProvider delayDuration={200}>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <button
+                    <Button
                       onClick={toggleManualMode}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${
+                      className={`gap-2 px-5 py-2 text-sm font-semibold rounded-xl shadow-md border-0 ${
                         manualMode
-                          ? 'bg-indigo-500/15 border-indigo-500/40 text-indigo-400 hover:bg-indigo-500/25'
-                          : 'bg-background border-border text-muted-foreground hover:text-foreground hover:border-foreground/30'
+                          ? 'bg-indigo-700 hover:bg-indigo-600 text-white ring-2 ring-indigo-400/60 ring-inset'
+                          : 'bg-secondary hover:bg-secondary/80 text-secondary-foreground'
                       }`}
                     >
-                      <Wrench className="w-3.5 h-3.5" />
+                      <Wrench className="w-4 h-4" />
                       {manualMode ? 'Manual' : 'Auto'}
-                    </button>
+                    </Button>
                   </TooltipTrigger>
                   <TooltipContent side="bottom" className="max-w-xs text-xs">
                     {manualMode
