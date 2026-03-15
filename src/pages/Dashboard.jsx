@@ -44,10 +44,10 @@ export default function Dashboard() {
   const utilizationColor = utilizationPct > 100 ? '#ef4444' : utilizationPct > 85 ? '#f59e0b' : '#0F52BA';
 
   const stats = [
-    { label: 'Teams', value: teams.length, icon: Users, bg: 'bg-blue-50 dark:bg-blue-950/40', iconColor: 'text-blue-500' },
-    { label: 'Features', value: features.length, icon: ListChecks, bg: 'bg-blue-50 dark:bg-blue-950/40', iconColor: 'text-blue-600' },
-    { label: 'BE Effort (weeks)', value: totalBEEffort, icon: Server, bg: 'bg-blue-50 dark:bg-blue-950/40', iconColor: 'text-blue-500' },
-    { label: 'FE Effort (weeks)', value: totalFEEffort, icon: Monitor, bg: 'bg-emerald-50 dark:bg-emerald-950/40', iconColor: 'text-emerald-500' },
+    { label: 'Teams', value: teams.length, icon: Users, bg: 'bg-indigo-900', iconColor: 'text-indigo-400' },
+    { label: 'Features', value: features.length, icon: ListChecks, bg: 'bg-indigo-900', iconColor: 'text-indigo-400' },
+    { label: 'BE Effort (weeks)', value: totalBEEffort, icon: Server, bg: 'bg-indigo-900', iconColor: 'text-indigo-400' },
+    { label: 'FE Effort (weeks)', value: totalFEEffort, icon: Monitor, bg: 'bg-indigo-900', iconColor: 'text-indigo-400' },
   ];
 
   const firstName = user?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
