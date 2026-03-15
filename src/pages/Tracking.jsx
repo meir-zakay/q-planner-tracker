@@ -164,6 +164,14 @@ export default function Tracking() {
                           <p className="font-medium text-foreground">{feature.sprintRange ? `${feature.sprintRange.start} → ${feature.sprintRange.end}` : '—'}</p>
                         </div>
                         <div className="text-left">
+                          <p className="text-xs text-muted-foreground">Planned Effort</p>
+                          <p className="font-medium text-foreground">{feature.plannedWeeks}w</p>
+                        </div>
+                        <div className="text-left">
+                          <p className="text-xs text-muted-foreground">Expected Progress</p>
+                          <p className="font-medium text-foreground">{feature.expectedProgress}%</p>
+                        </div>
+                        <div className="text-left">
                           <p className="text-xs text-muted-foreground">Actual</p>
                           <p className="font-medium" style={{
                             color: sprints.indexOf(feature.actualRange?.end) > sprints.indexOf(feature.sprintRange?.end) ? '#dc2626'
@@ -172,14 +180,6 @@ export default function Tracking() {
                           }}>
                             {feature.actualRange?.start && feature.actualRange?.end ? `${feature.actualRange.start} → ${feature.actualRange.end}` : '—'}
                           </p>
-                        </div>
-                        <div className="text-left">
-                          <p className="text-xs text-muted-foreground">Planned Effort</p>
-                          <p className="font-medium text-foreground">{feature.plannedWeeks}w</p>
-                        </div>
-                        <div className="text-left">
-                          <p className="text-xs text-muted-foreground">Expected Progress</p>
-                          <p className="font-medium text-foreground">{feature.expectedProgress}%</p>
                         </div>
                         <div className="text-left">
                           <p className="text-xs text-muted-foreground">Actual Progress</p>
