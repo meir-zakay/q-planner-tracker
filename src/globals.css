@@ -12,7 +12,7 @@
     --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
-    --primary: 213 94% 52%;
+    --primary: 217 85% 39%;
     --primary-foreground: 0 0% 100%;
     --secondary: 214 32% 95%;
     --secondary-foreground: 222 47% 11%;
@@ -24,11 +24,11 @@
     --destructive-foreground: 0 0% 98%;
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 213 94% 52%;
+    --ring: 217 85% 39%;
     --radius: 0.625rem;
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 222 47% 11%;
-    --sidebar-primary: 239 84% 67%;
+    --sidebar-primary: 217 85% 39%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 214 32% 95%;
     --sidebar-accent-foreground: 222 47% 11%;
