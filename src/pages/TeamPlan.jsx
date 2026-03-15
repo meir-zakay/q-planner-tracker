@@ -195,7 +195,7 @@ export default function TeamPlan() {
   }, [sortedEntries, featureMap]);
 
   const utilizationPct = totalCapacity > 0 ? Math.round((totalUsed / totalCapacity) * 100) : 0;
-  const utilizationColor = utilizationPct > 100 ? '#ef4444' : utilizationPct > 85 ? '#f59e0b' : '#4f46e5';
+  const utilizationColor = utilizationPct > 100 ? '#ef4444' : utilizationPct > 85 ? '#f59e0b' : '#0F52BA';
 
   // Save re-allocated results for all affected entries in parallel
   const saveReallocated = async (allocMap) => {
