@@ -111,7 +111,8 @@ export default function Features() {
                       <div
                         ref={provided.innerRef}
                         {...provided.draggableProps}
-                        className={`bg-card border border-border rounded-xl px-4 py-3.5 flex items-center gap-3 group transition-shadow ${snapshot.isDragging ? 'shadow-xl ring-2 ring-primary/20' : 'hover:shadow-sm'}`}
+                        className={`rounded-xl px-4 py-3.5 flex items-center gap-3 group transition-shadow ${snapshot.isDragging ? 'shadow-xl ring-2 ring-primary/20' : 'hover:shadow-sm'}`}
+                        style={{ background: 'hsl(228 30% 7%)', border: '1px solid hsl(228 25% 14%)' }}
                       >
                         {canEdit && (
                           <div {...provided.dragHandleProps} className="cursor-grab text-muted-foreground/40 hover:text-muted-foreground transition-colors">
