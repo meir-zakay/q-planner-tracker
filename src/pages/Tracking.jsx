@@ -154,11 +154,11 @@ export default function Tracking() {
               </div>
             ) : (
               plannedFeatures.map(feature => (
-                <div key={feature.id} className="rounded-xl p-3 bg-slate-50 dark:bg-[#1a1530] border border-border transition-all duration-200 hover:shadow-md hover:border-primary/40 hover:bg-slate-100 dark:hover:bg-[#2d1f47]">
-                  <div className="flex items-start justify-between gap-4">
+                <div key={feature.id} className="rounded-xl p-2 bg-slate-50 dark:bg-[#1a1530] border border-border transition-all duration-200 hover:shadow-md hover:border-primary/40 hover:bg-slate-100 dark:hover:bg-[#2d1f47]">
+                  <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-foreground mb-2">{feature.title}</h3>
-                      <div className="grid grid-cols-5 gap-4 text-sm">
+                      <h3 className="font-medium text-foreground mb-1.5">{feature.title}</h3>
+                      <div className="grid grid-cols-5 gap-3 text-sm">
                         <div className="text-left">
                           <p className="text-xs text-muted-foreground">Plan</p>
                           <p className="font-medium text-foreground">{feature.sprintRange ? `${feature.sprintRange.start} → ${feature.sprintRange.end}` : '—'}</p>
