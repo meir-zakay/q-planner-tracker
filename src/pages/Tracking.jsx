@@ -13,7 +13,7 @@ export default function Tracking() {
   const qc = useQueryClient();
   const [selectedTeamId, setSelectedTeamId] = useState(() => localStorage.getItem('selectedTeamId') || '');
   const [editingProgress, setEditingProgress] = useState(null);
-  const [notesOpen, setNotesOpen] = useState(null);
+  const [viewingNotes, setViewingNotes] = useState(null);
   const [progressForm, setProgressForm] = useState({ percent: '', startSprint: '', endSprint: '', status: "Didn't Start", notes: '' });
 
   const { data: teamsRaw = [] } = useQuery({ queryKey: ['teams'], queryFn: () => base44.entities.Team.list() });
@@ -225,9 +225,21 @@ export default function Tracking() {
                       }`}>
                         {feature.featureStatus}
                       </span>
-                      <span className="text-muted-foreground/50">
-                        <StickyNote className="w-4 h-4" />
-                      </span>
+                      {feature.actual?.notes ? (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setViewingNotes(feature)}
+                          className="shrink-0 text-blue-500 hover:text-blue-600"
+                          title="View note"
+                        >
+                          <StickyNote className="w-4 h-4 fill-current" />
+                        </Button>
+                      ) : (
+                        <span className="text-muted-foreground/30">
+                          <StickyNote className="w-4 h-4" />
+                        </span>
+                      )}
                       <Button
                          variant="ghost"
                          size="icon"
@@ -244,6 +256,16 @@ export default function Tracking() {
           </div>
         </div>
       )}
+
+      <Dialog open={!!viewingNotes} onOpenChange={(o) => !o && setViewingNotes(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>{viewingNotes?.title}</DialogTitle></DialogHeader>
+          <div className="py-4">
+            <p className="text-sm text-muted-foreground mb-3">Note:</p>
+            <p className="text-foreground whitespace-pre-wrap">{viewingNotes?.actual?.notes}</p>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={!!editingProgress} onOpenChange={(o) => !o && setEditingProgress(null)}>
         <DialogContent>
