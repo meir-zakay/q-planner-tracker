@@ -13,7 +13,8 @@ export default function Tracking() {
   const qc = useQueryClient();
   const [selectedTeamId, setSelectedTeamId] = useState(() => localStorage.getItem('selectedTeamId') || '');
   const [editingProgress, setEditingProgress] = useState(null);
-  const [progressForm, setProgressForm] = useState({ percent: '', startSprint: '', endSprint: '', status: "Didn't Start" });
+  const [notesOpen, setNotesOpen] = useState(null);
+  const [progressForm, setProgressForm] = useState({ percent: '', startSprint: '', endSprint: '', status: "Didn't Start", notes: '' });
 
   const { data: teamsRaw = [] } = useQuery({ queryKey: ['teams'], queryFn: () => base44.entities.Team.list() });
   const teams = useMemo(() => [...teamsRaw].sort((a, b) => a.name.localeCompare(b.name)), [teamsRaw]);
