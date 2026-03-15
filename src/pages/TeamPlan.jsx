@@ -1031,8 +1031,9 @@ export default function TeamPlan() {
               {/* Gantt Chart */}
               <GanttChart entries={sortedEntries} sprints={sprints} featureMap={featureMap} colorMap={colorMap} darkMode={darkMode} />
               </div>
+              </div>
               </DragDropContext>
-      )}
+              )}
 
       {/* Delete Plan Confirmation Dialog */}
       <Dialog open={deletePlanOpen} onOpenChange={setDeletePlanOpen}>
