@@ -74,21 +74,21 @@ export default function Layout() {
     <TooltipProvider delayDuration={300}>
       <div className="h-screen flex overflow-hidden">
         {/* Sidebar */}
-        <aside
-          className={`relative shrink-0 h-full flex flex-col transition-all duration-200 ${sidebarWidth}`}
-        >
+         <aside
+           className={`relative shrink-0 h-full flex flex-col transition-all duration-200 bg-slate-900 dark:bg-slate-950 ${sidebarWidth}`}
+         >
           {/* Logo */}
-          <div className="h-16 flex items-center gap-2 px-3 shrink-0 border-b border-border">
-            <Link to="/Dashboard" className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center shrink-0">
-                <CalendarRange className="w-4 h-4 text-primary-foreground" />
-              </div>
-              {!collapsed && <span className="font-bold text-foreground text-lg tracking-tight whitespace-nowrap">Quarter Planner</span>}
+           <div className="h-16 flex items-center gap-2 px-3 shrink-0 border-b border-slate-700">
+             <Link to="/Dashboard" className="flex items-center gap-2">
+               <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center shrink-0">
+                 <CalendarRange className="w-4 h-4 text-primary-foreground" />
+               </div>
+               {!collapsed && <span className="font-bold text-slate-100 text-lg tracking-tight whitespace-nowrap">Quarter Planner</span>}
             </Link>
           </div>
 
           {/* Nav */}
-          <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto">
+          <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto text-slate-200">
             {filteredNav.map(item => {
               const isActive = location.pathname === item.path;
               const NavLink = (
@@ -96,7 +96,7 @@ export default function Layout() {
                   key={item.path}
                   to={item.path}
                   style={isActive
-                    ? { backgroundColor: 'hsl(217 85% 39% / 0.20)', color: 'hsl(217 85% 75%)' }
+                    ? { backgroundColor: 'rgb(15 82 204 / 0.25)', color: 'rgb(225 239 254)' }
                     : {}}
                   className={`flex items-center gap-3 px-2.5 py-2 rounded-lg text-sm font-medium transition-all duration-150 ${
                     collapsed ? 'justify-center' : ''
@@ -126,9 +126,9 @@ export default function Layout() {
           {/* Collapse toggle */}
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="absolute -right-3 top-4 w-6 h-6 rounded-full flex items-center justify-center shadow-sm transition-colors z-10 bg-background border border-border"
-          >
-            {collapsed ? <ChevronRight className="w-3 h-3 text-blue-300/60" /> : <ChevronLeft className="w-3 h-3 text-blue-300/60" />}
+             className="absolute -right-3 top-4 w-6 h-6 rounded-full flex items-center justify-center shadow-sm transition-colors z-10 bg-slate-800 border border-slate-700"
+            >
+             {collapsed ? <ChevronRight className="w-3 h-3 text-slate-400" /> : <ChevronLeft className="w-3 h-3 text-slate-400" />}
           </button>
         </aside>
 
