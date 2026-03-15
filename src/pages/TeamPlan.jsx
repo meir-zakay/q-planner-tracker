@@ -212,10 +212,12 @@ export default function TeamPlan() {
   const utilizationColor = utilizationPct > 100 ? '#ef4444' : utilizationPct > 85 ? '#f59e0b' : '#0F52BA';
 
   // Save re-allocated results for all affected entries in parallel, preserving parallelism
-  const saveReallocated = async (allocMap) => {
+  // entriesForParallelism: optional array of entries to use as source of parallelism values (e.g., when they've been updated but not yet synced)
+  const saveReallocated = async (allocMap, entriesForParallelism = null) => {
+    const entrySource = entriesForParallelism || sortedEntries;
     await Promise.all(
       Object.entries(allocMap).map(([id, sprint_allocations]) => {
-        const entry = sortedEntries.find(e => e.id === id);
+        const entry = entrySource.find(e => e.id === id);
         const newBE = sprint_allocations.reduce((s, a) => s + (a.be_weeks || 0), 0);
         const newFE = sprint_allocations.reduce((s, a) => s + (a.fe_weeks || 0), 0);
         return base44.entities.TeamPlanEntry.update(id, { 
