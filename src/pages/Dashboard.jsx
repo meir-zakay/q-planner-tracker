@@ -74,7 +74,7 @@ export default function Dashboard() {
         ))}
       </div>
 
-      <div className="bg-card border border-border rounded-xl p-6">
+      <div className="rounded-xl p-6" style={{ background: 'hsl(228 30% 7%)', border: '1px solid hsl(228 25% 14%)' }}>
         <h2 className="text-base font-semibold text-foreground mb-1">Effort by Objective</h2>
         <div className="flex items-center justify-between mb-1">
           <p className="text-xs text-muted-foreground">Capacity Utilization</p>
