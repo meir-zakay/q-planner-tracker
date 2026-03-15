@@ -331,7 +331,7 @@ export default function TeamPlan() {
         const updated = { ...entry, ...updateData };
         const allEntries = sortedEntries.filter(e => !e.excluded_from_allocation).map(e => e.id === entry.id ? updated : e);
         const allocMap = reallocateAll(allEntries, sprints, beSprintCaps, feSprintCaps);
-        await saveReallocated(allocMap);
+        await saveReallocated(allocMap, allEntries);
       }
     },
     onSuccess: () => { setEditEntryId(null); },
