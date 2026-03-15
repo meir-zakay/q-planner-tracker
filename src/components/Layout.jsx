@@ -75,15 +75,15 @@ export default function Layout() {
       <div className="h-screen flex overflow-hidden">
         {/* Sidebar */}
          <aside
-           className={`relative shrink-0 h-full flex flex-col transition-all duration-200 bg-blue-900 dark:bg-blue-950 ${sidebarWidth}`}
+           className={`relative shrink-0 h-full flex flex-col transition-all duration-200 bg-blue-950 dark:bg-blue-950 ${sidebarWidth}`}
          >
           {/* Logo */}
-           <div className="h-16 flex items-center gap-2 px-3 shrink-0 border-b border-blue-700 bg-blue-50 dark:bg-blue-900">
+           <div className="h-16 flex items-center gap-2 px-3 shrink-0 border-b border-blue-700 bg-blue-900 dark:bg-blue-900">
              <Link to="/Dashboard" className="flex items-center gap-2">
                <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center shrink-0">
                  <CalendarRange className="w-4 h-4 text-primary-foreground" />
                </div>
-               {!collapsed && <span className="font-bold text-blue-900 dark:text-slate-100 text-lg tracking-tight whitespace-nowrap">Quarter Planner</span>}
+               {!collapsed && <span className="font-bold text-white dark:text-white text-lg tracking-tight whitespace-nowrap">Quarter Planner</span>}
             </Link>
           </div>
 
@@ -132,8 +132,8 @@ export default function Layout() {
         {/* Main area */}
         <div className="flex-1 min-w-0 flex flex-col h-full overflow-hidden">
           {/* Top Header Bar */}
-          <header className="h-16 flex items-center px-6 gap-4 shrink-0 z-20 bg-blue-50 dark:bg-blue-900 border-b border-border">
-            <h1 className="text-xl font-bold text-foreground">{pageTitle}</h1>
+          <header className="h-16 flex items-center px-6 gap-4 shrink-0 z-20 bg-blue-900 dark:bg-blue-900 border-b border-border">
+            <h1 className="text-xl font-bold text-white">{pageTitle}</h1>
             <div className="flex-1" />
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground hidden sm:inline">Period:</span>
