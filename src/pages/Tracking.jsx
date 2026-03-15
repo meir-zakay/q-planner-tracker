@@ -220,7 +220,7 @@ export default function Tracking() {
                     <Button
                        variant="ghost"
                        size="icon"
-                       onClick={() => { setEditingProgress(feature); setProgressForm({ percent: String(feature.actualProgress), startSprint: feature.actualRange?.start || '', endSprint: feature.actualRange?.end || '' }); }}
+                       onClick={() => { setEditingProgress(feature); setProgressForm({ percent: String(feature.actualProgress), startSprint: feature.actualRange?.start || '', endSprint: feature.actualRange?.end || '', status: feature.featureStatus }); }}
                        className="shrink-0 mt-0"
                     >
                       <Edit2 className="w-4 h-4" />
