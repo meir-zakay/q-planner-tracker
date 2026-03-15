@@ -859,8 +859,10 @@ export default function TeamPlan() {
               </div>
           </div>
 
-          {/* Bottom: Planned Features + Pie Chart */}
+          {/* Bottom: Planned Features, Gantt, + Pie Chart */}
           <div className="grid lg:grid-cols-[1fr_380px] gap-6">
+            {/* Planned Features & Gantt */}
+            <div className="space-y-6">
             {/* Planned Features */}
             <div className="rounded-xl p-5 bg-slate-50 dark:bg-[#1a1530] border border-border">
               <div className="flex items-center justify-between mb-4">
