@@ -97,9 +97,10 @@ export default function Tracking() {
       plannedWeeks: totalPlannedWeeks,
       expectedProgress,
       actualProgress: actualPercent,
-      status,
+      healthStatus: status,
       sprintRange,
       actualRange,
+      featureStatus: actual?.status || "Didn't Start",
       entry,
       actual
     };
