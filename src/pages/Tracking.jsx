@@ -188,7 +188,7 @@ export default function Tracking() {
                           </p>
                         </div>
                       </div>
-                      <div className="mt-3 space-y-1">
+                      <div className="mt-2 space-y-1">
                         <div className="flex justify-between text-xs text-muted-foreground mb-1">
                           <span>Expected</span>
                           <span>Actual</span>
