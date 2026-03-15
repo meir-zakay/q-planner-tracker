@@ -141,7 +141,7 @@ export default function Tracking() {
               </div>
             ) : (
               plannedFeatures.map(feature => (
-                <div key={feature.id} className="rounded-xl p-5 bg-slate-50 dark:bg-[#1a1530] border border-border">
+                <div key={feature.id} className="rounded-xl p-3 bg-slate-50 dark:bg-[#1a1530] border border-border">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
                       <h3 className="font-medium text-foreground mb-2">{feature.title}</h3>
