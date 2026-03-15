@@ -211,13 +211,20 @@ export default function TeamPlan() {
   const utilizationPct = totalCapacity > 0 ? Math.round((totalUsed / totalCapacity) * 100) : 0;
   const utilizationColor = utilizationPct > 100 ? '#ef4444' : utilizationPct > 85 ? '#f59e0b' : '#0F52BA';
 
-  // Save re-allocated results for all affected entries in parallel
+  // Save re-allocated results for all affected entries in parallel, preserving parallelism
   const saveReallocated = async (allocMap) => {
     await Promise.all(
       Object.entries(allocMap).map(([id, sprint_allocations]) => {
+        const entry = sortedEntries.find(e => e.id === id);
         const newBE = sprint_allocations.reduce((s, a) => s + (a.be_weeks || 0), 0);
         const newFE = sprint_allocations.reduce((s, a) => s + (a.fe_weeks || 0), 0);
-        return base44.entities.TeamPlanEntry.update(id, { sprint_allocations, be_effort_weeks: newBE, fe_effort_weeks: newFE });
+        return base44.entities.TeamPlanEntry.update(id, { 
+          sprint_allocations, 
+          be_effort_weeks: newBE, 
+          fe_effort_weeks: newFE,
+          be_parallelism: entry?.be_parallelism || 1,
+          fe_parallelism: entry?.fe_parallelism || 1
+        });
       })
     );
     qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] });
