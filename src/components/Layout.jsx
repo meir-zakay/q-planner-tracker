@@ -75,10 +75,10 @@ export default function Layout() {
       <div className="h-screen flex overflow-hidden">
         {/* Sidebar */}
          <aside
-           className={`relative shrink-0 h-full flex flex-col transition-all duration-200 bg-indigo-950 dark:bg-indigo-950 ${sidebarWidth}`}
+           className={`relative shrink-0 h-full flex flex-col transition-all duration-200 bg-[#1a1530] dark:bg-[#1a1530] ${sidebarWidth}`}
          >
           {/* Logo */}
-          <div className="h-16 flex items-center gap-2 px-3 shrink-0 border-b border-indigo-700 bg-indigo-950 dark:bg-indigo-950">
+          <div className="h-16 flex items-center gap-2 px-3 shrink-0 border-b border-indigo-900 bg-[#1a1530] dark:bg-[#1a1530]">
             <Link to="/Dashboard" className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-lg bg-indigo-900 flex items-center justify-center shrink-0">
                 <CalendarRange className="w-4 h-4 text-indigo-400" />
@@ -123,7 +123,7 @@ export default function Layout() {
           {/* Collapse toggle */}
           <button
             onClick={() => setCollapsed(!collapsed)}
-             className="absolute -right-3 top-4 w-6 h-6 rounded-full flex items-center justify-center shadow-sm transition-colors z-10 bg-indigo-800 border border-indigo-700 hover:bg-indigo-700"
+             className="absolute -right-3 top-4 w-6 h-6 rounded-full flex items-center justify-center shadow-sm transition-colors z-10 bg-[#2a2040] border border-indigo-700 hover:bg-[#3a3050]"
             >
              {collapsed ? <ChevronRight className="w-3 h-3 text-slate-300" /> : <ChevronLeft className="w-3 h-3 text-slate-300" />}
           </button>
