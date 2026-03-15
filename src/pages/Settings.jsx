@@ -59,7 +59,7 @@ export default function Settings() {
             <Target className="w-5 h-5 text-primary" />
             <span className="text-base font-semibold text-foreground">Objectives</span>
           </div>
-          <Button onClick={() => setObjForm({ name: '', color: '#6366f1' })} className="gap-2 bg-indigo-600 hover:bg-indigo-500 text-white border-0 px-5 py-2 text-sm font-semibold rounded-xl shadow-md">
+          <Button onClick={() => setObjForm({ name: '', color: '#6366f1' })} className="gap-2 px-5 py-2 text-sm font-semibold rounded-xl shadow-md">
             <Plus className="w-4 h-4" />Add Objective
           </Button>
         </div>
