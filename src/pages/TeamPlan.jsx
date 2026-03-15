@@ -1027,7 +1027,10 @@ export default function TeamPlan() {
                 </>
               )}
             </div>
-          </div>
+            </div>
+
+            {/* Gantt Chart */}
+            <GanttChart entries={sortedEntries} sprints={sprints} featureMap={featureMap} colorMap={colorMap} darkMode={darkMode} />
           </div>
         </DragDropContext>
       )}
