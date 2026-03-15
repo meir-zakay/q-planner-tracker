@@ -175,22 +175,22 @@ export default function Tracking() {
                       <div className="flex items-center gap-2 mb-1.5">
                         <h3 className="font-medium text-foreground">{feature.title}</h3>
                       </div>
-                      <div className="grid grid-cols-5 gap-3 text-sm">
-                        <div className="text-left">
+                      <div className="flex gap-6 text-sm">
+                        <div className="text-left flex-1 min-w-0">
                           <p className="text-xs text-muted-foreground">Plan</p>
-                          <p className="font-medium text-foreground">{feature.sprintRange ? `${feature.sprintRange.start} → ${feature.sprintRange.end}` : '—'}</p>
+                          <p className="font-medium text-foreground truncate">{feature.sprintRange ? `${feature.sprintRange.start} → ${feature.sprintRange.end}` : '—'}</p>
                         </div>
-                        <div className="text-left">
+                        <div className="text-left flex-1 min-w-0">
                           <p className="text-xs text-muted-foreground">Planned Effort</p>
                           <p className="font-medium text-foreground">{feature.plannedWeeks}w</p>
                         </div>
-                        <div className="text-left">
+                        <div className="text-left flex-1 min-w-0">
                           <p className="text-xs text-muted-foreground">Expected Progress</p>
                           <p className="font-medium text-foreground">{feature.expectedProgress}%</p>
                         </div>
-                        <div className="text-left">
+                        <div className="text-left flex-1 min-w-0">
                           <p className="text-xs text-muted-foreground">Actual</p>
-                          <p className="font-medium" style={{
+                          <p className="font-medium truncate" style={{
                             color: sprints.indexOf(feature.actualRange?.end) > sprints.indexOf(feature.sprintRange?.end) ? '#dc2626'
                               : sprints.indexOf(feature.actualRange?.start) > sprints.indexOf(feature.sprintRange?.start) ? '#f97316'
                               : '#16a34a'
@@ -198,7 +198,7 @@ export default function Tracking() {
                             {feature.actualRange?.start && feature.actualRange?.end ? `${feature.actualRange.start} → ${feature.actualRange.end}` : '—'}
                           </p>
                         </div>
-                        <div className="text-left">
+                        <div className="text-left flex-1 min-w-0">
                           <p className="text-xs text-muted-foreground">Actual Progress</p>
                           <p className={`font-medium ${feature.healthStatus === 'ahead' ? 'text-green-600' : feature.healthStatus === 'behind' ? 'text-red-600' : 'text-blue-600'}`}>
                             {feature.actualProgress}%
