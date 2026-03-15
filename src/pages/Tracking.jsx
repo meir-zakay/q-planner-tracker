@@ -158,30 +158,30 @@ export default function Tracking() {
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
                       <h3 className="font-medium text-foreground mb-2">{feature.title}</h3>
-                      <div className="flex flex-wrap gap-4 text-sm">
-                        <div>
+                      <div className="flex flex-wrap gap-6 text-sm">
+                        <div className="text-left">
                           <p className="text-xs text-muted-foreground">Plan</p>
                           <p className="font-medium text-foreground">{feature.sprintRange ? `${feature.sprintRange.start} → ${feature.sprintRange.end}` : '—'}</p>
                         </div>
-                        <div>
+                        <div className="text-left">
                           <p className="text-xs text-muted-foreground">Actual</p>
                           <p className="font-medium" style={{
-                            color: sprints.indexOf(feature.actualRange?.start) > sprints.indexOf(feature.sprintRange?.start) ? '#f97316'
-                              : sprints.indexOf(feature.actualRange?.end) > sprints.indexOf(feature.sprintRange?.end) ? '#dc2626'
-                              : 'hsl(var(--foreground))'
+                            color: sprints.indexOf(feature.actualRange?.end) > sprints.indexOf(feature.sprintRange?.end) ? '#dc2626'
+                              : sprints.indexOf(feature.actualRange?.start) > sprints.indexOf(feature.sprintRange?.start) ? '#f97316'
+                              : '#16a34a'
                           }}>
                             {feature.actualRange?.start && feature.actualRange?.end ? `${feature.actualRange.start} → ${feature.actualRange.end}` : '—'}
                           </p>
                         </div>
-                        <div>
+                        <div className="text-left">
                           <p className="text-xs text-muted-foreground">Planned Effort</p>
                           <p className="font-medium text-foreground">{feature.plannedWeeks}w</p>
                         </div>
-                        <div>
+                        <div className="text-left">
                           <p className="text-xs text-muted-foreground">Expected Progress</p>
                           <p className="font-medium text-foreground">{feature.expectedProgress}%</p>
                         </div>
-                        <div>
+                        <div className="text-left">
                           <p className="text-xs text-muted-foreground">Actual Progress</p>
                           <p className={`font-medium ${feature.status === 'ahead' ? 'text-green-600' : feature.status === 'behind' ? 'text-red-600' : 'text-blue-600'}`}>
                             {feature.actualProgress}%
