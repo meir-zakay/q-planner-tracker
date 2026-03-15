@@ -582,7 +582,7 @@ export default function TeamPlan() {
         <DragDropContext onDragEnd={handleDragEnd}>
           <div className="space-y-6">
           {/* Sprint Allocation Section */}
-          <div className="rounded-xl p-5" style={{ background: 'hsl(228 30% 7%)', border: '1px solid hsl(228 25% 14%)' }}>
+          <div className="rounded-xl p-5 bg-card dark:bg-[hsl(228_30%_7%)] border border-border dark:border-[hsl(228_25%_14%)]">
             <div className="flex items-center justify-between mb-1 flex-wrap gap-2">
               <h2 className="text-base font-semibold text-foreground">Sprints Allocation — {selectedTeam?.name}</h2>
               <TooltipProvider delayDuration={200}>
