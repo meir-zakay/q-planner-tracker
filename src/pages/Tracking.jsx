@@ -159,12 +159,7 @@ export default function Tracking() {
         </div>
       ) : (
         <div className="space-y-4">
-          {plannedFeatures.length > 0 && (
-            <div className="flex justify-between text-xs text-muted-foreground px-2">
-              <span>Expected</span>
-              <span>Actual</span>
-            </div>
-          )}
+
           <div className="grid gap-4">
             {plannedFeatures.length === 0 ? (
               <div className="rounded-xl p-8 bg-slate-50 dark:bg-[#1a1530] border border-border text-center text-muted-foreground">
@@ -178,20 +173,20 @@ export default function Tracking() {
                       <div className="flex items-center gap-2 mb-1.5">
                         <h3 className="font-medium text-foreground">{feature.title}</h3>
                       </div>
-                      <div className="flex gap-6 text-sm">
-                        <div className="text-left w-28">
+                      <div className="flex gap-8 text-sm">
+                        <div className="text-left w-32">
                           <p className="text-xs text-muted-foreground">Plan</p>
                           <p className="font-medium text-foreground truncate">{feature.sprintRange ? `${feature.sprintRange.start} → ${feature.sprintRange.end}` : '—'}</p>
                         </div>
-                        <div className="text-left w-24">
+                        <div className="text-left w-32">
                           <p className="text-xs text-muted-foreground">Planned Effort</p>
                           <p className="font-medium text-foreground">{feature.plannedWeeks}w</p>
                         </div>
-                        <div className="text-left w-28">
+                        <div className="text-left w-36">
                           <p className="text-xs text-muted-foreground">Expected Progress</p>
                           <p className="font-medium text-foreground">{feature.expectedProgress}%</p>
                         </div>
-                        <div className="text-left w-28">
+                        <div className="text-left w-36">
                           <p className="text-xs text-muted-foreground">Actual</p>
                           <p className="font-medium truncate" style={{
                             color: sprints.indexOf(feature.actualRange?.end) > sprints.indexOf(feature.sprintRange?.end) ? '#dc2626'
@@ -201,7 +196,7 @@ export default function Tracking() {
                             {feature.actualRange?.start && feature.actualRange?.end ? `${feature.actualRange.start} → ${feature.actualRange.end}` : '—'}
                           </p>
                         </div>
-                        <div className="text-left w-32">
+                        <div className="text-left w-36">
                           <p className="text-xs text-muted-foreground">Actual Progress</p>
                           <p className={`font-medium ${feature.healthStatus === 'ahead' ? 'text-green-600' : feature.healthStatus === 'behind' ? 'text-red-600' : 'text-blue-600'}`}>
                             {feature.actualProgress}%
@@ -230,14 +225,9 @@ export default function Tracking() {
                       }`}>
                         {feature.featureStatus}
                       </span>
-                      <Button
-                         variant="ghost"
-                         size="icon"
-                         onClick={() => setNotesOpen(feature)}
-                         className="shrink-0"
-                      >
+                      <span className="text-muted-foreground/50">
                         <StickyNote className="w-4 h-4" />
-                      </Button>
+                      </span>
                       <Button
                          variant="ghost"
                          size="icon"
@@ -311,6 +301,15 @@ export default function Tracking() {
                 className="text-lg"
               />
             </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-foreground">Notes</label>
+              <textarea
+                value={progressForm.notes}
+                onChange={(e) => setProgressForm(p => ({ ...p, notes: e.target.value }))}
+                placeholder="Add notes about this feature's progress..."
+                className="w-full h-24 p-3 rounded-md border border-input bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+              />
+            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditingProgress(null)}>Cancel</Button>
@@ -336,49 +335,7 @@ export default function Tracking() {
       <Dialog open={!!notesOpen} onOpenChange={(o) => !o && setNotesOpen(null)}>
         <DialogContent>
           <DialogHeader><DialogTitle>Notes: {notesOpen?.title}</DialogTitle></DialogHeader>
-          <div className="space-y-4 py-4">
-            <textarea
-              value={notesOpen?.actual?.notes || ''}
-              onChange={(e) => setNotesOpen(prev => ({ ...prev, actual: { ...prev.actual, notes: e.target.value } }))}
-              placeholder="Add notes about this feature's progress..."
-              className="w-full h-32 p-3 rounded-md border border-input bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-            />
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setNotesOpen(null)}>Cancel</Button>
-            <Button
-              onClick={() => {
-                if (notesOpen?.actual) {
-                  updateProgressMutation.mutate({ 
-                    featureId: notesOpen.featureId, 
-                    percent: notesOpen.actualProgress, 
-                    startSprint: notesOpen.actualRange?.start || '', 
-                    endSprint: notesOpen.actualRange?.end || '',
-                    status: notesOpen.featureStatus,
-                    plannedStart: notesOpen.sprintRange?.start,
-                    plannedEnd: notesOpen.sprintRange?.end,
-                    notes: notesOpen.actual.notes
-                  });
-                } else {
-                  updateProgressMutation.mutate({ 
-                    featureId: notesOpen.featureId, 
-                    percent: notesOpen.actualProgress, 
-                    startSprint: notesOpen.actualRange?.start || '', 
-                    endSprint: notesOpen.actualRange?.end || '',
-                    status: notesOpen.featureStatus,
-                    plannedStart: notesOpen.sprintRange?.start,
-                    plannedEnd: notesOpen.sprintRange?.end,
-                    notes: ''
-                  });
-                }
-              }}
-              disabled={updateProgressMutation.isPending}
-            >
-              Save Notes
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+
     </div>
   );
 }
