@@ -231,7 +231,15 @@ export default function Tracking() {
                       <Button
                          variant="ghost"
                          size="icon"
-                         onClick={() => { setEditingProgress(feature); setProgressForm({ percent: String(feature.actualProgress), startSprint: feature.actualRange?.start || '', endSprint: feature.actualRange?.end || '', status: feature.featureStatus }); }}
+                         onClick={() => setNotesOpen(feature)}
+                         className="shrink-0"
+                      >
+                        <StickyNote className="w-4 h-4" />
+                      </Button>
+                      <Button
+                         variant="ghost"
+                         size="icon"
+                         onClick={() => { setEditingProgress(feature); setProgressForm({ percent: String(feature.actualProgress), startSprint: feature.actualRange?.start || '', endSprint: feature.actualRange?.end || '', status: feature.featureStatus, notes: feature.actual?.notes || '' }); }}
                          className="shrink-0"
                       >
                         <Edit2 className="w-4 h-4" />
