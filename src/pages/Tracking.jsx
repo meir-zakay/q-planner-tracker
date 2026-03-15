@@ -214,8 +214,8 @@ export default function Tracking() {
                          </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full bg-slate-700 dark:bg-slate-800 ${
+                    <div className="flex items-start gap-2 shrink-0 pt-1">
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full bg-slate-700 dark:bg-slate-800 whitespace-nowrap ${
                         feature.featureStatus === 'Done' ? 'text-green-400' :
                         feature.featureStatus === 'Blocked' ? 'text-red-400' :
                         feature.featureStatus === 'On Hold' ? 'text-yellow-400' :
@@ -230,21 +230,21 @@ export default function Tracking() {
                           variant="ghost"
                           size="icon"
                           onClick={() => setViewingNotes(feature)}
-                          className="shrink-0 text-blue-500 hover:text-blue-600"
+                          className="shrink-0 text-blue-500 hover:text-blue-600 h-6 w-6"
                           title="View note"
                         >
                           <StickyNote className="w-4 h-4 fill-current" />
                         </Button>
                       ) : (
-                        <span className="text-muted-foreground/30">
+                        <div className="w-6 h-6 flex items-center justify-center text-muted-foreground/30">
                           <StickyNote className="w-4 h-4" />
-                        </span>
+                        </div>
                       )}
                       <Button
                          variant="ghost"
                          size="icon"
                          onClick={() => { setEditingProgress(feature); setProgressForm({ percent: String(feature.actualProgress), startSprint: feature.actualRange?.start || '', endSprint: feature.actualRange?.end || '', status: feature.featureStatus, notes: feature.actual?.notes || '' }); }}
-                         className="shrink-0"
+                         className="shrink-0 h-6 w-6"
                       >
                         <Edit2 className="w-4 h-4" />
                       </Button>

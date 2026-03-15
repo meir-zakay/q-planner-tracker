@@ -998,11 +998,12 @@ export default function TeamPlan() {
       {/* Delete Plan Confirmation Dialog */}
       <Dialog open={deletePlanOpen} onOpenChange={setDeletePlanOpen}>
         <DialogContent>
-          <DialogHeader><DialogTitle>Delete Signed Plan</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>Resign Plan</DialogTitle></DialogHeader>
           <div className="space-y-4 py-4">
             <p className="text-sm text-muted-foreground">
-              This will delete the signed plan for <span className="font-semibold text-foreground">{selectedQuarter} {selectedYear}</span> and <span className="font-semibold text-foreground">remove all recorded progress</span> in the Tracking page. This action cannot be undone.
+              Resigning this plan will delete the current signed plan for <span className="font-semibold text-foreground">{selectedQuarter} {selectedYear}</span> and <span className="font-semibold text-foreground">remove all recorded progress</span> from the Tracking page. You will then be able to create a new plan for this quarter.
             </p>
+            <p className="text-xs text-muted-foreground italic">This action cannot be undone.</p>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeletePlanOpen(false)}>Cancel</Button>
@@ -1011,7 +1012,7 @@ export default function TeamPlan() {
               onClick={() => deletePlanMutation.mutate()}
               disabled={deletePlanMutation.isPending}
             >
-              Delete Plan & Progress
+              Resign Plan
             </Button>
           </DialogFooter>
         </DialogContent>
