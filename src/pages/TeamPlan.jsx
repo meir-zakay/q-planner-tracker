@@ -1027,11 +1027,10 @@ export default function TeamPlan() {
               )}
               </div>
               </div>
-              </div>
               </DragDropContext>
               )}
 
-      {/* Delete Plan Confirmation Dialog */}
+              {/* Delete Plan Confirmation Dialog */}
       <Dialog open={deletePlanOpen} onOpenChange={setDeletePlanOpen}>
         <DialogContent>
           <DialogHeader><DialogTitle>Re-sign Plan</DialogTitle></DialogHeader>
