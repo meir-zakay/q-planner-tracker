@@ -187,7 +187,7 @@ export default function Features() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => { setFormOpen(false); setEditId(null); }}>Cancel</Button>
-            <Button onClick={() => saveMutation.mutate(formData)} disabled={saveMutation.isPending || !formData.title} className="bg-indigo-600 hover:bg-indigo-500 text-white border-0 font-semibold rounded-xl shadow-md">{editId ? 'Update' : 'Add'}</Button>
+            <Button onClick={() => saveMutation.mutate(formData)} disabled={saveMutation.isPending || !formData.title} className="font-semibold rounded-xl shadow-md">{editId ? 'Update' : 'Add'}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
