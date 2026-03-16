@@ -675,19 +675,6 @@ export default function TeamPlan() {
           </SelectContent>
         </Select>
         <div className="flex items-center gap-2">
-           {selectedTeamId && canEdit && !manualMode && sortedEntries.length > 0 && (
-             <Button
-               variant="outline"
-               onClick={async () => {
-                 const included = sortedEntries.filter(e => !e.excluded_from_allocation);
-                 if (included.length === 0) return;
-                 const allocMap = reallocateAll(included, sprints, beSprintCaps, feSprintCaps, {}, selectedTeam?.be_developers || 1, selectedTeam?.fe_developers || 1);
-                 await saveReallocated(allocMap);
-               }}
-             >
-               <Wrench className="w-4 h-4" />Re-allocate All
-             </Button>
-           )}
            {selectedTeamId && (
              <Button
                onClick={() => signedPlan ? setDeletePlanOpen(true) : signPlanMutation.mutate()}
