@@ -62,7 +62,7 @@ export default function Users() {
   const handleInviteClose = () => {
     setInviteOpen(false);
     setInviteEmail('');
-    setInviteRole('user');
+    setInviteRole('viewer');
     setInviteSent(false);
     setInviteError('');
   };
