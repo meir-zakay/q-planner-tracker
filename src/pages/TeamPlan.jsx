@@ -559,7 +559,7 @@ export default function TeamPlan() {
   }, [manualMode, qc, selectedYear, selectedQuarter, selectedTeamId]);
 
   const handleDragEnd = useCallback((result) => {
-    const { sortedEntries: currentEntries, sprints: sprintList, beSprintCaps: beCaps, feSprintCaps: feCaps, manualMode: isManual } = dndStateRef.current;
+    const { sortedEntries: currentEntries, sprints: sprintList, beSprintCaps: beCaps, feSprintCaps: feCaps, manualMode: isManual, selectedTeam: team } = dndStateRef.current;
     if (!result.destination) return;
     const { draggableId, source, destination } = result;
 
