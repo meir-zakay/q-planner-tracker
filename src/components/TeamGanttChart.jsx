@@ -49,7 +49,7 @@ export default function TeamGanttChart({ teams, planEntries, features, sprints, 
   if (!sprints.length || rows.length === 0) {
     return (
       <div className="rounded-xl p-5 bg-slate-50 dark:bg-[#1a1530] border border-border">
-        <h3 className="font-semibold text-foreground mb-2">Project Timeline</h3>
+        <h3 className="font-semibold text-foreground mb-2">Quarter Timeline</h3>
         <div className="text-center py-12 text-muted-foreground text-sm">No timeline data available for this quarter</div>
       </div>
     );
@@ -59,14 +59,14 @@ export default function TeamGanttChart({ teams, planEntries, features, sprints, 
 
   return (
     <div className="rounded-xl p-5 bg-slate-50 dark:bg-[#1a1530] border border-border overflow-x-auto">
-      <h3 className="font-semibold text-foreground mb-4">Project Timeline</h3>
+      <h3 className="font-semibold text-foreground mb-4">Quarter Timeline</h3>
       <div style={{ minWidth: Math.max(600, numSprints * 60 + 200) }}>
         {/* Sprint header */}
         <div className="flex" style={{ marginLeft: 180 }}>
           {sprints.map(s => (
             <div
               key={s}
-              className="flex-1 text-center text-[11px] font-bold text-white bg-indigo-600 dark:bg-indigo-700 border-r border-indigo-500 py-1.5 first:rounded-tl-lg last:rounded-tr-lg last:border-r-0"
+              className="flex-1 text-center text-[11px] font-semibold text-muted-foreground border-r border-border py-1.5 first:rounded-tl-lg last:rounded-tr-lg last:border-r-0 bg-muted/40"
             >
               {s}
             </div>
@@ -75,7 +75,6 @@ export default function TeamGanttChart({ teams, planEntries, features, sprints, 
 
         {/* Feature rows */}
         {rows.map(({ feat, startIdx, endIdx }, rowIdx) => {
-          const objColor = colorMap[feat.objective] || FALLBACK_COLORS[rowIdx % FALLBACK_COLORS.length];
           const barSpan = endIdx - startIdx + 1;
           const barWidthPct = (barSpan / numSprints) * 100;
           const barOffsetPct = (startIdx / numSprints) * 100;
@@ -88,8 +87,8 @@ export default function TeamGanttChart({ teams, planEntries, features, sprints, 
             >
               {/* Feature label */}
               <div
-                className="shrink-0 flex items-center px-3 text-[11px] font-semibold text-white truncate"
-                style={{ width: 180, height: '100%', backgroundColor: objColor, opacity: 0.92 }}
+                className="shrink-0 flex items-center px-3 text-[11px] font-medium text-foreground truncate bg-muted/20 border-r border-border/40"
+                style={{ width: 180, height: '100%' }}
                 title={feat.title}
               >
                 <span className="truncate">{feat.title}</span>
@@ -102,23 +101,23 @@ export default function TeamGanttChart({ teams, planEntries, features, sprints, 
                   {sprints.map(s => (
                     <div
                       key={s}
-                      className="flex-1 border-r border-border/30 last:border-r-0 h-full"
-                      style={{ backgroundColor: rowIdx % 2 === 0 ? 'transparent' : 'rgba(0,0,0,0.02)' }}
+                      className="flex-1 border-r border-border/20 last:border-r-0 h-full"
+                      style={{ backgroundColor: rowIdx % 2 === 0 ? 'transparent' : 'rgba(0,0,0,0.015)' }}
                     />
                   ))}
                 </div>
 
                 {/* Bar */}
                 <div
-                  className="absolute top-1/2 -translate-y-1/2 rounded-full flex items-center px-2 text-[10px] font-semibold text-white shadow-sm"
+                  className="absolute top-1/2 -translate-y-1/2 rounded-sm flex items-center px-2 text-[10px] font-medium text-white/90"
                   style={{
                     left: `calc(${barOffsetPct}% + 2px)`,
                     width: `calc(${barWidthPct}% - 4px)`,
-                    height: 22,
-                    backgroundColor: objColor,
+                    height: 20,
+                    backgroundColor: 'hsl(217 85% 39%)',
+                    opacity: 0.75 + (rowIdx % 3) * 0.08,
                   }}
                 >
-                  <span className="truncate">{feat.objective || ''}</span>
                 </div>
               </div>
             </div>
