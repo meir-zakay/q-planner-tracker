@@ -876,7 +876,24 @@ export default function TeamPlan() {
             {/* Planned Features */}
             <div className="rounded-xl p-5 bg-slate-50 dark:bg-[#1a1530] border border-border">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-foreground">Planned Features</h3>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold text-foreground">Planned Features</h3>
+                  {canEdit && !manualMode && sortedEntries.length > 0 && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-7 text-xs px-2"
+                      onClick={async () => {
+                        const included = sortedEntries.filter(e => !e.excluded_from_allocation);
+                        if (included.length === 0) return;
+                        const allocMap = reallocateAll(included, sprints, beSprintCaps, feSprintCaps, {}, selectedTeam?.be_developers || 1, selectedTeam?.fe_developers || 1);
+                        await saveReallocated(allocMap);
+                      }}
+                    >
+                      <Wrench className="w-3 h-3" />Refresh
+                    </Button>
+                  )}
+                </div>
                 {canEdit && <p className="text-xs text-muted-foreground italic">
                   {manualMode ? 'Drag a feature into a sprint to assign it · ' : (sortedEntries.length > 1 ? 'Drag rows to reorder · ' : '')}
                   Click <Pencil className="w-3 h-3 inline" /> to set effort
