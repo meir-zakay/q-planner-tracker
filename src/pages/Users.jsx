@@ -174,7 +174,7 @@ export default function Users() {
                   <Select value={inviteRole} onValueChange={setInviteRole}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      {ROLES.map(r => <SelectItem key={r} value={r} className="capitalize">{r}</SelectItem>)}
+                      {INVITE_ROLES.map(r => <SelectItem key={r} value={r} className="capitalize">{r}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
