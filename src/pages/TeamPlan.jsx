@@ -21,25 +21,34 @@ function roundHalf(n) {
   return Math.round(n * 2) / 2;
 }
 
-// Distribute totalEffort across sprints greedily from the first sprint with capacity,
-// filling each sprint up to its cap (rounded to 0.5 steps).
-// If maxPerSprint is set, cap each sprint's allocation to that value.
-// Any remainder is placed in the last sprint (allows overallocation).
-function distributeEffort(totalEffort, sprintCapacities, maxPerSprint = Infinity) {
-  const allocations = sprintCapacities.map(() => 0);
+// Distribute totalEffort across sprints greedily from the first sprint with capacity.
+// physicalCaps: available capacity per sprint.
+// maxPerSprintArr: optional per-sprint parallelism cap array.
+// If a sprint received less than its parallelism cap (due to reduced physical capacity),
+// the next sprint is allowed to absorb up to maxCap+0.5 so the feature doesn't spill
+// an extra tiny amount into a further sprint.
+function distributeEffort(totalEffort, physicalCaps, maxPerSprintArr = null) {
+  const allocations = physicalCaps.map(() => 0);
   let remaining = Number(totalEffort.toFixed(2));
-  for (let i = 0; i < sprintCapacities.length && remaining > 0.01; i++) {
-    const cap = Math.min(sprintCapacities[i], maxPerSprint);
-    if (cap <= 0.001) continue;
-    const raw = Math.min(remaining, cap);
+  let hasAllocated = false;
+  for (let i = 0; i < physicalCaps.length && remaining > 0.01; i++) {
+    const physCap = physicalCaps[i];
+    if (physCap <= 0.001) continue;
+    const maxCap = maxPerSprintArr ? maxPerSprintArr[i] : Infinity;
+    // If we've already started this feature and the remaining fits within maxCap+0.5 slack,
+    // allow placing it all here (avoids tiny spill from a previously reduced sprint).
+    const canFitWithSlack = hasAllocated && remaining <= (maxCap + 0.5) && remaining <= physCap;
+    const effectiveCap = canFitWithSlack ? physCap : Math.min(physCap, maxCap);
+    const raw = Math.min(remaining, effectiveCap);
     const alloc = roundHalf(raw);
-    const actual = Math.min(alloc, cap);
+    const actual = Math.min(alloc, effectiveCap);
     allocations[i] = actual;
     remaining = Number((remaining - actual).toFixed(2));
+    if (actual > 0) hasAllocated = true;
   }
-  // If there's still remaining effort, place it in the last sprint
-  if (remaining > 0.01 && sprintCapacities.length > 0) {
-    allocations[sprintCapacities.length - 1] = Number((allocations[sprintCapacities.length - 1] + remaining).toFixed(2));
+  // If there's still remaining effort, place it in the last sprint (allows overallocation).
+  if (remaining > 0.01 && physicalCaps.length > 0) {
+    allocations[physicalCaps.length - 1] = Number((allocations[physicalCaps.length - 1] + remaining).toFixed(2));
   }
   return allocations;
 }
