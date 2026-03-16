@@ -20,7 +20,7 @@ export default function Users() {
   const [editUser, setEditUser] = useState(null);
   const [inviteOpen, setInviteOpen] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
-  const [inviteRole, setInviteRole] = useState('viewer');
+  const [inviteRole, setInviteRole] = useState('user');
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   const { data: users = [] } = useQuery({ queryKey: ['users'], queryFn: () => base44.entities.User.list() });
@@ -40,7 +40,7 @@ export default function Users() {
     await base44.users.inviteUser(inviteEmail, inviteRole);
     setInviteOpen(false);
     setInviteEmail('');
-    setInviteRole('viewer');
+    setInviteRole('user');
   };
 
   return (
