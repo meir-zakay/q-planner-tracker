@@ -224,8 +224,8 @@ export default function TeamPlan() {
     return { be, fe };
   }), [sortedEntries, sprints]);
 
-  const totalBEUsed = sortedEntries.reduce((s, e) => s + (e.be_effort_weeks || 0), 0);
-  const totalFEUsed = sortedEntries.reduce((s, e) => s + (e.fe_effort_weeks || 0), 0);
+  const totalBEUsed = sortedEntries.filter(e => !e.excluded_from_allocation).reduce((s, e) => s + (e.be_effort_weeks || 0), 0);
+  const totalFEUsed = sortedEntries.filter(e => !e.excluded_from_allocation).reduce((s, e) => s + (e.fe_effort_weeks || 0), 0);
   const totalBECap = selectedTeam?.be_capacity_weeks || 0;
   const totalFECap = selectedTeam?.fe_capacity_weeks || 0;
   const totalCapacity = totalBECap + totalFECap;
