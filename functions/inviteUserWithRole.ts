@@ -16,7 +16,7 @@ Deno.serve(async (req) => {
 
     // inviteUser only accepts "user" or "admin"; map accordingly
     const baseRole = role === 'admin' ? 'admin' : 'user';
-    await base44.asServiceRole.users.inviteUser(email, baseRole);
+    await base44.users.inviteUser(email, baseRole);
 
     // If a custom role (editor/viewer) is needed, find the newly created user and update
     if (role !== 'user' && role !== 'admin') {
