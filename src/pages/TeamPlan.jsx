@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Plus, Trash2, Pencil, Info, Server, Monitor, CircleCheck, CircleMinus, Wrench, CheckCircle, Users2 } from 'lucide-react';
+import { Plus, Trash2, Pencil, Info, Server, Monitor, CircleCheck, CircleMinus, Wrench, CheckCircle, Users2, RotateCw } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
