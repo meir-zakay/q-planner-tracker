@@ -65,9 +65,12 @@ function reallocateAll(entriesInOrder, sprints, beSprintCaps, feSprintCaps, pinn
     const beFraction = beDevs > 0 ? Math.min(1, beParallelism / beDevs) : 1;
     const feFraction = feDevs > 0 ? Math.min(1, feParallelism / feDevs) : 1;
 
-    // Available caps from startIdx onward, scaled by parallelism fraction
-    const beCaps = beRem.map((c, i) => i < startIdx ? 0 : roundHalf(c * beFraction));
-    const feCaps = feRem.map((c, i) => i < startIdx ? 0 : roundHalf(c * feFraction));
+    // Per-sprint max for this feature based on original sprint caps (not remaining)
+    // Then intersect with actual remaining to avoid over-allocation
+    const beMaxPerSprint = beSprintCaps.map(c => roundHalf(c * beFraction));
+    const feMaxPerSprint = feSprintCaps.map(c => roundHalf(c * feFraction));
+    const beCaps = beRem.map((c, i) => i < startIdx ? 0 : Math.min(c, beMaxPerSprint[i]));
+    const feCaps = feRem.map((c, i) => i < startIdx ? 0 : Math.min(c, feMaxPerSprint[i]));
 
     const beAllocs = distributeEffort(beTotal, beCaps);
     const feAllocs = distributeEffort(feTotal, feCaps);
