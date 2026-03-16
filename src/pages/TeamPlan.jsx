@@ -480,7 +480,7 @@ export default function TeamPlan() {
 
   // Use a ref to always have fresh state in the drag handler (avoids stale closure)
   const dndStateRef = useRef({});
-  dndStateRef.current = { sortedEntries, sprints, beSprintCaps, feSprintCaps, canEdit, manualMode };
+  dndStateRef.current = { sortedEntries, sprints, beSprintCaps, feSprintCaps, canEdit, manualMode, selectedTeam };
 
   // --- Native pointer drag state for feature-row → sprint drops ---
   const [nativeDrag, setNativeDrag] = useState(null); // { entryId, x, y } while dragging
