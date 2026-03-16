@@ -47,7 +47,8 @@ function distributeEffort(totalEffort, sprintCapacities, maxPerSprint = Infinity
 // Re-allocate ALL entries in priority order given a set of "pinned" sprint-starts
 // and per-sprint caps. Returns a map of entryId -> sprint_allocations array.
 // pinnedStarts: { [entryId]: sprintIdx } — the earliest sprint the entry can start from.
-function reallocateAll(entriesInOrder, sprints, beSprintCaps, feSprintCaps, pinnedStarts = {}) {
+// beDevs/feDevs: total developers on the team (used to compute parallelism fraction).
+function reallocateAll(entriesInOrder, sprints, beSprintCaps, feSprintCaps, pinnedStarts = {}, beDevs = 1, feDevs = 1) {
   // Track remaining capacity per sprint for BE and FE separately
   const beRem = [...beSprintCaps];
   const feRem = [...feSprintCaps];
@@ -60,16 +61,16 @@ function reallocateAll(entriesInOrder, sprints, beSprintCaps, feSprintCaps, pinn
     const beParallelism = entry.be_parallelism || 1;
     const feParallelism = entry.fe_parallelism || 1;
 
-    // Max per sprint based on parallelism: total_effort / parallelism
-    const beMaxPerSprint = beTotal > 0 ? beTotal / beParallelism : Infinity;
-    const feMaxPerSprint = feTotal > 0 ? feTotal / feParallelism : Infinity;
+    // Fraction of sprint capacity this feature can consume based on parallelism vs total devs
+    const beFraction = beDevs > 0 ? Math.min(1, beParallelism / beDevs) : 1;
+    const feFraction = feDevs > 0 ? Math.min(1, feParallelism / feDevs) : 1;
 
-    // Available caps from startIdx onward (zero before)
-    const beCaps = beRem.map((c, i) => i < startIdx ? 0 : c);
-    const feCaps = feRem.map((c, i) => i < startIdx ? 0 : c);
+    // Available caps from startIdx onward, scaled by parallelism fraction
+    const beCaps = beRem.map((c, i) => i < startIdx ? 0 : roundHalf(c * beFraction));
+    const feCaps = feRem.map((c, i) => i < startIdx ? 0 : roundHalf(c * feFraction));
 
-    const beAllocs = distributeEffort(beTotal, beCaps, beMaxPerSprint);
-    const feAllocs = distributeEffort(feTotal, feCaps, feMaxPerSprint);
+    const beAllocs = distributeEffort(beTotal, beCaps);
+    const feAllocs = distributeEffort(feTotal, feCaps);
 
     // Subtract from remaining
     beAllocs.forEach((v, i) => { beRem[i] = Number((beRem[i] - v).toFixed(2)); });
