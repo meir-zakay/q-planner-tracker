@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { UserPlus, Pencil, Trash2, Mail, Shield } from 'lucide-react';
 const ROLES = ['admin', 'editor', 'viewer'];
 
-const roleBadge = { admin: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300', user: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300' };
+const roleBadge = { admin: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300', editor: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300', viewer: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300' };
 
 export default function Users() {
   const { user } = useOutletContext();
@@ -20,7 +20,7 @@ export default function Users() {
   const [editUser, setEditUser] = useState(null);
   const [inviteOpen, setInviteOpen] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
-  const [inviteRole, setInviteRole] = useState('user');
+  const [inviteRole, setInviteRole] = useState('viewer');
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   const { data: users = [], isLoading } = useQuery({ queryKey: ['users'], queryFn: () => base44.entities.User.list('-created_date', 200) });
@@ -113,7 +113,7 @@ export default function Users() {
                 </div>
                 <div className="space-y-2">
                   <Label>Role</Label>
-                  <Select value={editUser.role || 'user'} onValueChange={v => setEditUser({ ...editUser, role: v })}>
+                  <Select value={editUser.role || 'viewer'} onValueChange={v => setEditUser({ ...editUser, role: v })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       {ROLES.map(r => <SelectItem key={r} value={r} className="capitalize">{r}</SelectItem>)}
