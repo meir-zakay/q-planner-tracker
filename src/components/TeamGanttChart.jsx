@@ -109,16 +109,15 @@ export default function TeamGanttChart({ teams, planEntries, features, sprints, 
 
                 {/* Bar */}
                 <div
-                  className="absolute top-1/2 -translate-y-1/2 rounded-sm flex items-center px-2 text-[10px] font-medium text-white/90"
+                  className="absolute top-1/2 -translate-y-1/2 rounded-sm"
                   style={{
                     left: `calc(${barOffsetPct}% + 2px)`,
                     width: `calc(${barWidthPct}% - 4px)`,
                     height: 20,
-                    backgroundColor: 'hsl(217 85% 39%)',
-                    opacity: 0.75 + (rowIdx % 3) * 0.08,
+                    backgroundColor: colorMap[feat.objective] || FALLBACK_COLORS[rowIdx % FALLBACK_COLORS.length],
+                    opacity: 0.55,
                   }}
-                >
-                </div>
+                />
               </div>
             </div>
           );
