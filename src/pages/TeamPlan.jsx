@@ -707,26 +707,17 @@ export default function TeamPlan() {
            <div className="rounded-xl p-5 bg-slate-50 dark:bg-[#1a1530] border border-border">
             <div className="flex items-center justify-between mb-1 flex-wrap gap-2">
               <h2 className="text-base font-semibold text-foreground">Sprints Allocation — {selectedTeam?.name}</h2>
-              <TooltipProvider delayDuration={200}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      onClick={toggleManualMode}
-                      variant="outline"
-                      size="sm"
-                      className={`text-xs ${manualMode ? 'ring-2 ring-primary/40 ring-inset' : 'opacity-60'}`}
-                    >
-                      <Wrench className="w-3 h-3" />
-                      {manualMode ? 'Manual' : 'Auto'}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" className="max-w-xs text-xs">
-                    {manualMode
-                      ? 'Manual mode ON — drag features into sprints. Cell edits save as-is. Capacity limits not enforced. Click to switch to Auto.'
-                      : 'Auto mode — allocations are computed automatically by priority. Click to switch to Manual.'}
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              {selectedTeamId && canEdit && (
+                <Button
+                  onClick={() => signedPlan ? setDeletePlanOpen(true) : signPlanMutation.mutate()}
+                  disabled={signPlanMutation.isPending || deletePlanMutation.isPending || entries.length === 0}
+                  variant="outline"
+                  size="sm"
+                >
+                  <CheckCircle className="w-4 h-4" />
+                  {signedPlan ? 'Re-sign Plan' : 'Sign Plan'}
+                </Button>
+              )}
             </div>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mb-4 text-sm">
               <span className={totalBEUsed > totalBECap ? 'text-red-500 font-semibold' : 'text-foreground'}>
