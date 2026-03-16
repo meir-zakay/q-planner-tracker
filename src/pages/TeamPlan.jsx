@@ -91,13 +91,15 @@ function reallocateAll(entriesInOrder, sprints, beSprintCaps, feSprintCaps, pinn
     // Then intersect with actual remaining to avoid over-allocation
     const beMaxPerSprint = beSprintCaps.map(c => roundHalf(c * beFraction));
     const feMaxPerSprint = feSprintCaps.map(c => roundHalf(c * feFraction));
-    const beCaps = beRem.map((c, i) => i < startIdx ? 0 : Math.min(c, beMaxPerSprint[i]));
-    const feCaps = feRem.map((c, i) => i < startIdx ? 0 : Math.min(c, feMaxPerSprint[i]));
-    const beMaxArr = beMaxPerSprint.map((c, i) => i < startIdx ? 0 : c);
-    const feMaxArr = feMaxPerSprint.map((c, i) => i < startIdx ? 0 : c);
+    // physicalCaps = remaining capacity in sprint (capped by parallelism but NOT combined)
+    // parallelismCaps = per-sprint max for this feature based on parallelism fraction
+    const bePCaps = beRem.map((c, i) => i < startIdx ? 0 : c);
+    const fePCaps = feRem.map((c, i) => i < startIdx ? 0 : c);
+    const beParCaps = beMaxPerSprint.map((c, i) => i < startIdx ? 0 : c);
+    const feParCaps = feMaxPerSprint.map((c, i) => i < startIdx ? 0 : c);
 
-    const beAllocs = distributeEffort(beTotal, beCaps, beMaxArr);
-    const feAllocs = distributeEffort(feTotal, feCaps, feMaxArr);
+    const beAllocs = distributeEffort(beTotal, bePCaps, beParCaps);
+    const feAllocs = distributeEffort(feTotal, fePCaps, feParCaps);
 
     // Subtract from remaining
     beAllocs.forEach((v, i) => { beRem[i] = Number((beRem[i] - v).toFixed(2)); });
