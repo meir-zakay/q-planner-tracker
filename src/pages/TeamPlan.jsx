@@ -422,7 +422,7 @@ export default function TeamPlan() {
       await Promise.all(updates);
       if (!manualMode) {
         const withNewOrder = reorderedEntries.map((e, i) => ({ ...e, sort_order: i + 1 }));
-        const allocMap = reallocateAll(withNewOrder.filter(e => !e.excluded_from_allocation), sprints, beSprintCaps, feSprintCaps);
+        const allocMap = reallocateAll(withNewOrder.filter(e => !e.excluded_from_allocation), sprints, beSprintCaps, feSprintCaps, {}, selectedTeam?.be_developers || 1, selectedTeam?.fe_developers || 1);
         await saveReallocated(allocMap);
       }
     },
