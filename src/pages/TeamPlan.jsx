@@ -101,9 +101,9 @@ function reallocateAll(entriesInOrder, sprints, beSprintCaps, feSprintCaps, pinn
     const beAllocs = distributeEffort(beTotal, bePCaps, beParCaps);
     const feAllocs = distributeEffort(feTotal, fePCaps, feParCaps);
 
-    // Subtract from remaining
-    beAllocs.forEach((v, i) => { beRem[i] = Number((beRem[i] - v).toFixed(2)); });
-    feAllocs.forEach((v, i) => { feRem[i] = Number((feRem[i] - v).toFixed(2)); });
+    // Subtract from remaining capacity (clamp to 0 to avoid negative)
+    beAllocs.forEach((v, i) => { beRem[i] = Number(Math.max(0, beRem[i] - v).toFixed(2)); });
+    feAllocs.forEach((v, i) => { feRem[i] = Number(Math.max(0, feRem[i] - v).toFixed(2)); });
 
     result[entry.id] = sprints.map((s, i) => ({ sprint: s, be_weeks: beAllocs[i], fe_weeks: feAllocs[i] }));
   }
