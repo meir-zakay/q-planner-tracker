@@ -675,14 +675,24 @@ export default function TeamPlan() {
       )}
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
-        <Select value={selectedTeamId} onValueChange={handleTeamChange}>
-          <SelectTrigger className="w-52">
-            <SelectValue placeholder="Select a team..." />
-          </SelectTrigger>
-          <SelectContent>
-            {teams.map(t => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-3">
+          <Select value={selectedTeamId} onValueChange={handleTeamChange}>
+            <SelectTrigger className="w-52">
+              <SelectValue placeholder="Select a team..." />
+            </SelectTrigger>
+            <SelectContent>
+              {teams.map(t => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          {selectedTeam && getLeadDisplayName(selectedTeam) && (
+            <span className="text-sm text-muted-foreground flex items-center gap-1.5">
+              <span className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary shrink-0">
+                {getLeadDisplayName(selectedTeam)[0].toUpperCase()}
+              </span>
+              {getLeadDisplayName(selectedTeam)}
+            </span>
+          )}
+        </div>
         <div className="flex items-center gap-2">
            {canEdit && (
              <Button onClick={() => setAddFeatureOpen(true)} disabled={!selectedTeamId}><Plus className="w-4 h-4" />Add Feature</Button>
@@ -703,7 +713,7 @@ export default function TeamPlan() {
           {/* Sprint Allocation Section */}
            <div className="rounded-xl p-5 bg-slate-50 dark:bg-[#1a1530] border border-border">
             <div className="flex items-center justify-between mb-1 flex-wrap gap-2">
-              <h2 className="text-base font-semibold text-foreground">Sprints Allocation — {selectedTeam?.name}{selectedTeam?.team_lead_name ? `, ${selectedTeam.team_lead_name}` : ''}</h2>
+              <h2 className="text-base font-semibold text-foreground">Sprints Allocation — {selectedTeam?.name}</h2>
               {selectedTeamId && canEdit && (
                 <Button
                   onClick={() => signedPlan ? setDeletePlanOpen(true) : signPlanMutation.mutate()}
