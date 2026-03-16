@@ -87,7 +87,7 @@ export default function Features() {
           {sortedFeatures.length} features for{' '}
           <span className="text-primary font-medium">{selectedQuarter} {selectedYear}</span>
         </p>
-        {canEdit && (
+        {canAdd && (
           <Button onClick={openNew}><Plus className="w-4 h-4" />Add Feature</Button>
         )}
       </div>
