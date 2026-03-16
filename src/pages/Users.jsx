@@ -21,7 +21,7 @@ export default function Users() {
   const [editUser, setEditUser] = useState(null);
   const [inviteOpen, setInviteOpen] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
-  const [inviteRole, setInviteRole] = useState('viewer');
+  const [inviteRole, setInviteRole] = useState('user');
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [inviteSent, setInviteSent] = useState(false);
   const [inviteLoading, setInviteLoading] = useState(false);
