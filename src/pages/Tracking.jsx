@@ -19,6 +19,9 @@ export default function Tracking() {
   const { data: teamsRaw = [] } = useQuery({ queryKey: ['teams'], queryFn: () => base44.entities.Team.list() });
   const teams = useMemo(() => [...teamsRaw].sort((a, b) => a.name.localeCompare(b.name)), [teamsRaw]);
   const selectedTeam = teams.find(t => t.id === selectedTeamId);
+  const isAdmin = userRole === 'admin';
+  const isTeamLead = selectedTeam?.team_lead_email === user?.email;
+  const canEdit = isAdmin || isTeamLead;
   
   const { data: features = [] } = useQuery({ queryKey: ['features', selectedYear, selectedQuarter], queryFn: () => base44.entities.Feature.filter({ year: selectedYear, quarter: selectedQuarter }) });
   const { data: quarterConfigs = [] } = useQuery({ queryKey: ['quarterConfigs'], queryFn: () => base44.entities.QuarterConfig.list() });
