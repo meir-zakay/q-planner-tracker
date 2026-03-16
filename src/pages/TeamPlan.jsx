@@ -130,6 +130,7 @@ export default function TeamPlan() {
   // assignSprintEntry removed — using DnD for manual mode sprint assignment
 
   const { data: teamsRaw = [] } = useQuery({ queryKey: ['teams'], queryFn: () => base44.entities.Team.list() });
+  const { data: users = [] } = useQuery({ queryKey: ['users'], queryFn: () => base44.entities.User.list() });
   const teams = useMemo(() => [...teamsRaw].sort((a, b) => a.name.localeCompare(b.name)), [teamsRaw]);
   const { data: allFeatures = [] } = useQuery({
     queryKey: ['features', selectedYear, selectedQuarter],

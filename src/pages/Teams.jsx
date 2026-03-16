@@ -89,7 +89,7 @@ export default function Teams() {
   const openNew = () => { setFormData(emptyTeam); setEditId(null); setFormOpen(true); };
   const handleLeadChange = (email) => {
     const u = users.find(u => u.email === email);
-    setFormData(prev => ({ ...prev, team_lead_email: email, team_lead_name: u?.full_name || '' }));
+    setFormData(prev => ({ ...prev, team_lead_email: email, team_lead_name: u?.display_name || u?.full_name || '' }));
   };
   const n = (key) => (e) => setFormData(prev => ({ ...prev, [key]: Number(e.target.value) }));
 
