@@ -405,7 +405,7 @@ export default function TeamPlan() {
 
       const updatedEntry = { ...entry, sprint_allocations: finalAllocs, be_effort_weeks: newBE, fe_effort_weeks: newFE };
       const allUpdated = sortedEntries.map(e => e.id === entry.id ? updatedEntry : e);
-      const allocMap = reallocateAll(allUpdated, sprints, beSprintCaps, feSprintCaps);
+      const allocMap = reallocateAll(allUpdated, sprints, beSprintCaps, feSprintCaps, {}, selectedTeam?.be_developers || 1, selectedTeam?.fe_developers || 1);
       const othersAllocMap = Object.fromEntries(Object.entries(allocMap).filter(([id]) => id !== entry.id));
       if (Object.keys(othersAllocMap).length > 0) await saveReallocated(othersAllocMap);
       else qc.invalidateQueries({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter, selectedTeamId] });
