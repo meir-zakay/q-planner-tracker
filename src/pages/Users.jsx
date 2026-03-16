@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { UserPlus, Pencil, Trash2, Mail, Shield } from 'lucide-react';
+import { UserPlus, Pencil, Trash2, Mail, Shield, CheckCircle2 } from 'lucide-react';
 const ROLES = ['admin', 'editor', 'viewer'];
 
 const roleBadge = { admin: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300', editor: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300', viewer: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300' };
