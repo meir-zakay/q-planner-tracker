@@ -141,9 +141,9 @@ export default function Teams() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span className="text-[10px] font-bold text-primary">{team.team_lead_name[0].toUpperCase()}</span>
+                        <span className="text-[10px] font-bold text-primary">{(users.find(u => u.email === team.team_lead_email)?.display_name || team.team_lead_name)[0].toUpperCase()}</span>
                       </div>
-                      <span className="text-sm text-foreground">{team.team_lead_name}</span>
+                      <span className="text-sm text-foreground">{users.find(u => u.email === team.team_lead_email)?.display_name || team.team_lead_name}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-muted-foreground">Team Lead</span>
