@@ -80,9 +80,11 @@ function reallocateAll(entriesInOrder, sprints, beSprintCaps, feSprintCaps, pinn
     const feMaxPerSprint = feSprintCaps.map(c => roundHalf(c * feFraction));
     const beCaps = beRem.map((c, i) => i < startIdx ? 0 : Math.min(c, beMaxPerSprint[i]));
     const feCaps = feRem.map((c, i) => i < startIdx ? 0 : Math.min(c, feMaxPerSprint[i]));
+    const beMaxArr = beMaxPerSprint.map((c, i) => i < startIdx ? 0 : c);
+    const feMaxArr = feMaxPerSprint.map((c, i) => i < startIdx ? 0 : c);
 
-    const beAllocs = distributeEffort(beTotal, beCaps);
-    const feAllocs = distributeEffort(feTotal, feCaps);
+    const beAllocs = distributeEffort(beTotal, beCaps, beMaxArr);
+    const feAllocs = distributeEffort(feTotal, feCaps, feMaxArr);
 
     // Subtract from remaining
     beAllocs.forEach((v, i) => { beRem[i] = Number((beRem[i] - v).toFixed(2)); });
