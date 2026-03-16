@@ -677,16 +677,6 @@ export default function TeamPlan() {
           </SelectContent>
         </Select>
         <div className="flex items-center gap-2">
-           {selectedTeamId && (
-             <Button
-               onClick={() => signedPlan ? setDeletePlanOpen(true) : signPlanMutation.mutate()}
-               disabled={signPlanMutation.isPending || deletePlanMutation.isPending || entries.length === 0}
-               variant="outline"
-             >
-               <CheckCircle className="w-4 h-4" />
-               {signedPlan ? 'Re-sign Plan' : 'Sign Plan'}
-             </Button>
-           )}
            {canEdit && (
              <Button onClick={() => setAddFeatureOpen(true)} disabled={!selectedTeamId}><Plus className="w-4 h-4" />Add Feature</Button>
            )}
