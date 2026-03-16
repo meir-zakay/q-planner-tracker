@@ -258,7 +258,7 @@ export default function TeamPlan() {
         return oa - ob;
       });
       if (ordered.length > 0) {
-        const allocMap = reallocateAll(ordered, sprints, beSprintCaps, feSprintCaps);
+        const allocMap = reallocateAll(ordered, sprints, beSprintCaps, feSprintCaps, {}, selectedTeam?.be_developers || 1, selectedTeam?.fe_developers || 1);
         await saveReallocated(allocMap);
       }
     },
