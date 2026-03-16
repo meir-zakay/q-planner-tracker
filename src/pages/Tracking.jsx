@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { AlertCircle, Edit2, StickyNote } from 'lucide-react';
 
 export default function Tracking() {
-  const { user, selectedYear, selectedQuarter } = useOutletContext();
+  const { user, userRole, selectedYear, selectedQuarter } = useOutletContext();
   const qc = useQueryClient();
   const [selectedTeamId, setSelectedTeamId] = useState(() => localStorage.getItem('selectedTeamId') || '');
   const [editingProgress, setEditingProgress] = useState(null);
