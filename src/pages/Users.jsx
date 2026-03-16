@@ -153,27 +153,44 @@ export default function Users() {
         </Dialog>
 
         {/* Invite Dialog */}
-        <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
+        <Dialog open={inviteOpen} onOpenChange={(o) => !o && handleInviteClose()}>
           <DialogContent>
             <DialogHeader><DialogTitle>Invite User</DialogTitle></DialogHeader>
-            <div className="space-y-4 py-2">
-              <div className="space-y-2">
-                <Label>Email</Label>
-                <Input value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} placeholder="user@example.com" type="email" />
+            {inviteSent ? (
+              <div className="flex flex-col items-center gap-3 py-6 text-center">
+                <CheckCircle2 className="w-12 h-12 text-green-500" />
+                <p className="font-semibold text-foreground">Invitation Sent!</p>
+                <p className="text-sm text-muted-foreground">An invitation has been sent to <strong>{inviteEmail}</strong>.</p>
               </div>
-              <div className="space-y-2">
-                <Label>Role</Label>
-                <Select value={inviteRole} onValueChange={setInviteRole}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {ROLES.map(r => <SelectItem key={r} value={r} className="capitalize">{r}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+            ) : (
+              <div className="space-y-4 py-2">
+                <div className="space-y-2">
+                  <Label>Email</Label>
+                  <Input value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} placeholder="user@example.com" type="email" />
+                </div>
+                <div className="space-y-2">
+                  <Label>Role</Label>
+                  <Select value={inviteRole} onValueChange={setInviteRole}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {ROLES.map(r => <SelectItem key={r} value={r} className="capitalize">{r}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                {inviteError && <p className="text-sm text-destructive">{inviteError}</p>}
               </div>
-            </div>
+            )}
             <DialogFooter>
-              <Button variant="outline" onClick={() => setInviteOpen(false)}>Cancel</Button>
-              <Button onClick={handleInvite}>Send Invitation</Button>
+              {inviteSent ? (
+                <Button onClick={handleInviteClose}>Close</Button>
+              ) : (
+                <>
+                  <Button variant="outline" onClick={handleInviteClose}>Cancel</Button>
+                  <Button onClick={handleInvite} disabled={!inviteEmail || inviteLoading}>
+                    {inviteLoading ? 'Sending…' : 'Send Invitation'}
+                  </Button>
+                </>
+              )}
             </DialogFooter>
           </DialogContent>
         </Dialog>
