@@ -23,6 +23,7 @@ export default function Features() {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   const canEdit = ['admin', 'editor'].includes(userRole);
+  const canAdd = userRole === 'admin';
 
   const { data: features = [], isLoading } = useQuery({
     queryKey: ['features', selectedYear, selectedQuarter],
