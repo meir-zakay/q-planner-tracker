@@ -160,6 +160,12 @@ export default function TeamPlan() {
     localStorage.setItem('manualMode', String(next));
   };
   const selectedTeam = teams.find(t => t.id === selectedTeamId);
+  const userMap = useMemo(() => { const m = {}; users.forEach(u => { m[u.email] = u; }); return m; }, [users]);
+  const getLeadDisplayName = (team) => {
+    if (!team?.team_lead_email) return team?.team_lead_name || null;
+    const u = userMap[team.team_lead_email];
+    return u?.display_name || u?.full_name || team.team_lead_name || null;
+  };
   const isAdmin = userRole === 'admin';
   const isTeamLead = selectedTeam?.team_lead_email === user?.email;
   const canEdit = isAdmin || isTeamLead;
