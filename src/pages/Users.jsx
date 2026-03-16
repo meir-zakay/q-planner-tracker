@@ -22,8 +22,17 @@ export default function Users() {
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState('viewer');
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [inviteSent, setInviteSent] = useState(false);
+  const [inviteLoading, setInviteLoading] = useState(false);
+  const [inviteError, setInviteError] = useState('');
 
-  const { data: users = [], isLoading } = useQuery({ queryKey: ['users'], queryFn: () => base44.entities.User.list('-created_date', 200) });
+  const { data: users = [], isLoading } = useQuery({
+    queryKey: ['users'],
+    queryFn: async () => {
+      const res = await base44.functions.invoke('listUsers', {});
+      return res.data.users || [];
+    }
+  });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.User.update(id, data),
