@@ -40,7 +40,7 @@ export default function Users() {
     await base44.users.inviteUser(inviteEmail, inviteRole);
     setInviteOpen(false);
     setInviteEmail('');
-    setInviteRole('user');
+    setInviteRole('viewer');
   };
 
   return (
@@ -64,7 +64,7 @@ export default function Users() {
                   </tr>
                 </thead>
                 <tbody>
-                  {users.map(u => (
+                  {[...users].sort((a, b) => (a.full_name || a.email || '').localeCompare(b.full_name || b.email || '')).map(u => (
                     <tr key={u.id} className="border-b border-border last:border-0 hover:bg-muted/20 transition-colors">
                       <td className="px-4 py-3 font-medium text-foreground">{u.full_name || '—'}</td>
                       <td className="px-4 py-3 text-muted-foreground">
@@ -80,7 +80,7 @@ export default function Users() {
                       </td>
                       <td className="px-4 py-3 text-right">
                         <div className="flex items-center justify-end gap-2">
-                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setEditUser({ ...u })}>
+                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setEditUser({ ...u, role: u.role === 'user' ? 'viewer' : (u.role || 'viewer') })}>
                             <Pencil className="w-3.5 h-3.5" />
                           </Button>
                           {u.email !== user?.email && (
