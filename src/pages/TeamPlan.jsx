@@ -601,7 +601,7 @@ export default function TeamPlan() {
         const destSprintIdx = sprintList.indexOf(destSprint);
         if (destSprintIdx < 0) return;
         const pinnedStarts = { [entryId]: destSprintIdx };
-        const allocMap = reallocateAll(currentEntries, sprintList, beCaps, feCaps, pinnedStarts);
+        const allocMap = reallocateAll(currentEntries, sprintList, beCaps, feCaps, pinnedStarts, selectedTeam?.be_developers || 1, selectedTeam?.fe_developers || 1);
         saveReallocated(allocMap);
       }
     }
