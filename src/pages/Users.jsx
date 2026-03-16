@@ -50,7 +50,7 @@ export default function Users() {
     setInviteLoading(true);
     setInviteError('');
     try {
-      await base44.users.inviteUser(inviteEmail, inviteRole);
+      await base44.functions.invoke('inviteUserWithRole', { email: inviteEmail, role: inviteRole });
       setInviteSent(true);
     } catch (err) {
       setInviteError(err?.message || 'Failed to send invitation. Please try again.');
