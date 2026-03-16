@@ -23,7 +23,7 @@ export default function Users() {
   const [inviteRole, setInviteRole] = useState('user');
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
-  const { data: users = [] } = useQuery({ queryKey: ['users'], queryFn: () => base44.entities.User.list() });
+  const { data: users = [], isLoading } = useQuery({ queryKey: ['users'], queryFn: () => base44.entities.User.list('-created_date', 200) });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.User.update(id, data),
@@ -100,7 +100,7 @@ export default function Users() {
         {/* Edit Dialog */}
         <Dialog open={!!editUser} onOpenChange={(o) => !o && setEditUser(null)}>
           <DialogContent>
-            <DialogHeader><DialogTitle>Edit User Role</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>Edit User</DialogTitle></DialogHeader>
             {editUser && (
               <div className="space-y-4 py-2">
                 <div>
@@ -108,8 +108,12 @@ export default function Users() {
                   <p className="text-sm text-muted-foreground">{editUser.email}</p>
                 </div>
                 <div className="space-y-2">
+                  <Label>Display Name</Label>
+                  <Input value={editUser.display_name || ''} onChange={e => setEditUser({ ...editUser, display_name: e.target.value })} placeholder="Enter display name..." />
+                </div>
+                <div className="space-y-2">
                   <Label>Role</Label>
-                  <Select value={editUser.role || 'viewer'} onValueChange={v => setEditUser({ ...editUser, role: v })}>
+                  <Select value={editUser.role || 'user'} onValueChange={v => setEditUser({ ...editUser, role: v })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       {ROLES.map(r => <SelectItem key={r} value={r} className="capitalize">{r}</SelectItem>)}
@@ -120,7 +124,7 @@ export default function Users() {
             )}
             <DialogFooter>
               <Button variant="outline" onClick={() => setEditUser(null)}>Cancel</Button>
-              <Button onClick={() => updateMutation.mutate({ id: editUser.id, data: { role: editUser.role } })} disabled={updateMutation.isPending}>Save</Button>
+              <Button onClick={() => updateMutation.mutate({ id: editUser.id, data: { role: editUser.role, display_name: editUser.display_name } })} disabled={updateMutation.isPending}>Save</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

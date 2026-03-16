@@ -164,7 +164,7 @@ export default function Layout() {
                       <div className="w-7 h-7 rounded-full bg-indigo-900 shadow-md flex items-center justify-center shrink-0">
                         <span className="text-xs font-bold text-indigo-400">{(user.full_name || user.email || '?')[0].toUpperCase()}</span>
                       </div>
-                      <span className="text-sm font-medium text-foreground hidden sm:inline">{user.full_name || user.email}</span>
+                      <span className="text-sm font-medium text-foreground hidden sm:inline">{user.display_name || user.full_name || user.email}</span>
                       <ChevronDown className="w-3.5 h-3.5 text-muted-foreground hidden sm:inline" />
                     </button>
                   </DropdownMenuTrigger>

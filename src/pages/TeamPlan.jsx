@@ -696,7 +696,7 @@ export default function TeamPlan() {
           {/* Sprint Allocation Section */}
            <div className="rounded-xl p-5 bg-slate-50 dark:bg-[#1a1530] border border-border">
             <div className="flex items-center justify-between mb-1 flex-wrap gap-2">
-              <h2 className="text-base font-semibold text-foreground">Sprints Allocation — {selectedTeam?.name}</h2>
+              <h2 className="text-base font-semibold text-foreground">Sprints Allocation — {selectedTeam?.name}{selectedTeam?.team_lead_name ? `, ${selectedTeam.team_lead_name}` : ''}</h2>
               {selectedTeamId && canEdit && (
                 <Button
                   onClick={() => signedPlan ? setDeletePlanOpen(true) : signPlanMutation.mutate()}
