@@ -712,9 +712,11 @@ export default function TeamPlan() {
                   <TooltipTrigger asChild>
                     <Button
                       onClick={toggleManualMode}
-                      className={manualMode ? 'ring-2 ring-primary/40 ring-inset' : 'opacity-60'}
+                      variant="outline"
+                      size="sm"
+                      className={`text-xs ${manualMode ? 'ring-2 ring-primary/40 ring-inset' : 'opacity-60'}`}
                     >
-                      <Wrench className="w-4 h-4" />
+                      <Wrench className="w-3 h-3" />
                       {manualMode ? 'Manual' : 'Auto'}
                     </Button>
                   </TooltipTrigger>
