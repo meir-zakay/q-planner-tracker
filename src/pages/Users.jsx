@@ -46,10 +46,24 @@ export default function Users() {
 
   const handleInvite = async () => {
     if (!inviteEmail) return;
-    await base44.users.inviteUser(inviteEmail, inviteRole);
+    setInviteLoading(true);
+    setInviteError('');
+    try {
+      await base44.users.inviteUser(inviteEmail, inviteRole);
+      setInviteSent(true);
+    } catch (err) {
+      setInviteError(err?.message || 'Failed to send invitation. Please try again.');
+    } finally {
+      setInviteLoading(false);
+    }
+  };
+
+  const handleInviteClose = () => {
     setInviteOpen(false);
     setInviteEmail('');
     setInviteRole('viewer');
+    setInviteSent(false);
+    setInviteError('');
   };
 
   return (
