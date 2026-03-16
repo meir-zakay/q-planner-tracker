@@ -87,8 +87,8 @@ export default function TeamGanttChart({ teams, planEntries, features, sprints, 
             >
               {/* Feature label */}
               <div
-                className="shrink-0 flex items-center px-3 text-[11px] font-medium text-foreground truncate bg-muted/20 border-r border-border/40"
-                style={{ width: 180, height: '100%' }}
+                className="shrink-0 flex items-center px-3 text-[11px] font-medium text-foreground truncate border-r border-border/40"
+                style={{ width: 180, height: '100%', borderLeft: `3px solid ${colorMap[feat.objective] || FALLBACK_COLORS[rowIdx % FALLBACK_COLORS.length]}` }}
                 title={feat.title}
               >
                 <span className="truncate">{feat.title}</span>
