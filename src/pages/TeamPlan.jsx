@@ -21,32 +21,45 @@ function roundHalf(n) {
   return Math.round(n * 2) / 2;
 }
 
-// Distribute totalEffort across sprints greedily from the first sprint with capacity.
-// physicalCaps: available capacity per sprint.
-// maxPerSprintArr: optional per-sprint parallelism cap array.
-// If a sprint received less than its parallelism cap (due to reduced physical capacity),
-// the next sprint is allowed to absorb up to maxCap+0.5 so the feature doesn't spill
-// an extra tiny amount into a further sprint.
-function distributeEffort(totalEffort, physicalCaps, maxPerSprintArr = null) {
+// Distribute totalEffort across sprints greedily.
+// physicalCaps: actual available capacity per sprint.
+// parallelismCaps: optional per-sprint parallelism cap (max this feature can use per sprint).
+// When a sprint's physical capacity is below the parallelism cap, the deficit carries forward
+// so the next sprint can compensate and avoid tiny spill-over.
+function distributeEffort(totalEffort, physicalCaps, parallelismCaps = null) {
   const allocations = physicalCaps.map(() => 0);
   let remaining = Number(totalEffort.toFixed(2));
-  let hasAllocated = false;
+  let deficit = 0; // accumulated shortfall from parallelism cap due to physical constraints
+
   for (let i = 0; i < physicalCaps.length && remaining > 0.01; i++) {
     const physCap = physicalCaps[i];
-    if (physCap <= 0.001) continue;
-    const maxCap = maxPerSprintArr ? maxPerSprintArr[i] : Infinity;
-    // If we've already started this feature and the remaining fits within maxCap+0.5 slack,
-    // allow placing it all here (avoids tiny spill from a previously reduced sprint).
-    const canFitWithSlack = hasAllocated && remaining <= (maxCap + 0.5) && remaining <= physCap;
-    const effectiveCap = canFitWithSlack ? physCap : Math.min(physCap, maxCap);
+    const maxCap = parallelismCaps ? parallelismCaps[i] : Infinity;
+
+    if (physCap <= 0.001) {
+      // Sprint fully consumed by other features; accumulate deficit if we had effort to place
+      if (maxCap < Infinity && remaining > 0) deficit += maxCap;
+      continue;
+    }
+
+    // Allow up to maxCap + carried-forward deficit
+    const effectiveCap = maxCap === Infinity ? physCap : Math.min(physCap, maxCap + deficit);
     const raw = Math.min(remaining, effectiveCap);
     const alloc = roundHalf(raw);
     const actual = Math.min(alloc, effectiveCap);
     allocations[i] = actual;
     remaining = Number((remaining - actual).toFixed(2));
-    if (actual > 0) hasAllocated = true;
+
+    // Update deficit: if physical was the limiting factor, carry the gap forward
+    if (maxCap < Infinity) {
+      if (physCap < maxCap) {
+        deficit += maxCap - actual; // placed less than maxCap due to physical constraint
+      } else {
+        deficit = 0; // had full room, reset
+      }
+    }
   }
-  // If there's still remaining effort, place it in the last sprint (allows overallocation).
+
+  // Place any remainder in the last sprint (allows overallocation edge case)
   if (remaining > 0.01 && physicalCaps.length > 0) {
     allocations[physicalCaps.length - 1] = Number((allocations[physicalCaps.length - 1] + remaining).toFixed(2));
   }
