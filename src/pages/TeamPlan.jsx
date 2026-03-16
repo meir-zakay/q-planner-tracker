@@ -336,7 +336,7 @@ export default function TeamPlan() {
         // Update totals and parallelism, then reallocate all included entries from scratch
         const updated = { ...entry, ...updateData };
         const allEntries = sortedEntries.filter(e => !e.excluded_from_allocation).map(e => e.id === entry.id ? updated : e);
-        const allocMap = reallocateAll(allEntries, sprints, beSprintCaps, feSprintCaps);
+        const allocMap = reallocateAll(allEntries, sprints, beSprintCaps, feSprintCaps, {}, selectedTeam?.be_developers || 1, selectedTeam?.fe_developers || 1);
         await saveReallocated(allocMap, allEntries);
       }
     },
