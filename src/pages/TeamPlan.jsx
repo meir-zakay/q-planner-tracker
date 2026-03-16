@@ -290,7 +290,7 @@ export default function TeamPlan() {
           const ob = b.sort_order ?? allFeatures.find(f => f.id === b.feature_id)?.priority ?? 999;
           return oa - ob;
         });
-        const allocMap = reallocateAll(ordered, sprints, beSprintCaps, feSprintCaps);
+        const allocMap = reallocateAll(ordered, sprints, beSprintCaps, feSprintCaps, {}, selectedTeam?.be_developers || 1, selectedTeam?.fe_developers || 1);
         await saveReallocated(allocMap, ordered);
       }
     },
