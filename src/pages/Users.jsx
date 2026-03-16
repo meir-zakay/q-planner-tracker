@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { UserPlus, Pencil, Trash2, Mail, Shield } from 'lucide-react';
-const ROLES = ['admin', 'user'];
+const ROLES = ['admin', 'editor', 'viewer'];
 
 const roleBadge = { admin: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300', user: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300' };
 
