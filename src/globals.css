@@ -58,12 +58,12 @@
     --ring: 220 60% 22%;
     --sidebar-background: 15 20% 6%;
     --sidebar-foreground: 210 40% 96%;
-    --sidebar-primary: 220 60% 22%;
+    --sidebar-primary: var(--brand);
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 15 25% 16%;
     --sidebar-accent-foreground: 210 40% 96%;
     --sidebar-border: 15 25% 16%;
-    --sidebar-ring: 220 60% 22%;
+    --sidebar-ring: var(--brand);
   }
 }
 
