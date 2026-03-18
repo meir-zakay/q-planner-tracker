@@ -96,3 +96,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Make hover:shadow-sm visible on dark/near-black backgrounds */
+.dark .hover\:shadow-sm:hover {
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 2px 6px rgba(255,255,255,0.04);
+}

@@ -79,10 +79,10 @@ export default function Layout() {
       <div className="h-screen flex overflow-hidden">
         {/* Sidebar */}
          <aside
-           className={`relative shrink-0 h-full flex flex-col transition-all duration-200 bg-sidebar ${sidebarWidth}`}
+           className={`relative shrink-0 h-full flex flex-col transition-all duration-200 bg-panel ${sidebarWidth}`}
          >
           {/* Logo */}
-          <div className="h-16 flex items-center gap-2 px-3 shrink-0 border-b border-indigo-900 bg-sidebar">
+          <div className="h-16 flex items-center gap-2 px-3 shrink-0 border-b border-indigo-900 bg-panel">
             <Link to="/Dashboard" className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-lg bg-indigo-900 flex items-center justify-center shrink-0">
                 <CalendarRange className="w-4 h-4 text-indigo-400" />
