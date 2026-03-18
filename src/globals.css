@@ -88,13 +88,10 @@
   border-radius: 0.5rem;
 }
 
-/* Force Sapphire Blue primary (light) / Navy (dark) */
-:root {
-  --primary: 217 85% 39% !important;
-  --primary-foreground: 0 0% 100% !important;
-}
+/* ─── Brand color: change ONLY here to retheme all component backgrounds ─── */
+:root   { --brand: 217 85% 39%; }        /* Light: Sapphire Blue  */
+html.dark { --brand: 220 60% 18%; }      /* Dark:  Navy Blue      */
 
-html.dark {
-  --primary: 220 60% 22% !important;
-  --primary-foreground: 0 0% 100% !important;
-}
+/* Keep --primary in sync with --brand */
+:root   { --primary: var(--brand) !important; --primary-foreground: 0 0% 100% !important; }
+html.dark { --primary: var(--brand) !important; --primary-foreground: 0 0% 100% !important; }
