@@ -306,7 +306,7 @@ export default function TeamPlan() {
       let fid = featureId;
       if (!fid && customTitle) {
         const maxPriority = allFeatures.length > 0 ? Math.max(...allFeatures.map(f => f.priority || 0)) : 0;
-        const newFeature = await base44.entities.Feature.create({ title: customTitle, objective: customFeatureObjective || undefined, priority: maxPriority + 1, quarter: selectedQuarter, year: selectedYear, team_plan_only: true });
+        const newFeature = await base44.entities.Feature.create({ title: customTitle, objective: customFeatureObjective || undefined, priority: maxPriority + 1, quarter: selectedQuarter, year: selectedYear });
         fid = newFeature.id;
       }
       // Create new entry with parallelism settings
