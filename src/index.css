@@ -79,6 +79,10 @@
 
 
 
+/* ─── Panel: change ONLY here to retheme all panel backgrounds ─── */
+:root     { --panel: 210 40% 97%; }
+.dark     { --panel: 251 36% 14%; }
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
