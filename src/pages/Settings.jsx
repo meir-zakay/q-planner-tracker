@@ -66,7 +66,7 @@ export default function Settings() {
         <div className="rounded-xl overflow-hidden bg-panel border border-border">
           <div className="px-6 py-4 space-y-2">
             {objectives.map(obj => (
-              <div key={obj.id} className="flex items-center justify-between py-2 px-3 rounded-lg bg-muted/40 hover:bg-muted/70 transition-colors">
+              <div key={obj.id} className="flex items-center justify-between py-2 px-3 rounded-lg bg-panel border border-border transition-all hover:brightness-125 hover:border-indigo-500/40">
                 <div className="flex items-center gap-3">
                   <div className="w-4 h-4 rounded-full border border-border" style={{ backgroundColor: obj.color }} />
                   <span className="text-sm font-medium text-foreground">{obj.name}</span>
