@@ -88,3 +88,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Hover brightness utility for panel rows */
+.hover\:brightness-125:hover {
+  filter: brightness(1.25);
+}
