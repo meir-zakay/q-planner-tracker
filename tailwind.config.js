@@ -51,6 +51,7 @@ module.exports = {
   				'5': 'hsl(var(--chart-5))'
   			},
   			panel: 'hsl(var(--panel))',
+  			btn: 'hsl(var(--btn))',
   			sidebar: {
   				DEFAULT: 'hsl(var(--sidebar-background))',
   				foreground: 'hsl(var(--sidebar-foreground))',
