@@ -85,7 +85,14 @@ export default function Tracking() {
     return { start: activeSprints[0], end: activeSprints[activeSprints.length - 1] };
   };
 
-  const plannedFeatures = teamPlanEntries.filter(entry => !entry.excluded_from_allocation).map(entry => {
+  const plannedFeatures = [...teamPlanEntries]
+    .filter(entry => entry.excluded_from_allocation !== true)
+    .sort((a, b) => {
+      const oa = a.sort_order ?? featureMap[a.feature_id]?.priority ?? 999;
+      const ob = b.sort_order ?? featureMap[b.feature_id]?.priority ?? 999;
+      return oa - ob;
+    })
+    .map(entry => {
     const feat = featureMap[entry.feature_id];
     const actual = progressMap[entry.feature_id];
     const totalPlannedWeeks = (entry.be_effort_weeks || 0) + (entry.fe_effort_weeks || 0);
