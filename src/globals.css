@@ -58,12 +58,12 @@
     --ring: 220 60% 22%;
     --sidebar-background: 15 20% 6%;
     --sidebar-foreground: 210 40% 96%;
-    --sidebar-primary: var(--brand);
+    --sidebar-primary: 217 100% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 15 25% 16%;
     --sidebar-accent-foreground: 210 40% 96%;
     --sidebar-border: 15 25% 16%;
-    --sidebar-ring: var(--brand);
+    --sidebar-ring: 217 100% 40%;
   }
 }
 
@@ -88,10 +88,6 @@
   border-radius: 0.5rem;
 }
 
-/* ─── Brand color: change ONLY here to retheme all component backgrounds ─── */
-:root   { --brand: 217 85% 39%; }        /* Light: Sapphire Blue  */
-html.dark { --brand: 220 60% 18%; }      /* Dark:  Navy Blue      */
-
-/* Keep --primary in sync with --brand */
-:root   { --primary: var(--brand) !important; --primary-foreground: 0 0% 100% !important; }
-html.dark { --primary: var(--brand) !important; --primary-foreground: 0 0% 100% !important; }
+/* ─── Panel background: change ONLY here to retheme all panel/sidebar backgrounds ─── */
+:root     { --panel: 210 40% 97%; }   /* Light mode panels  */
+html.dark { --panel: 251 36% 14%; }   /* Dark mode panels (#1a1530). Change to e.g. 0 0% 0% for black */
