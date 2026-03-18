@@ -29,14 +29,15 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
-    --sidebar-background: 220 52% 12%;  /* Always dark — deep Navy */
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
+    --sidebar-background: 243 39% 11%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 243 30% 18%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 243 30% 18%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    --panel: 0 0% 98%;
   }
 
   .dark {
@@ -64,28 +65,19 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-    --sidebar-background: 220 52% 12%;  /* Always dark — deep Navy */
+    --sidebar-background: 243 39% 11%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent: 243 30% 18%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-border: 243 30% 18%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    --panel: 0 0% 8%;
   }
 }
 
 
-
-/* ════════════════════════════════════════════════════
-   THEME TOKENS — change ONLY here to retheme the app
-   ════════════════════════════════════════════════════ */
-/* Panel background (Navy Blue) */
-:root { --panel: 210 40% 97%; }          /* light mode panels */
-.dark { --panel: 220 9% 10%; }           /* dark mode panels  — near Black */
-
-/* Button primary color (Indigo Blue) — same in both themes */
-:root, .dark { --btn: 243 75% 59%; }     /* Indigo-600 #4f46e5 */
 
 @layer base {
   * {
@@ -95,9 +87,4 @@
   body {
     @apply bg-background text-foreground;
   }
-}
-
-/* Make hover:shadow-sm visible on dark/near-black backgrounds */
-.dark .hover\:shadow-sm:hover {
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 2px 6px rgba(255,255,255,0.04);
 }
