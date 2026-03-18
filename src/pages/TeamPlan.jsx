@@ -938,7 +938,7 @@ export default function TeamPlan() {
                         ref={rowDrag.innerRef}
                         {...rowDrag.draggableProps}
                         style={rowDrag.draggableProps.style}
-                        className={`py-2 px-2 rounded-lg border border-transparent transition-all hover:brightness-125 hover:border-indigo-500/30 ${entry.excluded_from_allocation ? 'opacity-50' : ''}`}
+                        className={`py-2 px-2 rounded-lg border border-transparent bg-panel transition-all hover:brightness-125 hover:border-indigo-500/40 ${entry.excluded_from_allocation ? 'opacity-50' : ''}`}
                       >
                         {rowSnapshot.isDragging ? (
                           <div className="bg-primary text-primary-foreground text-xs font-semibold px-2 py-1 rounded-md shadow-xl truncate w-32">
