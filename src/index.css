@@ -82,7 +82,7 @@
    ════════════════════════════════════════════════════ */
 /* Panel background (Navy Blue) */
 :root { --panel: 210 40% 97%; }          /* light mode panels */
-.dark { --panel: 220 52% 18%; }          /* dark mode panels  — Navy Blue */
+.dark { --panel: 220 9% 20%; }           /* dark mode panels  — Dark Gray */
 
 /* Button primary color (Indigo Blue) — same in both themes */
 :root, .dark { --btn: 243 75% 59%; }     /* Indigo-600 #4f46e5 */
