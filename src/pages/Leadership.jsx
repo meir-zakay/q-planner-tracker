@@ -101,28 +101,28 @@ export default function Leadership() {
 
       {/* Key Metrics */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="rounded-xl p-5 bg-slate-50 dark:bg-[#1a1530] border border-border">
+        <div className="rounded-xl p-5 bg-panel border border-border">
           <p className="text-xs text-muted-foreground mb-1">Total Capacity</p>
           <p className="text-2xl font-bold text-foreground">{totalCapacity}w</p>
           <p className="text-xs text-muted-foreground mt-2">{totalBECapacity}w BE / {totalFECapacity}w FE</p>
         </div>
-        <div className="rounded-xl p-5 bg-slate-50 dark:bg-[#1a1530] border border-border">
+        <div className="rounded-xl p-5 bg-panel border border-border">
           <p className="text-xs text-muted-foreground mb-1">Planned</p>
           <p className="text-2xl font-bold text-foreground">{totalPlanned}w</p>
           <p className="text-xs text-muted-foreground mt-2">{utilizationPct}% utilization</p>
         </div>
-        <div className="rounded-xl p-5 bg-slate-50 dark:bg-[#1a1530] border border-border">
+        <div className="rounded-xl p-5 bg-panel border border-border">
           <p className="text-xs text-muted-foreground mb-1">Avg Progress</p>
           <p className="text-2xl font-bold text-foreground">{actualProgress.length > 0 ? Math.round(actualProgress.reduce((s, p) => s + (p.actual_progress_percent || 0), 0) / actualProgress.length) : 0}%</p>
         </div>
-        <div className="rounded-xl p-5 bg-slate-50 dark:bg-[#1a1530] border border-border">
+        <div className="rounded-xl p-5 bg-panel border border-border">
           <p className="text-xs text-muted-foreground mb-1">Blocked Features</p>
           <p className={`text-2xl font-bold ${blockedFeatures.length > 0 ? 'text-red-600' : 'text-foreground'}`}>{blockedFeatures.length}</p>
         </div>
       </div>
 
       {/* Planned vs Actual Effort */}
-      <div className="rounded-xl p-6 bg-slate-50 dark:bg-[#1a1530] border border-border">
+      <div className="rounded-xl p-6 bg-panel border border-border">
         <h2 className="text-base font-semibold text-foreground mb-4">Planned vs Actual Effort</h2>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={effortData}>
@@ -136,7 +136,7 @@ export default function Leadership() {
       </div>
 
       {/* Team Progress */}
-      <div className="rounded-xl p-6 bg-slate-50 dark:bg-[#1a1530] border border-border">
+      <div className="rounded-xl p-6 bg-panel border border-border">
         <h2 className="text-base font-semibold text-foreground mb-4">Team Progress</h2>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={progressData}>
@@ -150,7 +150,7 @@ export default function Leadership() {
       </div>
 
       {/* Team Summary Table */}
-      <div className="rounded-xl p-6 bg-slate-50 dark:bg-[#1a1530] border border-border overflow-x-auto">
+      <div className="rounded-xl p-6 bg-panel border border-border overflow-x-auto">
         <h2 className="text-base font-semibold text-foreground mb-4">Team Breakdown</h2>
         <table className="w-full text-sm">
           <thead>

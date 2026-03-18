@@ -26,7 +26,7 @@
     --input: 216 100% 18%;
     --ring: 217 100% 40%;
     --radius: 0.625rem;
-    --sidebar-background: 0 0% 100%;
+    --sidebar-background: 251 36% 14%;  /* Always dark — controls sidebar bg in both themes */
     --sidebar-foreground: 222 47% 11%;
     --sidebar-primary: 217 100% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
@@ -56,7 +56,7 @@
     --border: 216 100% 12%;
     --input: 216 100% 15%;
     --ring: 220 60% 22%;
-    --sidebar-background: 15 20% 6%;
+    --sidebar-background: 251 36% 14%;  /* Same as :root — sidebar is always dark */
     --sidebar-foreground: 210 40% 96%;
     --sidebar-primary: 217 100% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
