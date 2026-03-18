@@ -88,8 +88,13 @@
   border-radius: 0.5rem;
 }
 
-/* Force Sapphire Blue primary */
+/* Force Sapphire Blue primary (light) / Navy (dark) */
 :root {
   --primary: 217 85% 39% !important;
+  --primary-foreground: 0 0% 100% !important;
+}
+
+html.dark {
+  --primary: 220 60% 22% !important;
   --primary-foreground: 0 0% 100% !important;
 }
