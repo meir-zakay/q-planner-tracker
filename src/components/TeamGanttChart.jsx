@@ -48,7 +48,7 @@ export default function TeamGanttChart({ teams, planEntries, features, sprints, 
 
   if (!sprints.length || rows.length === 0) {
     return (
-      <div className="rounded-xl p-5 bg-slate-50 dark:bg-[#1a1530] border border-border">
+      <div className="rounded-xl p-5 bg-panel border border-border">
         <h3 className="font-semibold text-foreground mb-2">Quarter Timeline</h3>
         <div className="text-center py-12 text-muted-foreground text-sm">No timeline data available for this quarter</div>
       </div>
@@ -58,7 +58,7 @@ export default function TeamGanttChart({ teams, planEntries, features, sprints, 
   const numSprints = sprints.length;
 
   return (
-    <div className="rounded-xl p-5 bg-slate-50 dark:bg-[#1a1530] border border-border overflow-x-auto">
+    <div className="rounded-xl p-5 bg-panel border border-border overflow-x-auto">
       <h3 className="font-semibold text-foreground mb-4">Quarter Timeline</h3>
       <div style={{ minWidth: Math.max(600, numSprints * 60 + 200) }}>
         {/* Sprint header */}
