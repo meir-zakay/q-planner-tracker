@@ -89,7 +89,7 @@ export default function Users() {
                 </thead>
                 <tbody>
                   {[...users].sort((a, b) => (a.full_name || a.email || '').localeCompare(b.full_name || b.email || '')).map(u => (
-                    <tr key={u.id} className="border-b border-border last:border-0 hover:bg-muted/20 transition-colors">
+                    <tr key={u.id} className="border-b border-border last:border-0 hover:brightness-125 transition-all">
                       <td className="px-4 py-3 font-medium text-foreground">{u.full_name || '—'}</td>
                       <td className="px-4 py-3 text-muted-foreground">
                         <div className="flex items-center gap-2">
