@@ -91,3 +91,7 @@
 /* ─── Panel background: change ONLY here to retheme all panel/sidebar backgrounds ─── */
 :root     { --panel: 210 40% 97%; }   /* Light mode panels  */
 html.dark { --panel: 251 36% 14%; }   /* Dark mode panels (#1a1530). Change to e.g. 0 0% 0% for black */
+
+/* ─── Button primary color: change ONLY here to retheme all primary buttons ─── */
+:root     { --btn: 243 75% 59%; }     /* Indigo blue (#4f46e5 / indigo-600) */
+html.dark { --btn: 243 75% 59%; }     /* Same in dark mode */

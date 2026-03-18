@@ -12,6 +12,7 @@ module.exports = {
   		colors: {
   			panel: 'hsl(var(--panel))',
   			sidebar: 'hsl(var(--sidebar-background))',
+  			btn: 'hsl(var(--btn))',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
