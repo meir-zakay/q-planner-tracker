@@ -37,6 +37,31 @@ export default function Features() {
 
   const sortedFeatures = useMemo(() => [...features].filter(f => !f.team_plan_only).sort((a, b) => (a.priority || 0) - (b.priority || 0)), [features]);
 
+  // Team-plan-only features for this quarter (not yet promoted to global list)
+  const { data: teamPlanEntries = [] } = useQuery({
+    queryKey: ['teamPlanEntries', selectedYear, selectedQuarter],
+    queryFn: () => base44.entities.TeamPlanEntry.filter({ year: selectedYear, quarter: selectedQuarter }),
+  });
+
+  const syncMutation = useMutation({
+    mutationFn: async () => {
+      // Get all team-plan-only features for this quarter
+      const teamOnlyFeatures = features.filter(f => f.team_plan_only);
+      // Find which ones have at least one non-excluded TeamPlanEntry
+      const nonExcludedFeatureIds = new Set(
+        teamPlanEntries.filter(e => !e.excluded_from_allocation).map(e => e.feature_id)
+      );
+      const toPromote = teamOnlyFeatures.filter(f => nonExcludedFeatureIds.has(f.id));
+      if (toPromote.length === 0) return 0;
+      const nextPriority = sortedFeatures.length > 0 ? Math.max(...sortedFeatures.map(f => f.priority || 0)) : 0;
+      await Promise.all(toPromote.map((f, i) =>
+        base44.entities.Feature.update(f.id, { team_plan_only: false, priority: nextPriority + i + 1 })
+      ));
+      return toPromote.length;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['features', selectedYear, selectedQuarter] }),
+  });
+
   const colorMap = useMemo(() => { const m = {}; objectives.forEach(o => { m[o.name] = o.color; }); return m; }, [objectives]);
 
   const saveMutation = useMutation({
