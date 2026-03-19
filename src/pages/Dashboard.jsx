@@ -26,13 +26,15 @@ export default function Dashboard() {
   const totalFECapacity = teams.reduce((s, t) => s + (t.fe_capacity_weeks || 0), 0);
   const totalCapacity = totalBECapacity + totalFECapacity;
 
-  const totalBEEffort = allEntries.reduce((s, e) => s + (e.be_effort_weeks || 0), 0);
-  const totalFEEffort = allEntries.reduce((s, e) => s + (e.fe_effort_weeks || 0), 0);
+  const includedEntries = allEntries.filter(e => e.excluded_from_allocation !== true);
+
+  const totalBEEffort = includedEntries.reduce((s, e) => s + (e.be_effort_weeks || 0), 0);
+  const totalFEEffort = includedEntries.reduce((s, e) => s + (e.fe_effort_weeks || 0), 0);
   const totalUsed = totalBEEffort + totalFEEffort;
 
   const effortByObjective = useMemo(() => {
     const map = {};
-    allEntries.forEach(entry => {
+    includedEntries.forEach(entry => {
       const feat = featureMap[entry.feature_id];
       if (!feat) return;
       const obj = feat.objective || 'Other';
@@ -40,7 +42,7 @@ export default function Dashboard() {
       map[obj] = (map[obj] || 0) + effort;
     });
     return Object.entries(map).map(([name, value]) => ({ name, value })).filter(d => d.value > 0);
-  }, [allEntries, featureMap]);
+  }, [includedEntries, featureMap]);
 
   const utilizationPct = totalCapacity > 0 ? Math.round((totalUsed / totalCapacity) * 100) : 0;
   const utilizationColor = utilizationPct > 100 ? '#ef4444' : utilizationPct > 85 ? '#f59e0b' : '#0F52BA';
