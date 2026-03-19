@@ -43,7 +43,14 @@ export default function TeamGanttChart({ teams, planEntries, features, sprints, 
         return { feat, startIdx, endIdx };
       })
       .filter(Boolean)
-      .sort((a, b) => (a.feat.priority || 999) - (b.feat.priority || 999));
+      .sort((a, b) => {
+        // Primary: start sprint ascending
+        if (a.startIdx !== b.startIdx) return a.startIdx - b.startIdx;
+        // Secondary: shorter duration first
+        const aDur = a.endIdx - a.startIdx;
+        const bDur = b.endIdx - b.startIdx;
+        return aDur - bDur;
+      });
   }, [planEntries, features, sprints, featureMap]);
 
   if (!sprints.length || rows.length === 0) {
