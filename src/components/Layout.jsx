@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
-import { LayoutDashboard, Users, UsersRound, ListChecks, CalendarRange, Settings, LogOut, Moon, Sun, ChevronLeft, ChevronRight, ChevronDown, Eye, UserCircle } from 'lucide-react';
+import { LayoutDashboard, Users, UsersRound, ListChecks, CalendarRange, Settings, LogOut, ChevronLeft, ChevronRight, Eye, UserCircle } from 'lucide-react';
 import ProfileDialog from '@/components/ProfileDialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from "@/components/ui/button";
@@ -51,7 +51,34 @@ export default function Layout() {
   });
 
   const userRole = user?.role || 'viewer';
-  const selectedCrew = user?.default_crew || '';
+  const isAppAdmin = userRole === 'app_admin';
+
+  // app_admin can switch crew; others are locked to their default_crew
+  const [selectedCrew, setSelectedCrew] = useState(() => localStorage.getItem('selectedCrew') || '');
+
+  // Fetch all domains (to build crew list) — only needed for app_admin
+  const { data: domains = [] } = useQuery({
+    queryKey: ['domains'],
+    queryFn: () => base44.entities.Domain.list(),
+    enabled: isAppAdmin,
+  });
+
+  const allCrews = isAppAdmin
+    ? domains.flatMap(d => d.crews || []).filter(Boolean)
+    : [];
+
+  // Sync: when user loads, if not app_admin, lock to their default_crew
+  useEffect(() => {
+    if (!isAppAdmin && user?.default_crew) {
+      setSelectedCrew(user.default_crew);
+    }
+  }, [isAppAdmin, user?.default_crew]);
+
+  useEffect(() => {
+    if (isAppAdmin) {
+      localStorage.setItem('selectedCrew', selectedCrew);
+    }
+  }, [selectedCrew, isAppAdmin]);
 
   const currentYear = new Date().getFullYear();
   const currentQ = `Q${Math.ceil((new Date().getMonth() + 1) / 3)}`;
@@ -141,6 +168,21 @@ export default function Layout() {
             <h1 className="text-xl font-bold text-foreground">{pageTitle}</h1>
             <div className="flex-1" />
             <div className="flex items-center gap-2">
+              {isAppAdmin && (
+                <>
+                  <span className="text-sm text-muted-foreground hidden sm:inline">Crew:</span>
+                  <Select value={selectedCrew} onValueChange={setSelectedCrew}>
+                    <SelectTrigger className="h-9 text-sm w-[140px]">
+                      <SelectValue placeholder="All crews" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={null}>All crews</SelectItem>
+                      {allCrews.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                  <div className="w-px h-5 bg-border mx-1" />
+                </>
+              )}
               <span className="text-sm text-muted-foreground hidden sm:inline">Period:</span>
               <Select value={selectedQuarter} onValueChange={setSelectedQuarter}>
                 <SelectTrigger className="h-9 text-sm w-[70px]">
