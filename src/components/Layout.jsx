@@ -171,7 +171,9 @@ export default function Layout() {
         <div className="flex-1 min-w-0 flex flex-col h-full overflow-hidden">
           {/* Top Header Bar */}
           <header className="h-16 flex items-center px-6 gap-4 shrink-0 z-20 border-b border-border">
-            <h1 className="text-xl font-bold text-foreground">{pageTitle}</h1>
+            <h1 className="text-xl font-bold text-foreground">
+              {pageTitle}{selectedCrew ? <span className="font-normal text-muted-foreground"> — {selectedCrew} Crew</span> : ''}
+            </h1>
             <div className="flex-1" />
             <div className="flex items-center gap-2">
               {isAppAdmin && (
