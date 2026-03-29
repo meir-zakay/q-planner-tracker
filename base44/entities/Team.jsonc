@@ -1,0 +1,49 @@
+{
+  "name": "Team",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Team name"
+    },
+    "crew": {
+      "type": "string",
+      "description": "The crew this team belongs to"
+    },
+    "quarter": {
+      "type": "string",
+      "description": "Quarter this team belongs to e.g. Q1"
+    },
+    "year": {
+      "type": "number",
+      "description": "Year this team belongs to"
+    },
+    "be_developers": {
+      "type": "number",
+      "description": "Number of backend developers"
+    },
+    "be_capacity_weeks": {
+      "type": "number",
+      "description": "Backend capacity in weeks for the quarter"
+    },
+    "fe_developers": {
+      "type": "number",
+      "description": "Number of frontend developers"
+    },
+    "fe_capacity_weeks": {
+      "type": "number",
+      "description": "Frontend capacity in weeks for the quarter"
+    },
+    "team_lead_email": {
+      "type": "string",
+      "description": "Email of the team lead user"
+    },
+    "team_lead_name": {
+      "type": "string",
+      "description": "Display name of the team lead"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

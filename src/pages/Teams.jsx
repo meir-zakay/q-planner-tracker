@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Plus, Pencil, Trash2, Server, Monitor, X, Users, Copy } from 'lucide-react';
 import { useQuarterSelection } from '@/components/QuarterContext';
 
-const emptyTeam = { name: '', be_developers: 0, be_capacity_weeks: 0, fe_developers: 0, fe_capacity_weeks: 0, team_lead_email: '', team_lead_name: '' };
+const emptyTeam = { name: '', crew: '', be_developers: 0, be_capacity_weeks: 0, fe_developers: 0, fe_capacity_weeks: 0, team_lead_email: '', team_lead_name: '' };
 
 export default function Teams() {
   const qc = useQueryClient();
@@ -25,6 +25,14 @@ export default function Teams() {
 
   const { data: allTeamsRaw = [] } = useQuery({ queryKey: ['teams'], queryFn: () => base44.entities.Team.list() });
   const { data: users = [] } = useQuery({ queryKey: ['users'], queryFn: () => base44.entities.User.list() });
+  const { data: domains = [] } = useQuery({ queryKey: ['domains'], queryFn: () => base44.entities.Domain.list('sort_order') });
+
+  // All crews from all domains
+  const allCrews = useMemo(() => {
+    const set = new Set();
+    domains.forEach(d => (d.crews || []).forEach(c => set.add(c)));
+    return Array.from(set).sort();
+  }, [domains]);
 
   // Teams for the current quarter/year
   const teams = useMemo(() =>
@@ -71,6 +79,7 @@ export default function Teams() {
       await Promise.all(sourceTeams.map(t =>
         base44.entities.Team.create({
           name: t.name,
+          crew: t.crew || '',
           quarter: selectedQuarter,
           year: selectedYear,
           be_developers: t.be_developers,
@@ -112,7 +121,10 @@ export default function Teams() {
           {teams.map(team => (
             <div key={team.id} className="rounded-xl p-5 bg-panel border border-border transition-all hover:brightness-125 hover:border-indigo-500/40">
               <div className="flex items-start justify-between mb-4">
-                <h3 className="font-semibold text-foreground text-base">{team.name}</h3>
+                 <div>
+                   <h3 className="font-semibold text-foreground text-base">{team.name}</h3>
+                   {team.crew && <span className="text-xs text-indigo-400 font-medium">{team.crew}</span>}
+                 </div>
                 <div className="flex gap-1">
                   <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground" onClick={() => openEdit(team)}><Pencil className="w-3.5 h-3.5" /></Button>
                   <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive" onClick={() => setDeleteConfirm(team)}><Trash2 className="w-3.5 h-3.5" /></Button>
@@ -175,6 +187,16 @@ export default function Teams() {
               <div className="space-y-1.5">
                 <Label>Team Name</Label>
                 <Input value={formData.name} onChange={e => setFormData(p => ({ ...p, name: e.target.value }))} />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Crew</Label>
+                <Select value={formData.crew || '_none'} onValueChange={v => setFormData(p => ({ ...p, crew: v === '_none' ? '' : v }))}>
+                  <SelectTrigger><SelectValue placeholder="Select crew..." /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="_none">No crew</SelectItem>
+                    {allCrews.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5"><Label>BE Developers</Label><Input type="number" min="0" value={formData.be_developers} onChange={n('be_developers')} /></div>

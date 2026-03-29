@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
-import { LayoutDashboard, Users, UsersRound, ListChecks, CalendarRange, Settings, LogOut, Moon, Sun, ChevronLeft, ChevronRight, ChevronDown, Eye } from 'lucide-react';
+import { LayoutDashboard, Users, UsersRound, ListChecks, CalendarRange, Settings, LogOut, Moon, Sun, ChevronLeft, ChevronRight, ChevronDown, Eye, UserCircle } from 'lucide-react';
+import ProfileDialog from '@/components/ProfileDialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -33,6 +34,7 @@ export default function Layout() {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
+  const [profileOpen, setProfileOpen] = useState(false);
 
   useEffect(() => {
     if (darkMode) {
@@ -156,20 +158,26 @@ export default function Layout() {
                 </SelectContent>
               </Select>
               {user && (
+                <>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg transition-all duration-150 hover:bg-slate-100 dark:hover:bg-slate-800 ml-1">
+                    <button className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border border-border transition-all duration-150 hover:bg-slate-100 dark:hover:bg-slate-800 ml-1">
                       <div className="w-7 h-7 rounded-full bg-indigo-900 shadow-md flex items-center justify-center shrink-0">
-                        <span className="text-xs font-bold text-indigo-400">{(user.full_name || user.email || '?')[0].toUpperCase()}</span>
+                        <span className="text-xs font-bold text-indigo-400">{(user.display_name || user.full_name || user.email || '?')[0].toUpperCase()}</span>
                       </div>
-                      <span className="text-sm font-medium text-foreground hidden sm:inline">{user.display_name || user.full_name || user.email}</span>
-                      <ChevronDown className="w-3.5 h-3.5 text-muted-foreground hidden sm:inline" />
+                      <div className="hidden sm:flex flex-col items-start leading-tight">
+                        <span className="text-sm font-medium text-foreground">{user.display_name || user.full_name || user.email}</span>
+                        <span className="text-xs text-muted-foreground capitalize">{user.role || 'viewer'}</span>
+                      </div>
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => setDarkMode(!darkMode)} className="gap-2">
-                      {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-                      {darkMode ? 'Light Mode' : 'Dark Mode'}
+                  <DropdownMenuContent align="end" className="w-56">
+                    <div className="px-3 py-2 border-b border-border">
+                      <p className="text-sm font-semibold text-foreground">{user.display_name || user.full_name || user.email}</p>
+                      <p className="text-xs text-muted-foreground">{user.email}</p>
+                    </div>
+                    <DropdownMenuItem onClick={() => setProfileOpen(true)} className="gap-2 mt-1">
+                      <UserCircle className="w-4 h-4" /> My Profile
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => base44.auth.logout()} className="text-destructive focus:text-destructive gap-2">
@@ -177,6 +185,14 @@ export default function Layout() {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
+                <ProfileDialog
+                  open={profileOpen}
+                  onOpenChange={setProfileOpen}
+                  user={user}
+                  darkMode={darkMode}
+                  onToggleDarkMode={() => setDarkMode(d => !d)}
+                />
+                </>
               )}
             </div>
           </header>

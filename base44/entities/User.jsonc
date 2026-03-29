@@ -1,0 +1,27 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "editor",
+        "viewer"
+      ],
+      "default": "viewer"
+    },
+    "display_name": {
+      "type": "string",
+      "description": "Display name for the user"
+    },
+    "default_domain": {
+      "type": "string",
+      "description": "Default domain for this user"
+    },
+    "default_crew": {
+      "type": "string",
+      "description": "Default crew for this user"
+    }
+  }
+}

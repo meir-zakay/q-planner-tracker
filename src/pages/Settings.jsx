@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Plus, Pencil, Trash2, Target, Calendar } from 'lucide-react';
+import { Plus, Pencil, Trash2, Target, Calendar, Globe, Network, X, ChevronDown, ChevronRight } from 'lucide-react';
 const QUARTERS = ['Q1', 'Q2', 'Q3', 'Q4'];
 const DEFAULT_SPRINTS = { Q1: ['S1','S2','S3','S4','S5','S6'], Q2: ['S7','S8','S9','S10','S11','S12'], Q3: ['S13','S14','S15','S16','S17','S18'], Q4: ['S19','S20','S21','S22','S23','S24'] };
 
@@ -17,8 +17,15 @@ export default function Settings() {
   const currentYear = new Date().getFullYear();
   const [configYear, setConfigYear] = useState(currentYear);
 
+  // Domain state
+  const [domainForm, setDomainForm] = useState(null);
+  const [deleteDomainConfirm, setDeleteDomainConfirm] = useState(null);
+  const [expandedDomains, setExpandedDomains] = useState({});
+  const [newCrewInputs, setNewCrewInputs] = useState({});
+
   const { data: objectives = [] } = useQuery({ queryKey: ['objectives'], queryFn: () => base44.entities.Objective.list('sort_order') });
   const { data: quarterConfigs = [] } = useQuery({ queryKey: ['quarterConfigs'], queryFn: () => base44.entities.QuarterConfig.list() });
+  const { data: domains = [] } = useQuery({ queryKey: ['domains'], queryFn: () => base44.entities.Domain.list('sort_order') });
 
   const saveObjMutation = useMutation({
     mutationFn: (data) => data.id ? base44.entities.Objective.update(data.id, { name: data.name, color: data.color }) : base44.entities.Objective.create({ name: data.name, color: data.color, sort_order: objectives.length + 1 }),
@@ -29,6 +36,38 @@ export default function Settings() {
     mutationFn: (id) => base44.entities.Objective.delete(id),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['objectives'] }); setDeleteObjConfirm(null); },
   });
+
+  const saveDomainMutation = useMutation({
+    mutationFn: (data) => data.id
+      ? base44.entities.Domain.update(data.id, { name: data.name })
+      : base44.entities.Domain.create({ name: data.name, crews: [], sort_order: domains.length + 1 }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['domains'] }); setDomainForm(null); },
+  });
+
+  const deleteDomainMutation = useMutation({
+    mutationFn: (id) => base44.entities.Domain.delete(id),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['domains'] }); setDeleteDomainConfirm(null); },
+  });
+
+  const updateDomainCrews = async (domain, crews) => {
+    await base44.entities.Domain.update(domain.id, { crews });
+    qc.invalidateQueries({ queryKey: ['domains'] });
+  };
+
+  const addCrew = async (domain) => {
+    const crew = (newCrewInputs[domain.id] || '').trim();
+    if (!crew) return;
+    const existing = domain.crews || [];
+    if (existing.includes(crew)) return;
+    await updateDomainCrews(domain, [...existing, crew]);
+    setNewCrewInputs(p => ({ ...p, [domain.id]: '' }));
+  };
+
+  const removeCrew = async (domain, crew) => {
+    await updateDomainCrews(domain, (domain.crews || []).filter(c => c !== crew));
+  };
+
+  const toggleDomainExpand = (id) => setExpandedDomains(p => ({ ...p, [id]: !p[id] }));
 
   const getQuarterConfig = (q) => {
     return quarterConfigs.find(c => c.year === configYear && c.quarter === q);
@@ -77,6 +116,87 @@ export default function Settings() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Domains */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Globe className="w-5 h-5 text-primary" />
+              <span className="text-base font-semibold text-foreground">Domains</span>
+            </div>
+            <Button onClick={() => setDomainForm({ name: '' })} className="gap-2 px-5 py-2 text-sm font-semibold rounded-xl shadow-md">
+              <Plus className="w-4 h-4" />Add
+            </Button>
+          </div>
+          <div className="rounded-xl overflow-hidden bg-panel border border-border">
+            <div className="px-6 py-4 space-y-2">
+              {domains.map(domain => (
+                <div key={domain.id} className="flex items-center justify-between py-2 px-3 rounded-lg bg-panel border border-border transition-all hover:brightness-125 hover:border-indigo-500/40">
+                  <span className="text-sm font-medium text-foreground">{domain.name}</span>
+                  <div className="flex gap-1">
+                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setDomainForm({ id: domain.id, name: domain.name })}><Pencil className="w-3 h-3" /></Button>
+                    <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => setDeleteDomainConfirm(domain)}><Trash2 className="w-3 h-3" /></Button>
+                  </div>
+                </div>
+              ))}
+              {domains.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">No domains yet</p>}
+            </div>
+          </div>
+        </div>
+
+        {/* Domain → Crew Associations */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <Network className="w-5 h-5 text-primary" />
+            <div>
+              <span className="text-base font-semibold text-foreground">Domain → Crew Associations</span>
+              <p className="text-xs text-muted-foreground">Define which crews belong to each domain</p>
+            </div>
+          </div>
+          <div className="rounded-xl overflow-hidden bg-panel border border-border divide-y divide-border">
+            {domains.map(domain => {
+              const expanded = expandedDomains[domain.id];
+              const crews = domain.crews || [];
+              return (
+                <div key={domain.id}>
+                  <button
+                    className="w-full flex items-center justify-between px-5 py-3.5 hover:brightness-125 transition-all"
+                    onClick={() => toggleDomainExpand(domain.id)}
+                  >
+                    <div className="flex items-center gap-2">
+                      {expanded ? <ChevronDown className="w-4 h-4 text-muted-foreground" /> : <ChevronRight className="w-4 h-4 text-muted-foreground" />}
+                      <span className="text-sm font-semibold text-foreground">{domain.name}</span>
+                    </div>
+                    <span className="text-xs text-muted-foreground">{crews.length} {crews.length === 1 ? 'crew' : 'crews'}</span>
+                  </button>
+                  {expanded && (
+                    <div className="px-5 pb-4 space-y-3">
+                      <div className="flex flex-wrap gap-2">
+                        {crews.map(crew => (
+                          <span key={crew} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-indigo-600/20 text-indigo-300 text-xs font-medium border border-indigo-500/30">
+                            {crew}
+                            <button onClick={() => removeCrew(domain, crew)} className="hover:text-white ml-0.5"><X className="w-3 h-3" /></button>
+                          </span>
+                        ))}
+                        <div className="flex items-center gap-1.5">
+                          <Input
+                            value={newCrewInputs[domain.id] || ''}
+                            onChange={e => setNewCrewInputs(p => ({ ...p, [domain.id]: e.target.value }))}
+                            onKeyDown={e => e.key === 'Enter' && addCrew(domain)}
+                            placeholder="+ Add crew"
+                            className="h-7 text-xs w-32 border-dashed border-indigo-500/50"
+                          />
+                          <Button size="sm" variant="outline" className="h-7 text-xs px-2" onClick={() => addCrew(domain)}>Add</Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+            {domains.length === 0 && <p className="text-sm text-muted-foreground text-center py-6">Add domains first</p>}
           </div>
         </div>
 
@@ -132,6 +252,37 @@ export default function Settings() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setObjForm(null)}>Cancel</Button>
             <Button onClick={() => saveObjMutation.mutate(objForm)} disabled={saveObjMutation.isPending || !objForm?.name}>Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Domain form */}
+      <Dialog open={!!domainForm} onOpenChange={(o) => !o && setDomainForm(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>{domainForm?.id ? 'Edit Domain' : 'Add Domain'}</DialogTitle></DialogHeader>
+          {domainForm && (
+            <div className="space-y-4 py-2">
+              <div className="space-y-2">
+                <Label>Name</Label>
+                <Input value={domainForm.name} onChange={e => setDomainForm(p => ({ ...p, name: e.target.value }))} placeholder="Domain name" />
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDomainForm(null)}>Cancel</Button>
+            <Button onClick={() => saveDomainMutation.mutate(domainForm)} disabled={saveDomainMutation.isPending || !domainForm?.name}>Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete domain confirm */}
+      <Dialog open={!!deleteDomainConfirm} onOpenChange={(o) => !o && setDeleteDomainConfirm(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Delete Domain</DialogTitle></DialogHeader>
+          <p className="text-sm text-muted-foreground">Delete <strong>{deleteDomainConfirm?.name}</strong>?</p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteDomainConfirm(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={() => deleteDomainMutation.mutate(deleteDomainConfirm.id)}>Delete</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
