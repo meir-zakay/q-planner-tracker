@@ -121,7 +121,7 @@ export default function Tracking() {
     const totalPlannedWeeks = (entry.be_effort_weeks || 0) + (entry.fe_effort_weeks || 0);
     const daysPerWeek = 5;
     const totalPlannedDays = totalPlannedWeeks * daysPerWeek;
-    const daysSinceStart = Math.floor((new Date() - new Date(selectedYear, selectedQuarter.charCodeAt(1) - 1, 1)) / (1000 * 60 * 60 * 24));
+    const daysSinceStart = Math.max(0, Math.floor((new Date() - new Date(selectedYear, (parseInt(selectedQuarter[1]) - 1) * 3, 1)) / (1000 * 60 * 60 * 24)));
     const quarterDays = 90;
     const expectedProgress = Math.min(100, Math.round((daysSinceStart / quarterDays) * 100));
     const actualPercent = actual?.actual_progress_percent || 0;
