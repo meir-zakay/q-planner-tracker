@@ -130,7 +130,7 @@ export default function TeamPlan() {
   // assignSprintEntry removed — using DnD for manual mode sprint assignment
 
   const { data: teamsRaw = [] } = useQuery({ queryKey: ['teams'], queryFn: () => base44.entities.Team.list() });
-  const { data: users = [] } = useQuery({ queryKey: ['users'], queryFn: () => base44.entities.User.list() });
+  const { data: users = [] } = useQuery({ queryKey: ['users'], queryFn: () => base44.entities.User.list(), enabled: userRole === 'admin' || userRole === 'editor' });
   const teams = useMemo(() => [...teamsRaw].sort((a, b) => a.name.localeCompare(b.name)), [teamsRaw]);
   const { data: allFeatures = [] } = useQuery({
     queryKey: ['features', selectedYear, selectedQuarter],
@@ -524,7 +524,7 @@ export default function TeamPlan() {
   const ghostRef = useRef(null);
 
   const startNativeDrag = useCallback((e, entry, feat) => {
-    if (!manualMode) return; // only in manual mode
+    if (!manualMode || !canEdit) return; // only in manual mode for editors/admins
     e.preventDefault();
     const startX = e.clientX;
     const startY = e.clientY;
@@ -784,14 +784,14 @@ export default function TeamPlan() {
                                const cellKey = `${entry.id}-${sprint}-be`;
                                const dragId = `${entry.id}-drag-be-${sprint}`;
                                return (
-                                 <Draggable key={cellKey} draggableId={dragId} index={idx} isDragDisabled={false}>
+                                 <Draggable key={cellKey} draggableId={dragId} index={idx} isDragDisabled={!canEdit}>
                                    {(drag, dragSnapshot) => (
                                      <div
                                        ref={drag.innerRef}
                                        {...drag.draggableProps}
-                                       {...drag.dragHandleProps}
+                                       {...(!canEdit ? {} : drag.dragHandleProps)}
                                        style={drag.draggableProps.style}
-                                       className={`rounded-lg px-2 py-1.5 cursor-grab active:cursor-grabbing ${darkMode ? 'bg-blue-900 border border-blue-700' : 'bg-blue-50 border border-blue-200'} ${dragSnapshot.isDragging ? 'shadow-lg opacity-95 z-50' : ''}`}
+                                       className={`rounded-lg px-2 py-1.5 ${canEdit ? 'cursor-grab active:cursor-grabbing' : 'cursor-default'} ${darkMode ? 'bg-blue-900 border border-blue-700' : 'bg-blue-50 border border-blue-200'} ${dragSnapshot.isDragging ? 'shadow-lg opacity-95 z-50' : ''}`}
                                        >
                                        <p className={`text-[11px] font-semibold leading-tight truncate ${darkMode ? 'text-blue-200' : 'text-blue-600'}`}>{feat?.title}</p>
                                        {canEdit && editCell?.key === cellKey ? (
@@ -846,14 +846,14 @@ export default function TeamPlan() {
                                const cellKey = `${entry.id}-${sprint}-fe`;
                                const dragId = `${entry.id}-drag-fe-${sprint}`;
                                return (
-                                 <Draggable key={cellKey} draggableId={dragId} index={idx} isDragDisabled={false}>
+                                 <Draggable key={cellKey} draggableId={dragId} index={idx} isDragDisabled={!canEdit}>
                                    {(drag, dragSnapshot) => (
                                      <div
                                        ref={drag.innerRef}
                                        {...drag.draggableProps}
-                                       {...drag.dragHandleProps}
+                                       {...(!canEdit ? {} : drag.dragHandleProps)}
                                        style={drag.draggableProps.style}
-                                       className={`rounded-lg px-2 py-1.5 cursor-grab active:cursor-grabbing ${darkMode ? 'bg-emerald-900 border border-emerald-700' : 'bg-emerald-50 border border-emerald-200'} ${dragSnapshot.isDragging ? 'shadow-lg opacity-95 z-50' : ''}`}
+                                       className={`rounded-lg px-2 py-1.5 ${canEdit ? 'cursor-grab active:cursor-grabbing' : 'cursor-default'} ${darkMode ? 'bg-emerald-900 border border-emerald-700' : 'bg-emerald-50 border border-emerald-200'} ${dragSnapshot.isDragging ? 'shadow-lg opacity-95 z-50' : ''}`}
                                        >
                                        <p className={`text-[11px] font-semibold leading-tight truncate ${darkMode ? 'text-emerald-200' : 'text-emerald-600'}`}>{feat?.title}</p>
                                        {canEdit && editCell?.key === cellKey ? (
@@ -932,7 +932,7 @@ export default function TeamPlan() {
                   if (!feat) return null;
                   const isEditing = editEntryId === entry.id;
                   return (
-                    <Draggable key={entry.id} draggableId={`row-${entry.id}`} index={rowIdx} isDragDisabled={manualMode}>
+                    <Draggable key={entry.id} draggableId={`row-${entry.id}`} index={rowIdx} isDragDisabled={manualMode || !canEdit}>
                     {(rowDrag, rowSnapshot) => (
                       <div
                         ref={rowDrag.innerRef}
