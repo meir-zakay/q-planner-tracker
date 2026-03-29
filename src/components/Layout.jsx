@@ -50,7 +50,7 @@ export default function Layout() {
     queryFn: () => base44.auth.me(),
   });
 
-  const userRole = user?.role || 'viewer';
+  const userRole = user?.role && user.role !== 'user' ? user.role : 'viewer';
 
   const currentYear = new Date().getFullYear();
   const currentQ = `Q${Math.ceil((new Date().getMonth() + 1) / 3)}`;
