@@ -88,6 +88,18 @@ export default function Tracking() {
   const plannedFeatures = [...teamPlanEntries]
     .filter(entry => entry.excluded_from_allocation !== true)
     .sort((a, b) => {
+      // Sort by start sprint index (timeline order), fall back to sort_order/priority
+      const getStartIdx = (entry) => {
+        const activeSprints = sprints.filter(s => {
+          const alloc = entry.sprint_allocations?.find(a => a.sprint === s);
+          return (alloc?.be_weeks || 0) + (alloc?.fe_weeks || 0) > 0;
+        });
+        return activeSprints.length > 0 ? sprints.indexOf(activeSprints[0]) : 999;
+      };
+      const si = getStartIdx(a);
+      const sj = getStartIdx(b);
+      if (si !== sj) return si - sj;
+      // Tie-break by sort_order / priority
       const oa = a.sort_order ?? featureMap[a.feature_id]?.priority ?? 999;
       const ob = b.sort_order ?? featureMap[b.feature_id]?.priority ?? 999;
       return oa - ob;

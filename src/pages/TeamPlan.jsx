@@ -947,9 +947,9 @@ export default function TeamPlan() {
                         ) : (
                           <div className="flex items-center gap-3">
                             <div
-                              {...(!manualMode ? rowDrag.dragHandleProps : {})}
-                              onPointerDown={manualMode ? (e) => startNativeDrag(e, entry, feat) : undefined}
-                              className={`cursor-grab active:cursor-grabbing shrink-0 ${manualMode ? 'text-primary/50 hover:text-primary' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}
+                              {...(!manualMode && canEdit ? rowDrag.dragHandleProps : {})}
+                              onPointerDown={manualMode && canEdit ? (e) => startNativeDrag(e, entry, feat) : undefined}
+                              className={`shrink-0 ${canEdit ? 'cursor-grab active:cursor-grabbing' : 'cursor-default'} ${manualMode ? 'text-primary/50 hover:text-primary' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}
                             >
                               <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor"><circle cx="2" cy="2" r="1.5"/><circle cx="8" cy="2" r="1.5"/><circle cx="2" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="2" cy="14" r="1.5"/><circle cx="8" cy="14" r="1.5"/></svg>
                             </div>
