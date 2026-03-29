@@ -54,8 +54,8 @@ export default function Layout() {
   // Treat app_admin role OR platform admin (app owner) as app_admin
   const isAppAdmin = userRole === 'app_admin' || userRole === 'admin';
 
-  // app_admin can switch crew; others are locked to their default_crew
-  const [selectedCrew, setSelectedCrew] = useState(() => localStorage.getItem('selectedCrew') || '');
+  // app_admin can switch crew; others are locked to their default_crew (or '' if not set)
+  const [selectedCrew, setSelectedCrew] = useState(() => isAppAdmin ? (localStorage.getItem('selectedCrew') || '') : '');
 
   // Fetch all domains (to build crew list) — only needed for app_admin
   const { data: domains = [] } = useQuery({
@@ -68,12 +68,16 @@ export default function Layout() {
     ? domains.flatMap(d => d.crews || []).filter(Boolean)
     : [];
 
-  // Sync: when user loads, if not app_admin, lock to their default_crew
+  // Sync: when user loads, set crew based on role
   useEffect(() => {
-    if (!isAppAdmin && user?.default_crew) {
-      setSelectedCrew(user.default_crew);
+    if (!user) return;
+    if (isAppAdmin) {
+      // admin keeps their last selected crew from localStorage
+    } else {
+      // non-admin is locked to their default_crew, or '' if not set
+      setSelectedCrew(user.default_crew || '');
     }
-  }, [isAppAdmin, user?.default_crew]);
+  }, [isAppAdmin, user?.email, user?.default_crew]);
 
   useEffect(() => {
     if (isAppAdmin) {
