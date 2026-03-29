@@ -10,7 +10,6 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 
 const PAGE_TITLES = {
   '/Dashboard': 'Dashboard',
-  '/Leadership': 'Leadership Dashboard',
   '/Features': 'Feature Backlog',
   '/TeamPlan': 'Team Plan',
   '/Tracking': 'Planned vs Actual',
@@ -22,7 +21,6 @@ const PAGE_TITLES = {
 
 const navItems = [
   { path: '/Dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['admin', 'editor', 'viewer'] },
-  { path: '/Leadership', label: 'Leadership', icon: LayoutDashboard, roles: ['admin', 'editor'] },
   { path: '/Features', label: 'Features', icon: ListChecks, roles: ['admin', 'editor', 'viewer'] },
   { path: '/TeamPlan', label: 'Team Plan', icon: CalendarRange, roles: ['admin', 'editor', 'viewer'] },
   { path: '/Tracking', label: 'Tracking', icon: Eye, roles: ['admin', 'editor', 'viewer'] },
