@@ -21,13 +21,13 @@ const PAGE_TITLES = {
 };
 
 const navItems = [
-  { path: '/Dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['admin', 'editor', 'viewer'] },
-  { path: '/Features', label: 'Features', icon: ListChecks, roles: ['admin', 'editor', 'viewer'] },
-  { path: '/TeamPlan', label: 'Team Plan', icon: CalendarRange, roles: ['admin', 'editor', 'viewer'] },
-  { path: '/Tracking', label: 'Tracking', icon: Eye, roles: ['admin', 'editor', 'viewer'] },
-  { path: '/Teams', label: 'Teams', icon: UsersRound, roles: ['admin'] },
-  { path: '/Users', label: 'Users', icon: Users, roles: ['admin'] },
-  { path: '/Settings', label: 'Settings', icon: Settings, roles: ['admin'] },
+  { path: '/Dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['app_admin', 'admin', 'editor', 'viewer'] },
+  { path: '/Features', label: 'Features', icon: ListChecks, roles: ['app_admin', 'admin', 'editor', 'viewer'] },
+  { path: '/TeamPlan', label: 'Team Plan', icon: CalendarRange, roles: ['app_admin', 'admin', 'editor', 'viewer'] },
+  { path: '/Tracking', label: 'Tracking', icon: Eye, roles: ['app_admin', 'admin', 'editor', 'viewer'] },
+  { path: '/Teams', label: 'Teams', icon: UsersRound, roles: ['app_admin', 'admin'] },
+  { path: '/Users', label: 'Users', icon: Users, roles: ['app_admin'] },
+  { path: '/Settings', label: 'Settings', icon: Settings, roles: ['app_admin'] },
 ];
 
 export default function Layout() {
@@ -50,7 +50,8 @@ export default function Layout() {
     queryFn: () => base44.auth.me(),
   });
 
-  const userRole = user?.role && user.role !== 'user' ? user.role : 'viewer';
+  const userRole = user?.role || 'viewer';
+  const selectedCrew = user?.default_crew || '';
 
   const currentYear = new Date().getFullYear();
   const currentQ = `Q${Math.ceil((new Date().getMonth() + 1) / 3)}`;
@@ -200,7 +201,7 @@ export default function Layout() {
           {/* Main content — scrollable */}
           <main className="flex-1 min-w-0 overflow-y-auto">
             <div className="p-6 md:p-8 max-w-[1400px]">
-              <Outlet context={{ user, userRole, selectedYear, selectedQuarter, darkMode }} />
+              <Outlet context={{ user, userRole, selectedYear, selectedQuarter, darkMode, selectedCrew }} />
             </div>
           </main>
         </div>

@@ -68,7 +68,7 @@ export default function Users() {
   };
 
   return (
-    <RoleGate allowed={['admin']}>
+    <RoleGate allowed={['app_admin']}>
       <div className="space-y-6">
         <div className="flex items-center justify-end">
           <Button onClick={() => setInviteOpen(true)}>

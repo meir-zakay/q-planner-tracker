@@ -16,6 +16,7 @@ const emptyTeam = { name: '', crew: '', be_developers: 0, be_capacity_weeks: 0, 
 export default function Teams() {
   const qc = useQueryClient();
   const { selectedYear, selectedQuarter } = useQuarterSelection();
+  const { userRole, selectedCrew, user } = useOutletContext();
   const [formOpen, setFormOpen] = useState(false);
   const [formData, setFormData] = useState(emptyTeam);
   const [editId, setEditId] = useState(null);
@@ -34,13 +35,24 @@ export default function Teams() {
     return Array.from(set).sort();
   }, [domains]);
 
-  // Teams for the current quarter/year
+  // canManageTeams: app_admin can do anything; admin can only manage their own crew's teams
+  const isAppAdmin = userRole === 'app_admin';
+  const canManage = isAppAdmin || userRole === 'admin';
+
+  // Teams for the current quarter/year, filtered by crew for non-app-admins
   const teams = useMemo(() =>
     [...allTeamsRaw]
-      .filter(t => t.quarter === selectedQuarter && t.year === selectedYear)
+      .filter(t => {
+        if (t.quarter !== selectedQuarter || t.year !== selectedYear) return false;
+        if (!isAppAdmin && selectedCrew) return t.crew === selectedCrew;
+        return true;
+      })
       .sort((a, b) => a.name.localeCompare(b.name)),
-    [allTeamsRaw, selectedQuarter, selectedYear]
+    [allTeamsRaw, selectedQuarter, selectedYear, isAppAdmin, selectedCrew]
   );
+
+  // Can edit/delete a specific team (app_admin always; admin only for their crew)
+  const canEditTeam = (team) => isAppAdmin || (userRole === 'admin' && team.crew === selectedCrew);
 
   // Available source quarters to copy from (distinct quarter+year combos that have teams, excluding current)
   const sourceQuarters = useMemo(() => {
@@ -103,17 +115,17 @@ export default function Teams() {
   const n = (key) => (e) => setFormData(prev => ({ ...prev, [key]: Number(e.target.value) }));
 
   return (
-    <RoleGate allowed={['admin']}>
+    <RoleGate allowed={['app_admin', 'admin']}>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">{teams.length} teams in {selectedQuarter} {selectedYear}</p>
+          <p className="text-sm text-muted-foreground">{teams.length} teams in {selectedQuarter} {selectedYear}{selectedCrew && !isAppAdmin ? ` · ${selectedCrew}` : ''}</p>
           <div className="flex gap-2">
-            {sourceQuarters.length > 0 && (
+            {canManage && sourceQuarters.length > 0 && (
               <Button variant="outline" onClick={() => setCopyOpen(true)} className="gap-2">
                 <Copy className="w-4 h-4" />Copy from quarter
               </Button>
             )}
-            <Button onClick={openNew} className="gap-2"><Plus className="w-4 h-4" />Add Team</Button>
+            {canManage && <Button onClick={openNew} className="gap-2"><Plus className="w-4 h-4" />Add Team</Button>}
           </div>
         </div>
 
@@ -125,10 +137,12 @@ export default function Teams() {
                    <h3 className="font-semibold text-foreground text-base">{team.name}</h3>
                    {team.crew && <span className="text-xs text-indigo-400 font-medium">{team.crew}</span>}
                  </div>
+                {canEditTeam(team) && (
                 <div className="flex gap-1">
-                  <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground" onClick={() => openEdit(team)}><Pencil className="w-3.5 h-3.5" /></Button>
-                  <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive" onClick={() => setDeleteConfirm(team)}><Trash2 className="w-3.5 h-3.5" /></Button>
-                </div>
+                   <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground" onClick={() => openEdit(team)}><Pencil className="w-3.5 h-3.5" /></Button>
+                   <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive" onClick={() => setDeleteConfirm(team)}><Trash2 className="w-3.5 h-3.5" /></Button>
+                 </div>
+                )}
               </div>
 
               <div className="space-y-2 mb-4">
@@ -159,10 +173,10 @@ export default function Teams() {
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-muted-foreground">Team Lead</span>
-                      <button onClick={() => removeLeadMutation.mutate(team.id)} className="text-muted-foreground hover:text-foreground transition-colors">
+                      {canEditTeam(team) && <button onClick={() => removeLeadMutation.mutate(team.id)} className="text-muted-foreground hover:text-foreground transition-colors">
                         <X className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
+                        </button>}
+                        </div>
                   </div>
                 ) : (
                   <p className="text-xs text-muted-foreground italic">No team lead assigned</p>

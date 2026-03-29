@@ -41,7 +41,7 @@ export default function ProfileDialog({ open, onOpenChange, user, darkMode, onTo
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['currentUser'] }); onOpenChange(false); },
   });
 
-  const roleLabel = user?.role === 'admin' ? 'Admin' : user?.role === 'editor' ? 'Editor' : 'Viewer';
+  const roleLabel = user?.role === 'app_admin' ? 'App Admin' : user?.role === 'admin' ? 'Admin' : user?.role === 'editor' ? 'Editor' : 'Viewer';
   const initials = (user?.display_name || user?.full_name || user?.email || '?')[0].toUpperCase();
 
   return (

@@ -89,7 +89,7 @@ export default function Settings() {
   };
 
   return (
-    <RoleGate allowed={['admin']}>
+    <RoleGate allowed={['app_admin']}>
       <>
       <div className="space-y-8">
         {/* Objectives */}

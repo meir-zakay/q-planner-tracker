@@ -111,7 +111,7 @@ function reallocateAll(entriesInOrder, sprints, beSprintCaps, feSprintCaps, pinn
 }
 
 export default function TeamPlan() {
-  const { user, userRole, darkMode } = useOutletContext();
+  const { user, userRole, darkMode, selectedCrew } = useOutletContext();
   const { selectedYear, selectedQuarter } = useQuarterSelection();
   const qc = useQueryClient();
 
@@ -130,8 +130,11 @@ export default function TeamPlan() {
   // assignSprintEntry removed — using DnD for manual mode sprint assignment
 
   const { data: teamsRaw = [] } = useQuery({ queryKey: ['teams'], queryFn: () => base44.entities.Team.list() });
-  const { data: users = [] } = useQuery({ queryKey: ['users'], queryFn: () => base44.entities.User.list(), enabled: userRole === 'admin' || userRole === 'editor' });
-  const teams = useMemo(() => [...teamsRaw].sort((a, b) => a.name.localeCompare(b.name)), [teamsRaw]);
+  const { data: users = [] } = useQuery({ queryKey: ['users'], queryFn: () => base44.entities.User.list(), enabled: userRole === 'app_admin' || userRole === 'admin' || userRole === 'editor' });
+  const teams = useMemo(() => {
+    const filtered = selectedCrew ? teamsRaw.filter(t => t.crew === selectedCrew) : teamsRaw;
+    return [...filtered].sort((a, b) => a.name.localeCompare(b.name));
+  }, [teamsRaw, selectedCrew]);
   const { data: allFeatures = [] } = useQuery({
     queryKey: ['features', selectedYear, selectedQuarter],
     queryFn: () => base44.entities.Feature.filter({ year: selectedYear, quarter: selectedQuarter }),
@@ -166,7 +169,7 @@ export default function TeamPlan() {
     const u = userMap[team.team_lead_email];
     return u?.display_name || u?.full_name || team.team_lead_name || null;
   };
-  const isAdmin = userRole === 'admin';
+  const isAdmin = userRole === 'app_admin' || userRole === 'admin';
   const isTeamLead = selectedTeam?.team_lead_email === user?.email;
   const canEdit = isAdmin || isTeamLead;
 

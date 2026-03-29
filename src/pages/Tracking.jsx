@@ -16,10 +16,14 @@ export default function Tracking() {
   const [viewingNotes, setViewingNotes] = useState(null);
   const [progressForm, setProgressForm] = useState({ percent: '', startSprint: '', endSprint: '', status: "Didn't Start", notes: '' });
 
+  const { selectedCrew } = useOutletContext();
   const { data: teamsRaw = [] } = useQuery({ queryKey: ['teams'], queryFn: () => base44.entities.Team.list() });
-  const teams = useMemo(() => [...teamsRaw].sort((a, b) => a.name.localeCompare(b.name)), [teamsRaw]);
+  const teams = useMemo(() => {
+    const filtered = selectedCrew ? teamsRaw.filter(t => t.crew === selectedCrew) : teamsRaw;
+    return [...filtered].sort((a, b) => a.name.localeCompare(b.name));
+  }, [teamsRaw, selectedCrew]);
   const selectedTeam = teams.find(t => t.id === selectedTeamId);
-  const isAdmin = userRole === 'admin';
+  const isAdmin = userRole === 'app_admin' || userRole === 'admin';
   const isTeamLead = selectedTeam?.team_lead_email === user?.email;
   const canEdit = isAdmin || isTeamLead;
   

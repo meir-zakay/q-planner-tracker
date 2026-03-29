@@ -10,20 +10,28 @@ import TeamGanttChart from '@/components/TeamGanttChart';
 const FALLBACK_COLORS = ['#0F52BA','#0ea5e9','#f59e0b','#10b981','#f43f5e','#6366f1','#f97316'];
 
 export default function Dashboard() {
-  const { user } = useOutletContext();
+  const { user, selectedCrew } = useOutletContext();
   const { selectedYear, selectedQuarter } = useQuarterSelection();
 
-  const { data: teams = [] } = useQuery({ queryKey: ['teams'], queryFn: () => base44.entities.Team.list() });
-  const { data: features = [] } = useQuery({ queryKey: ['features', selectedYear, selectedQuarter], queryFn: () => base44.entities.Feature.filter({ year: selectedYear, quarter: selectedQuarter }) });
+  const { data: allTeams = [] } = useQuery({ queryKey: ['teams'], queryFn: () => base44.entities.Team.list() });
+  const teams = useMemo(() => selectedCrew ? allTeams.filter(t => t.crew === selectedCrew) : allTeams, [allTeams, selectedCrew]);
+  const { data: features = [] } = useQuery({ queryKey: ['features', selectedYear, selectedQuarter, selectedCrew], queryFn: () => {
+    const filter = { year: selectedYear, quarter: selectedQuarter };
+    if (selectedCrew) filter.crew = selectedCrew;
+    return base44.entities.Feature.filter(filter);
+  }});
   const { data: objectives = [] } = useQuery({ queryKey: ['objectives'], queryFn: () => base44.entities.Objective.list() });
-  const { data: allEntries = [] } = useQuery({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter], queryFn: () => base44.entities.TeamPlanEntry.filter({ year: selectedYear, quarter: selectedQuarter }) });
+  const teamIds = useMemo(() => new Set(teams.map(t => t.id)), [teams]);
+  const { data: allEntriesRaw = [] } = useQuery({ queryKey: ['teamPlanEntries', selectedYear, selectedQuarter], queryFn: () => base44.entities.TeamPlanEntry.filter({ year: selectedYear, quarter: selectedQuarter }) });
+  const allEntries = useMemo(() => selectedCrew ? allEntriesRaw.filter(e => teamIds.has(e.team_id)) : allEntriesRaw, [allEntriesRaw, teamIds, selectedCrew]);
   const { data: quarterConfigs = [] } = useQuery({ queryKey: ['quarterConfigs'], queryFn: () => base44.entities.QuarterConfig.list() });
 
   const featureMap = useMemo(() => { const m = {}; features.forEach(f => { m[f.id] = f; }); return m; }, [features]);
   const colorMap = useMemo(() => { const m = {}; objectives.forEach(o => { m[o.name] = o.color; }); return m; }, [objectives]);
 
-  const totalBECapacity = teams.reduce((s, t) => s + (t.be_capacity_weeks || 0), 0);
-  const totalFECapacity = teams.reduce((s, t) => s + (t.fe_capacity_weeks || 0), 0);
+  const filteredTeams = useMemo(() => selectedCrew ? teams.filter(t => t.quarter === selectedQuarter && t.year === selectedYear) : teams.filter(t => t.quarter === selectedQuarter && t.year === selectedYear), [teams, selectedQuarter, selectedYear, selectedCrew]);
+  const totalBECapacity = filteredTeams.reduce((s, t) => s + (t.be_capacity_weeks || 0), 0);
+  const totalFECapacity = filteredTeams.reduce((s, t) => s + (t.fe_capacity_weeks || 0), 0);
   const totalCapacity = totalBECapacity + totalFECapacity;
 
   const includedEntries = allEntries.filter(e => e.excluded_from_allocation !== true);
@@ -48,7 +56,7 @@ export default function Dashboard() {
   const utilizationColor = utilizationPct > 100 ? '#ef4444' : utilizationPct > 85 ? '#f59e0b' : '#0F52BA';
 
   const stats = [
-    { label: 'Teams', value: teams.length, icon: Users, bg: 'bg-blue-50 dark:bg-blue-950/40', iconColor: 'text-blue-500' },
+    { label: 'Teams', value: filteredTeams.length, icon: Users, bg: 'bg-blue-50 dark:bg-blue-950/40', iconColor: 'text-blue-500' },
     { label: 'Features', value: features.length, icon: ListChecks, bg: 'bg-blue-50 dark:bg-blue-950/40', iconColor: 'text-blue-600' },
     { label: 'BE Effort (weeks)', value: totalBEEffort, icon: Server, bg: 'bg-blue-50 dark:bg-blue-950/40', iconColor: 'text-blue-500' },
     { label: 'FE Effort (weeks)', value: totalFEEffort, icon: Monitor, bg: 'bg-emerald-50 dark:bg-emerald-950/40', iconColor: 'text-emerald-500' },
@@ -79,7 +87,7 @@ export default function Dashboard() {
       </div>
 
       <TeamGanttChart 
-        teams={teams} 
+        teams={filteredTeams} 
         planEntries={allEntries} 
         features={features} 
         sprints={quarterConfigs.find(c => c.year === selectedYear && c.quarter === selectedQuarter)?.sprints || []}

@@ -14,7 +14,7 @@ import { Plus, GripVertical, Pencil, Trash2, ListChecks } from 'lucide-react';
 const emptyFeature = { priority: 1, title: '', objective: '', description: '', comments: '' };
 
 export default function Features() {
-  const { userRole } = useOutletContext();
+  const { userRole, selectedCrew } = useOutletContext();
   const { selectedYear, selectedQuarter } = useQuarterSelection();
   const qc = useQueryClient();
   const [formOpen, setFormOpen] = useState(false);
@@ -22,12 +22,16 @@ export default function Features() {
   const [editId, setEditId] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
-  const canEdit = ['admin', 'editor'].includes(userRole);
-  const canAdd = userRole === 'admin';
+  const canEdit = ['app_admin', 'admin', 'editor'].includes(userRole);
+  const canAdd = ['app_admin', 'admin'].includes(userRole);
 
   const { data: features = [], isLoading } = useQuery({
-    queryKey: ['features', selectedYear, selectedQuarter],
-    queryFn: () => base44.entities.Feature.filter({ year: selectedYear, quarter: selectedQuarter }),
+    queryKey: ['features', selectedYear, selectedQuarter, selectedCrew],
+    queryFn: () => {
+      const filter = { year: selectedYear, quarter: selectedQuarter };
+      if (selectedCrew) filter.crew = selectedCrew;
+      return base44.entities.Feature.filter(filter);
+    },
   });
 
   const { data: objectives = [] } = useQuery({
@@ -42,23 +46,23 @@ export default function Features() {
   const saveMutation = useMutation({
     mutationFn: (data) => editId
       ? base44.entities.Feature.update(editId, data)
-      : base44.entities.Feature.create({ ...data, year: selectedYear, quarter: selectedQuarter }),
+      : base44.entities.Feature.create({ ...data, year: selectedYear, quarter: selectedQuarter, crew: selectedCrew || undefined }),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['features', selectedYear, selectedQuarter] });
+      qc.invalidateQueries({ queryKey: ['features', selectedYear, selectedQuarter, selectedCrew] });
       setFormOpen(false); setEditId(null); setFormData(emptyFeature);
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.Feature.delete(id),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['features', selectedYear, selectedQuarter] }); setDeleteConfirm(null); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['features', selectedYear, selectedQuarter, selectedCrew] }); setDeleteConfirm(null); },
   });
 
   const updatePrioritiesMutation = useMutation({
     mutationFn: async (reorderedFeatures) => {
       await Promise.all(reorderedFeatures.map((f, i) => base44.entities.Feature.update(f.id, { priority: i + 1 })));
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['features', selectedYear, selectedQuarter] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['features', selectedYear, selectedQuarter, selectedCrew] }),
   });
 
   const handleDragEnd = (result) => {
