@@ -42,8 +42,12 @@ export default function Tracking() {
   const { data: features = [] } = useQuery({ queryKey: ['features', selectedYear, selectedQuarter], queryFn: () => base44.entities.Feature.filter({ year: selectedYear, quarter: selectedQuarter }) });
   const { data: quarterConfigs = [] } = useQuery({ queryKey: ['quarterConfigs'], queryFn: () => base44.entities.QuarterConfig.list() });
   const { data: signedPlan = null } = useQuery({ queryKey: ['signedPlan', selectedTeamId, selectedYear, selectedQuarter], queryFn: () => selectedTeamId ? base44.entities.SignedQuarterPlan.filter({ team_id: selectedTeamId, year: selectedYear, quarter: selectedQuarter }).then(r => r[0] || null) : null, enabled: !!selectedTeamId });
-  const { data: teamPlanEntries = [] } = useQuery({ queryKey: ['teamPlanEntries', selectedTeamId, selectedYear, selectedQuarter], queryFn: () => selectedTeamId ? base44.entities.TeamPlanEntry.filter({ team_id: selectedTeamId, year: selectedYear, quarter: selectedQuarter }) : [], enabled: !!selectedTeamId });
-  const { data: actualProgress = [] } = useQuery({ queryKey: ['actualProgress', selectedTeamId, selectedYear, selectedQuarter], queryFn: () => selectedTeamId ? base44.entities.ActualProgress.filter({ team_id: selectedTeamId, year: selectedYear, quarter: selectedQuarter }) : [], enabled: !!selectedTeamId });
+  const { data: teamPlanEntriesRaw = [] } = useQuery({ queryKey: ['teamPlanEntries', selectedTeamId, selectedYear, selectedQuarter], queryFn: () => selectedTeamId ? base44.entities.TeamPlanEntry.filter({ team_id: selectedTeamId, year: selectedYear, quarter: selectedQuarter }) : [], enabled: !!selectedTeamId });
+  const { data: actualProgressRaw = [] } = useQuery({ queryKey: ['actualProgress', selectedTeamId, selectedYear, selectedQuarter], queryFn: () => selectedTeamId ? base44.entities.ActualProgress.filter({ team_id: selectedTeamId, year: selectedYear, quarter: selectedQuarter }) : [], enabled: !!selectedTeamId });
+
+  // Guard: only use data that actually belongs to the current selected team
+  const teamPlanEntries = selectedTeamId ? teamPlanEntriesRaw.filter(e => e.team_id === selectedTeamId) : [];
+  const actualProgress = selectedTeamId ? actualProgressRaw.filter(p => p.team_id === selectedTeamId) : [];
 
   const handleTeamChange = (id) => { setSelectedTeamId(id); localStorage.setItem('selectedTeamId', id); };
 
