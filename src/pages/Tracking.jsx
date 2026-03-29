@@ -28,9 +28,9 @@ export default function Tracking() {
     if (selectedTeamId && teams.length > 0 && !teams.find(t => t.id === selectedTeamId)) {
       setSelectedTeamId('');
       localStorage.removeItem('selectedTeamId');
-    } else if (selectedTeamId && teamsRaw.length > 0 && !teamsRaw.find(t => t.id === selectedTeamId)) {
-      setSelectedTeamId('');
-      localStorage.removeItem('selectedTeamId');
+      qc.removeQueries({ queryKey: ['teamPlanEntries'] });
+      qc.removeQueries({ queryKey: ['actualProgress'] });
+      qc.removeQueries({ queryKey: ['signedPlan'] });
     }
   }, [selectedCrew, teams]);
 
