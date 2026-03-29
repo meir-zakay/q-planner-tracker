@@ -26,8 +26,8 @@ const navItems = [
   { path: '/TeamPlan', label: 'Team Plan', icon: CalendarRange, roles: ['app_admin', 'admin', 'editor', 'viewer'] },
   { path: '/Tracking', label: 'Tracking', icon: Eye, roles: ['app_admin', 'admin', 'editor', 'viewer'] },
   { path: '/Teams', label: 'Teams', icon: UsersRound, roles: ['app_admin', 'admin'] },
-  { path: '/Users', label: 'Users', icon: Users, roles: ['app_admin'] },
-  { path: '/Settings', label: 'Settings', icon: Settings, roles: ['app_admin'] },
+  { path: '/Users', label: 'Users', icon: Users, roles: ['app_admin', 'admin'] },
+  { path: '/Settings', label: 'Settings', icon: Settings, roles: ['app_admin', 'admin'] },
 ];
 
 export default function Layout() {
@@ -51,7 +51,8 @@ export default function Layout() {
   });
 
   const userRole = user?.role || 'viewer';
-  const isAppAdmin = userRole === 'app_admin';
+  // Treat app_admin role OR platform admin (app owner) as app_admin
+  const isAppAdmin = userRole === 'app_admin' || userRole === 'admin';
 
   // app_admin can switch crew; others are locked to their default_crew
   const [selectedCrew, setSelectedCrew] = useState(() => localStorage.getItem('selectedCrew') || '');
