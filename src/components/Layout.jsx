@@ -55,7 +55,7 @@ export default function Layout() {
   const isAppAdmin = !!user && !!user.is_app_admin;
 
   // app_admin can switch crew; others are locked to their default_crew (or '' if not set)
-  const [selectedCrew, setSelectedCrew] = useState(() => isAppAdmin ? (localStorage.getItem('selectedCrew') || '') : '');
+  const [selectedCrew, setSelectedCrew] = useState(() => localStorage.getItem('selectedCrew') || '');
 
   // Fetch all domains (to build crew list) — only needed for app_admin
   const { data: domains = [] } = useQuery({
