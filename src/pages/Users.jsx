@@ -28,7 +28,7 @@ export default function Users() {
   const [inviteError, setInviteError] = useState('');
 
   const { data: users = [], isLoading } = useQuery({
-    queryKey: ['users'],
+    queryKey: ['usersList'],
     queryFn: async () => {
       const res = await base44.functions.invoke('listUsers', {});
       return res.data.users || [];
@@ -37,12 +37,12 @@ export default function Users() {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.User.update(id, data),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['users'] }); setEditUser(null); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['usersList'] }); setEditUser(null); },
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.User.delete(id),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['users'] }); setDeleteConfirm(null); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['usersList'] }); setDeleteConfirm(null); },
   });
 
   const handleInvite = async () => {
