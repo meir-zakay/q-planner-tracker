@@ -5,13 +5,16 @@
     "role": {
       "type": "string",
       "enum": [
-        "app_admin",
         "admin",
         "editor",
         "viewer"
       ],
       "default": "viewer",
-      "description": "User role. app_admin = full system access; admin = crew admin; editor = can edit; viewer = read-only"
+      "description": "User role. admin = crew admin; editor = can edit; viewer = read-only"
+    },
+    "is_app_admin": {
+      "type": "boolean",
+      "description": "If true, this user has full app-admin privileges (Users, Settings, Crew selector)"
     },
     "display_name": {
       "type": "string",
@@ -25,5 +28,6 @@
       "type": "string",
       "description": "User's default crew"
     }
-  }
+  },
+  "required": []
 }
