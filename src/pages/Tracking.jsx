@@ -25,14 +25,12 @@ export default function Tracking() {
 
   // Reset selected team when crew changes and the team no longer belongs to the new crew
   useEffect(() => {
-    if (selectedTeamId && teams.length > 0 && !teams.find(t => t.id === selectedTeamId)) {
+    if (!teamsRaw.length) return; // wait for teams to load
+    if (selectedTeamId && !teams.find(t => t.id === selectedTeamId)) {
       setSelectedTeamId('');
       localStorage.removeItem('selectedTeamId');
-      qc.removeQueries({ queryKey: ['teamPlanEntries'] });
-      qc.removeQueries({ queryKey: ['actualProgress'] });
-      qc.removeQueries({ queryKey: ['signedPlan'] });
     }
-  }, [selectedCrew, teams]);
+  }, [selectedCrew, teams, teamsRaw.length]);
 
   const selectedTeam = teams.find(t => t.id === selectedTeamId);
   const isAdmin = userRole === 'app_admin' || userRole === 'admin';

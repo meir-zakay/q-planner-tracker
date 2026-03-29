@@ -156,6 +156,15 @@ export default function TeamPlan() {
     enabled: !!selectedTeamId,
   });
 
+  // Reset selected team when crew changes and the team no longer belongs to the new crew
+  useEffect(() => {
+    if (!teamsRaw.length) return; // wait for teams to load
+    if (selectedTeamId && !teams.find(t => t.id === selectedTeamId)) {
+      setSelectedTeamId('');
+      localStorage.removeItem('selectedTeamId');
+    }
+  }, [selectedCrew, teams, teamsRaw.length]);
+
   const handleTeamChange = (id) => { setSelectedTeamId(id); localStorage.setItem('selectedTeamId', id); };
   const toggleManualMode = () => {
     const next = !manualMode;
