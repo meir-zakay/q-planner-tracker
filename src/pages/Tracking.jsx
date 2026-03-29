@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -22,6 +22,18 @@ export default function Tracking() {
     const filtered = selectedCrew ? teamsRaw.filter(t => t.crew === selectedCrew) : teamsRaw;
     return [...filtered].sort((a, b) => a.name.localeCompare(b.name));
   }, [teamsRaw, selectedCrew]);
+
+  // Reset selected team when crew changes and the team no longer belongs to the new crew
+  useEffect(() => {
+    if (selectedTeamId && teams.length > 0 && !teams.find(t => t.id === selectedTeamId)) {
+      setSelectedTeamId('');
+      localStorage.removeItem('selectedTeamId');
+    } else if (selectedTeamId && teamsRaw.length > 0 && !teamsRaw.find(t => t.id === selectedTeamId)) {
+      setSelectedTeamId('');
+      localStorage.removeItem('selectedTeamId');
+    }
+  }, [selectedCrew, teams]);
+
   const selectedTeam = teams.find(t => t.id === selectedTeamId);
   const isAdmin = userRole === 'app_admin' || userRole === 'admin';
   const isTeamLead = selectedTeam?.team_lead_email === user?.email;

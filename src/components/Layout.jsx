@@ -177,7 +177,6 @@ export default function Layout() {
                       <SelectValue placeholder="All crews" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value={null}>All crews</SelectItem>
                       {allCrews.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
                     </SelectContent>
                   </Select>
