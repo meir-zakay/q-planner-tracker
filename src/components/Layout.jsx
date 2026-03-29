@@ -51,8 +51,8 @@ export default function Layout() {
   });
 
   const userRole = user?.role || 'viewer';
-  // Treat app_admin role OR platform admin (app owner) as app_admin
-  const isAppAdmin = userRole === 'app_admin' || userRole === 'admin';
+  // Only treat as app_admin if user is fully loaded AND has the right role
+  const isAppAdmin = !!user && (userRole === 'app_admin' || userRole === 'admin');
 
   // app_admin can switch crew; others are locked to their default_crew (or '' if not set)
   const [selectedCrew, setSelectedCrew] = useState(() => isAppAdmin ? (localStorage.getItem('selectedCrew') || '') : '');
