@@ -5,23 +5,25 @@
     "role": {
       "type": "string",
       "enum": [
+        "app_admin",
         "admin",
         "editor",
         "viewer"
       ],
-      "default": "viewer"
+      "default": "viewer",
+      "description": "User role. app_admin = full system access; admin = crew admin; editor = can edit; viewer = read-only"
     },
     "display_name": {
       "type": "string",
-      "description": "Display name for the user"
+      "description": "Display name override"
     },
     "default_domain": {
       "type": "string",
-      "description": "Default domain for this user"
+      "description": "User's default domain"
     },
     "default_crew": {
       "type": "string",
-      "description": "Default crew for this user"
+      "description": "User's default crew"
     }
   }
 }

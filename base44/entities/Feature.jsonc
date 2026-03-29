@@ -1,0 +1,46 @@
+{
+  "name": "Feature",
+  "type": "object",
+  "properties": {
+    "priority": {
+      "type": "number",
+      "description": "Priority number (lower is higher priority)"
+    },
+    "title": {
+      "type": "string",
+      "description": "Feature title"
+    },
+    "objective": {
+      "type": "string",
+      "description": "Objective category"
+    },
+    "description": {
+      "type": "string",
+      "description": "Feature description"
+    },
+    "comments": {
+      "type": "string",
+      "description": "Comments about the feature"
+    },
+    "quarter": {
+      "type": "string",
+      "description": "Quarter identifier e.g. Q1"
+    },
+    "year": {
+      "type": "number",
+      "description": "Year"
+    },
+    "crew": {
+      "type": "string",
+      "description": "The crew this feature belongs to"
+    },
+    "team_plan_only": {
+      "type": "boolean",
+      "description": "If true, this feature was created inline in Team Plan and should not appear in the global Features page"
+    }
+  },
+  "required": [
+    "title",
+    "priority"
+  ]
+}
