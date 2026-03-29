@@ -26,8 +26,8 @@ const navItems = [
   { path: '/TeamPlan', label: 'Team Plan', icon: CalendarRange, roles: ['app_admin', 'admin', 'editor', 'viewer'] },
   { path: '/Tracking', label: 'Tracking', icon: Eye, roles: ['app_admin', 'admin', 'editor', 'viewer'] },
   { path: '/Teams', label: 'Teams', icon: UsersRound, roles: ['app_admin', 'admin'] },
-  { path: '/Users', label: 'Users', icon: Users, roles: ['app_admin', 'admin'] },
-  { path: '/Settings', label: 'Settings', icon: Settings, roles: ['app_admin', 'admin'] },
+  { path: '/Users', label: 'Users', icon: Users, roles: ['app_admin'] },
+  { path: '/Settings', label: 'Settings', icon: Settings, roles: ['app_admin'] },
 ];
 
 export default function Layout() {
@@ -101,7 +101,8 @@ export default function Layout() {
 
 
 
-  const filteredNav = navItems.filter(item => item.roles.includes(userRole));
+  const effectiveRole = isAppAdmin ? 'app_admin' : userRole;
+  const filteredNav = navItems.filter(item => item.roles.includes(effectiveRole));
 
   const pageTitle = PAGE_TITLES[location.pathname] || 'Cards Planner';
 
