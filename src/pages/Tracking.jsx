@@ -137,11 +137,42 @@ export default function Tracking() {
     const feat = featureMap[entry.feature_id];
     const actual = progressMap[entry.feature_id];
     const totalPlannedWeeks = (entry.be_effort_weeks || 0) + (entry.fe_effort_weeks || 0);
-    const daysPerWeek = 5;
-    const totalPlannedDays = totalPlannedWeeks * daysPerWeek;
-    const daysSinceStart = Math.max(0, Math.floor((new Date() - new Date(selectedYear, (parseInt(selectedQuarter[1]) - 1) * 3, 1)) / (1000 * 60 * 60 * 24)));
-    const quarterDays = 90;
-    const expectedProgress = Math.min(100, Math.round((daysSinceStart / quarterDays) * 100));
+
+    // Calculate expected progress based on sprint allocations and today's date
+    // Each sprint is assumed to be 2 weeks long; "today" determines which sprint we're in
+    const quarterStartMonth = (parseInt(selectedQuarter[1]) - 1) * 3;
+    const quarterStartDate = new Date(selectedYear, quarterStartMonth, 1);
+    const today = new Date();
+    const daysSinceQuarterStart = Math.max(0, Math.floor((today - quarterStartDate) / (1000 * 60 * 60 * 24)));
+    const sprintDurationDays = 14;
+    // current sprint index (0-based) within the quarter
+    const currentSprintIdx = Math.floor(daysSinceQuarterStart / sprintDurationDays);
+    // how many days into the current sprint
+    const daysIntoCurrentSprint = daysSinceQuarterStart % sprintDurationDays;
+
+    // Sum up effort that has already elapsed
+    let elapsedEffort = 0;
+    let totalEffort = 0;
+    (entry.sprint_allocations || []).forEach(alloc => {
+      const sprintIdx = sprints.indexOf(alloc.sprint);
+      if (sprintIdx === -1) return;
+      const beWeeks = alloc.be_weeks || 0;
+      const feWeeks = alloc.fe_weeks || 0;
+      const sprintEffort = beWeeks + feWeeks;
+      totalEffort += sprintEffort;
+      if (sprintIdx < currentSprintIdx) {
+        // Sprint fully elapsed
+        elapsedEffort += sprintEffort;
+      } else if (sprintIdx === currentSprintIdx) {
+        // Sprint partially elapsed — pro-rate by days into sprint
+        const fraction = Math.min(1, daysIntoCurrentSprint / sprintDurationDays);
+        elapsedEffort += sprintEffort * fraction;
+      }
+    });
+
+    const expectedProgress = totalEffort > 0
+      ? Math.min(100, Math.round((elapsedEffort / totalEffort) * 100))
+      : 0;
     const actualPercent = actual?.actual_progress_percent || 0;
     const status = actualPercent > expectedProgress ? 'ahead' : actualPercent < expectedProgress - 10 ? 'behind' : 'on-track';
     const sprintRange = getSprintRange(entry);
